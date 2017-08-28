@@ -1,12 +1,39 @@
 import React, { Component } from 'react';
 import { connect } from 'dva/mobile';
-import { View, Text } from 'react-native'
+import { Wrap } from '../../components';
+import { View, Text, Button, Image, StatusBar, FlatList, TouchableOpacity } from 'react-native'
 import styles from './style';
 
-class Home extends Component {
+class Home extends React.PureComponent {
+  constructor(props) {
+    super(props)
+    this.state = {}
+  }
+
+  static navigationOptions = ({ navigation }) => {
+    const { state, setParams } = navigation;
+    return {
+      headerStyle: {
+        backgroundColor: '#2D2D2D'
+      },
+      headerLeft: (
+        <Image style={styles.headerLeft} source={require('../../assets/images/logo.png')} resizeMode='contain' />
+      ),
+      headerRight: (
+        <View style={styles.headerRight}>
+          <TouchableOpacity style={styles.headerTouch} onPress={() => { }}>
+            <Image style={styles.headerBtn} source={require('../../assets/images/search.png')} resizeMode='contain' />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.headerTouch} onPress={() => { }}>
+            <Image style={[styles.headerBtn, styles.headerImg]} source={require('../../assets/images/header.png')} resizeMode='contain' />
+          </TouchableOpacity>
+        </View>
+      )
+    };
+  };
 
   componentDidMount() {
-
+    this.props.query()
   }
 
   componentWillReceiveProps(next) {
@@ -14,30 +41,36 @@ class Home extends Component {
   }
 
   render() {
-
+    const { data, loading } = this.props
+    const { navigate } = this.props.navigation;
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit index.android
-        </Text>
-        <Text style={styles.instructions}>
-          Double tap R on your keyboard to reload,{'\n'}
-          Shake or press menu button for dev menu
-        </Text>
+        <StatusBar barStyle="light-content" />
+        <FlatList
+          data={data}
+          extraData={this.state}
+          keyExtractor={(item, index) => index}
+          renderItem={({ item }) => <Wrap navigate={navigate} item={item} />}
+        />
       </View>
     );
   }
 }
 
 function mapStateToProps(state) {
-  return {}
+  const { data, loading } = state.home;
+  return { data, loading };
 }
 
 function mapDispatchToProps(dispatch) {
-  return {}
+  return {
+    query(params) {
+      dispatch({
+        type: 'home/query',
+        payload: params,
+      });
+    },
+  }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

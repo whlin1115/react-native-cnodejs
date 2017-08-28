@@ -1,6 +1,7 @@
+import { HOME_URL } from '../config';
 
 function parseJSON(response) {
-  return response.json();
+  return Promise.all([response, response.json()])
 }
 
 function checkStatus(response) {
@@ -21,7 +22,8 @@ function checkStatus(response) {
  * @return {object}           An object containing either "data" or "err"
  */
 export function request(url, options) {
-  return fetch(url, options)
+  const URL = HOME_URL + url;
+  return fetch(URL, options)
     .then(checkStatus)
     .then(parseJSON)
     .then(data => ({ data }))

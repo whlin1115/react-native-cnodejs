@@ -7,8 +7,11 @@ function Wrap({ item, navigate }) {
   return (
     <TouchableOpacity onpress={() => navigate('Detail', { id: item.id })}>
       <View style={styles.list}>
-        <View style={styles.title}>
-          <Text style={styles.tab}>{item.title}</Text>
+        <View style={styles.header}>
+          <View style={[styles[item.tab], styles.tab]} >
+            <Text style={styles.sort}>{item.sort}</Text>
+          </View>
+          <Text numberOfLines={1} style={styles.h3}>{item.title}</Text>
         </View >
         <View style={styles.content}>
           <Image source={{ uri: item.author.avatar_url }} style={styles.avatar} />
@@ -16,7 +19,7 @@ function Wrap({ item, navigate }) {
             <View style={styles.p}>
               <Text style={styles.name}>{item.author.loginname}</Text>
               <View style={styles.status}>
-                <Text style={styles.b}>{item.reply_count} / </Text>
+                <Text style={[styles.b, styles.reply]}>{item.reply_count} / </Text>
                 <Text style={styles.b}>{item.visit_count}</Text>
               </View>
             </View>
@@ -33,25 +36,42 @@ function Wrap({ item, navigate }) {
 
 const styles = StyleSheet.create({
   list: {
-    backgroundColor: '#fff'
+    paddingTop: 10,
+    paddingLeft: 15,
+    paddingRight: 15,
+    paddingBottom: 10,
+    backgroundColor: '#fff',
+    borderWidth: 0.5,
+    borderColor: '#d5dbdb'
   },
 
-  li: {
-    padding: 10,
-  },
-
-  text: {
-    lineHeight: 1.5,
-    fontWeight: 'bold',
+  header: {
+    flex: 1,
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    flexDirection: 'row'
   },
 
   tab: {
     marginRight: 10,
-    marginTop: -6,
-    padding: 5,
-    fontWeight: '400',
-    borderRadius: 5,
-    textAlign: 'center',
+    paddingTop: 5,
+    paddingLeft: 6,
+    paddingBottom: 5,
+    paddingRight: 6,
+    borderRadius: 3,
+  },
+
+  sort: {
+    fontSize: 12,
+    color: '#FFFFFF',
+    fontWeight: 'bold',
+  },
+
+  h3: {
+    flex: 1,
+    overflow: 'hidden',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 
   top: {
@@ -76,6 +96,7 @@ const styles = StyleSheet.create({
 
   content: {
     paddingTop: 10,
+    flexDirection: 'row'
   },
 
   avatar: {
@@ -90,23 +111,30 @@ const styles = StyleSheet.create({
   },
 
   p: {
-    fontSize: 14,
-  },
-
-  p: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     padding: 3,
   },
 
+  status: {
+    flexDirection: 'row',
+  },
+
   name: {
-    flex: 1,
+    fontSize: 12,
   },
 
   time: {
-    flex: 1,
+    fontSize: 12,
   },
 
   b: {
+    fontSize: 12,
     fontWeight: 'bold',
+  },
+
+  reply: {
+    color: '#42b983',
   }
 });
 

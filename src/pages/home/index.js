@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'dva/mobile';
 import { Wrap } from '../../components';
-import { View, Text, Button, Image, StatusBar, FlatList, TouchableOpacity } from 'react-native'
+import { View, Text, Button, Image, StatusBar, FlatList, Dimensions, TouchableOpacity } from 'react-native'
 import styles from './style';
 
 class Home extends React.PureComponent {
@@ -43,10 +43,12 @@ class Home extends React.PureComponent {
   render() {
     const { data, loading } = this.props
     const { navigate } = this.props.navigation;
+    const { width } = Dimensions.get('window');
     return (
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
         <FlatList
+          style={{ width: width }}
           data={data}
           extraData={this.state}
           keyExtractor={(item, index) => index}

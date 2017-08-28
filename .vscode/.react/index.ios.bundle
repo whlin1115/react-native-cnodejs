@@ -64667,12 +64667,14 @@ function queryTopics() {
 }
 
 function parseTopics(data) {
+  var tabs = { 'top': '置顶', 'ask': '问答', 'good': '精华', 'share': '分享', 'default': '暂无' };
   var topics = data.map(function (topic) {
     var create_at = (0, _tool.formatDate)(topic.create_at);
     var last_reply_at = (0, _tool.formatDate)(topic.last_reply_at);
     var tab = topic.tab ? topic.tab : 'default';
+    var sort = tabs[tab];
     var title = topic.title.replace(/[\r\n]/g, '');
-    return _extends({}, topic, { create_at: create_at, last_reply_at: last_reply_at, tab: tab, title: title });
+    return _extends({}, topic, { create_at: create_at, last_reply_at: last_reply_at, tab: tab, title: title, sort: sort });
   });
   return topics;
 }
@@ -72568,35 +72570,39 @@ var Home = function (_React$PureComponent) {
           loading = _props.loading;
       var navigate = this.props.navigation.navigate;
 
+      var _Dimensions$get = _reactNative.Dimensions.get('window'),
+          width = _Dimensions$get.width;
+
       return _react2.default.createElement(
         _reactNative.View,
         { style: _style2.default.container, __source: {
             fileName: _jsxFileName,
-            lineNumber: 47
+            lineNumber: 48
           }
         },
         _react2.default.createElement(_reactNative.StatusBar, { barStyle: 'light-content', __source: {
             fileName: _jsxFileName,
-            lineNumber: 48
+            lineNumber: 49
           }
         }),
         _react2.default.createElement(_reactNative.FlatList, {
+          style: { width: width },
           data: data,
           extraData: this.state,
+          keyExtractor: function keyExtractor(item, index) {
+            return index;
+          },
           renderItem: function renderItem(_ref) {
             var item = _ref.item;
             return _react2.default.createElement(_components2.Wrap, { navigate: navigate, item: item, __source: {
                 fileName: _jsxFileName,
-                lineNumber: 52
+                lineNumber: 55
               }
             });
           },
-          keyExtractor: function keyExtractor(item, index) {
-            return index;
-          },
           __source: {
             fileName: _jsxFileName,
-            lineNumber: 49
+            lineNumber: 50
           }
         })
       );
@@ -72727,16 +72733,33 @@ function Wrap(_ref) {
       },
       _react2.default.createElement(
         _reactNative.View,
-        { style: styles.title, __source: {
+        { style: styles.header, __source: {
             fileName: _jsxFileName,
             lineNumber: 10
           }
         },
         _react2.default.createElement(
-          _reactNative.Text,
-          { style: styles.tab, __source: {
+          _reactNative.View,
+          { style: [styles[item.tab], styles.tab], __source: {
               fileName: _jsxFileName,
               lineNumber: 11
+            }
+          },
+          _react2.default.createElement(
+            _reactNative.Text,
+            { style: styles.sort, __source: {
+                fileName: _jsxFileName,
+                lineNumber: 12
+              }
+            },
+            item.sort
+          )
+        ),
+        _react2.default.createElement(
+          _reactNative.Text,
+          { numberOfLines: 1, style: styles.h3, __source: {
+              fileName: _jsxFileName,
+              lineNumber: 14
             }
           },
           item.title
@@ -72746,33 +72769,33 @@ function Wrap(_ref) {
         _reactNative.View,
         { style: styles.content, __source: {
             fileName: _jsxFileName,
-            lineNumber: 13
+            lineNumber: 16
           }
         },
         _react2.default.createElement(_reactNative.Image, { source: { uri: item.author.avatar_url }, style: styles.avatar, __source: {
             fileName: _jsxFileName,
-            lineNumber: 14
+            lineNumber: 17
           }
         }),
         _react2.default.createElement(
           _reactNative.View,
           { style: styles.info, __source: {
               fileName: _jsxFileName,
-              lineNumber: 15
+              lineNumber: 18
             }
           },
           _react2.default.createElement(
             _reactNative.View,
             { style: styles.p, __source: {
                 fileName: _jsxFileName,
-                lineNumber: 16
+                lineNumber: 19
               }
             },
             _react2.default.createElement(
               _reactNative.Text,
               { style: styles.name, __source: {
                   fileName: _jsxFileName,
-                  lineNumber: 17
+                  lineNumber: 20
                 }
               },
               item.author.loginname
@@ -72781,14 +72804,14 @@ function Wrap(_ref) {
               _reactNative.View,
               { style: styles.status, __source: {
                   fileName: _jsxFileName,
-                  lineNumber: 18
+                  lineNumber: 21
                 }
               },
               _react2.default.createElement(
                 _reactNative.Text,
-                { style: styles.b, __source: {
+                { style: [styles.b, styles.reply], __source: {
                     fileName: _jsxFileName,
-                    lineNumber: 19
+                    lineNumber: 22
                   }
                 },
                 item.reply_count,
@@ -72798,7 +72821,7 @@ function Wrap(_ref) {
                 _reactNative.Text,
                 { style: styles.b, __source: {
                     fileName: _jsxFileName,
-                    lineNumber: 20
+                    lineNumber: 23
                   }
                 },
                 item.visit_count
@@ -72809,14 +72832,14 @@ function Wrap(_ref) {
             _reactNative.View,
             { style: styles.p, __source: {
                 fileName: _jsxFileName,
-                lineNumber: 23
+                lineNumber: 26
               }
             },
             _react2.default.createElement(
               _reactNative.Text,
               { style: styles.time, __source: {
                   fileName: _jsxFileName,
-                  lineNumber: 24
+                  lineNumber: 27
                 }
               },
               item.create_at
@@ -72825,7 +72848,7 @@ function Wrap(_ref) {
               _reactNative.Text,
               { style: styles.time, __source: {
                   fileName: _jsxFileName,
-                  lineNumber: 25
+                  lineNumber: 28
                 }
               },
               item.last_reply_at
@@ -72839,25 +72862,42 @@ function Wrap(_ref) {
 
 var styles = _reactNative.StyleSheet.create({
   list: {
-    backgroundColor: '#fff'
+    paddingTop: 10,
+    paddingLeft: 15,
+    paddingRight: 15,
+    paddingBottom: 10,
+    backgroundColor: '#fff',
+    borderWidth: 0.5,
+    borderColor: '#d5dbdb'
   },
 
-  li: {
-    padding: 10
-  },
-
-  text: {
-    lineHeight: 1.5,
-    fontWeight: 'bold'
+  header: {
+    flex: 1,
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    flexDirection: 'row'
   },
 
   tab: {
     marginRight: 10,
-    marginTop: -6,
-    padding: 5,
-    fontWeight: '400',
-    borderRadius: 5,
-    textAlign: 'center'
+    paddingTop: 5,
+    paddingLeft: 6,
+    paddingBottom: 5,
+    paddingRight: 6,
+    borderRadius: 3
+  },
+
+  sort: {
+    fontSize: 12,
+    color: '#FFFFFF',
+    fontWeight: 'bold'
+  },
+
+  h3: {
+    flex: 1,
+    overflow: 'hidden',
+    fontSize: 16,
+    fontWeight: 'bold'
   },
 
   top: {
@@ -72881,7 +72921,8 @@ var styles = _reactNative.StyleSheet.create({
   },
 
   content: {
-    paddingTop: 10
+    paddingTop: 10,
+    flexDirection: 'row'
   },
 
   avatar: {
@@ -72896,23 +72937,30 @@ var styles = _reactNative.StyleSheet.create({
   },
 
   p: {
-    fontSize: 14
-  },
-
-  p: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     padding: 3
   },
 
+  status: {
+    flexDirection: 'row'
+  },
+
   name: {
-    flex: 1
+    fontSize: 12
   },
 
   time: {
-    flex: 1
+    fontSize: 12
   },
 
   b: {
+    fontSize: 12,
     fontWeight: 'bold'
+  },
+
+  reply: {
+    color: '#42b983'
   }
 });
 

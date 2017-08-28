@@ -1,11 +1,6 @@
-import fetch from 'dva/fetch';
 
 function parseJSON(response) {
   return response.json();
-}
-
-function fetchHtml(response) {
-  return response.text();
 }
 
 function checkStatus(response) {
@@ -29,14 +24,6 @@ export function request(url, options) {
   return fetch(url, options)
     .then(checkStatus)
     .then(parseJSON)
-    .then(data => ({ data }))
-    .catch(err => ({ err }));
-}
-
-export function requestHtml(url, options) {
-  return fetch(url, options)
-    .then(checkStatus)
-    .then(fetchHtml)
     .then(data => ({ data }))
     .catch(err => ({ err }));
 }

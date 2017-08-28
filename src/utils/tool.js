@@ -12,43 +12,10 @@ export const formatDate = function (str) {
   } else if ((time / 86400000) < 31) {
     return parseInt(time / 86400000) + '天前';
   } else if ((time / 2592000000) < 12) {
-    return parseInt(time / 2592000000) + '月前';
+    return parseInt(time / 2592000000) + '个月前';
   } else {
-    return parseInt(time / 31536000000) + '年前';
+    let year = parseInt(time / 31536000000)
+    year = year ? year : 1
+    return year + '年前';
   }
 };
-
-export const phone = (function () {
-  var ua = navigator.platform;
-  if (ua == 'Android' || ua == 'iPhone' || ua == 'ipad') return true;
-  else return false;
-})();
-
-
-export function parsePlate(plate) {
-  var color = "plate "
-  switch (plate) {
-    case "步行街主干道":
-      color += "C4F8FF5";
-      break;
-    case "影视区":
-      color += "C4D86EE";
-      break;
-    case "爆照区":
-      color += "CE16C40";
-      break;
-    case "英雄联盟":
-      color += "CF8B841";
-      break;
-    case "王者荣耀":
-      color += "C2DB98B";
-      break;
-    case "IT数码区":
-      color += "C1C81F0";
-      break;
-    default:
-      color += "C4F8FF5";
-      break;
-  }
-  return color;
-}

@@ -1,10 +1,12 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'dva/mobile';
 import Info from './components/Info';
-import { View, Text, Button, Image, StatusBar, FlatList, Dimensions, TouchableOpacity } from 'react-native'
+import { Html, HtmlView } from '../../components';
+import Floor from './components/Floor';
+import { View, Text, Button, Image, StatusBar, FlatList, Dimensions, ScrollView, TouchableOpacity, StyleSheet } from 'react-native'
 import styles from './style';
 
-class Detail extends React.PureComponent {
+class Detail extends PureComponent {
   constructor(props) {
     super(props)
     this.state = {}
@@ -35,15 +37,41 @@ class Detail extends React.PureComponent {
     }
   }
 
+  componentWillUnmount() {
+    this.props.clean()
+  }
+
   render() {
     const { data, loading } = this.props;
     const { navigate } = this.props.navigation;
+    const { width } = Dimensions.get('window');
     const infoProps = { data, navigate }
+    const htmlProps = { html: data.content, styles: htmlStyles }
+    const { replies } = data
 
     return (
-      <View style={styles.container}>
-        <Info {...infoProps}></Info>
-      </View>
+      <ScrollView style={styles.container}>
+        <Info {...infoProps} />
+        {/* <Html {...htmlProps} /> */}
+        {
+          data.content ?
+            <View style={styles.connect}>
+              <HtmlView {...htmlProps} />
+            </View> : null
+        }
+        {
+          replies ? <View style={styles.reply}>
+            <Text>{replies.length} 回复</Text>
+          </View> : null
+        }
+        <FlatList
+          style={{ width: width }}
+          data={replies}
+          extraData={this.state}
+          keyExtractor={(item, index) => index}
+          renderItem={({ item }) => <Floor navigate={navigate} item={item} />}
+        />
+      </ScrollView>
     );
   }
 }
@@ -61,7 +89,32 @@ function mapDispatchToProps(dispatch) {
         payload: params,
       });
     },
+    clean() {
+      dispatch({
+        type: 'detail/clean',
+      })
+    }
   };
 }
+
+const htmlStyles = StyleSheet.create({
+  a: {
+    color: '#4078c0',
+  },
+
+  p: {
+    fontSize: 16,
+    lineHeight: 24,
+  },
+
+  h2: {
+    fontSize: 18,
+  },
+
+  h3: {
+    fontSize: 24,
+  }
+
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(Detail);

@@ -5,7 +5,7 @@ import { StyleSheet, View, Image, Text, TouchableOpacity } from 'react-native'
 function Info({ data, navigate }) {
 
   return (
-    data.title ?
+    Object.keys(data).length > 0 ?
       <View>
         <View style={styles.title}>
           <Text style={styles.h2}>{data.title}</Text>
@@ -17,8 +17,8 @@ function Info({ data, navigate }) {
             <Text style={styles.span}>发布于: {data.create_at}</Text>
           </View>
           <View style={styles.right}>
-            <View style={styles.tab} >
-              <Text style={styles.tag}>置顶</Text>
+            <View style={[styles[data.tab], styles.tab]} >
+              <Text style={styles.tag}>{data.sort}</Text>
             </View>
             <Text style={styles.span}>{data.visit_count}次浏览</Text>
           </View>
@@ -75,7 +75,6 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
     paddingRight: 15,
     borderRadius: 3,
-    backgroundColor: '#e74c3c',
   },
 
   tag: {
@@ -94,7 +93,27 @@ const styles = StyleSheet.create({
 
   right: {
     alignItems: 'flex-end',
-  }
+  },
+
+  top: {
+    backgroundColor: '#e74c3c',
+  },
+
+  ask: {
+    backgroundColor: '#3498db',
+  },
+
+  good: {
+    backgroundColor: '#e67e22',
+  },
+
+  share: {
+    backgroundColor: '#1abc9c',
+  },
+
+  default: {
+    backgroundColor: '#e7e7e7',
+  },
 
 });
 

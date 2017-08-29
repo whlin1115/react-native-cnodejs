@@ -23,6 +23,9 @@ export default {
     'loading'(state, { payload: data }) {
       return { ...state, loading: data };
     },
+    'clean'(state, { payload: data }) {
+      return { ...state, data: {} };
+    },
   },
   subscriptions: {},
 };

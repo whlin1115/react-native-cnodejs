@@ -12,7 +12,7 @@ const Navigation = StackNavigator({
         backgroundColor: '#2D2D2D',
       },
       headerTintColor: '#FFFFFF'
-    }
+    },
   });
 
 export default Navigation;

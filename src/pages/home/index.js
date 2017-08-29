@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'dva/mobile';
 import Wrap from './components/Wrap';
 import { View, Text, Button, Image, StatusBar, FlatList, Dimensions, TouchableOpacity } from 'react-native'
 import styles from './style';
 
-class Home extends React.PureComponent {
+class Home extends PureComponent {
   constructor(props) {
     super(props)
     this.state = {}

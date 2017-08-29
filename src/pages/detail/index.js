@@ -6,6 +6,9 @@ import Floor from './components/Floor';
 import { View, Text, Button, Image, StatusBar, FlatList, Dimensions, ScrollView, TouchableOpacity, StyleSheet } from 'react-native'
 import styles from './style';
 
+const { width } = Dimensions.get('window')
+const defaultMaxImageWidth = width - 30 - 20
+
 class Detail extends PureComponent {
   constructor(props) {
     super(props)
@@ -113,6 +116,10 @@ const htmlStyles = StyleSheet.create({
 
   h3: {
     fontSize: 24,
+  },
+
+  img: {
+    width: defaultMaxImageWidth
   }
 
 });

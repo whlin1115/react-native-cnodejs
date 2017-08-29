@@ -1,7 +1,10 @@
 
 import React from 'react'
-import { StyleSheet, View, Image, Text, TouchableOpacity } from 'react-native'
+import { StyleSheet, View, Image, Text, Dimensions, TouchableOpacity } from 'react-native'
 import { HtmlView } from '../../../components';
+
+const { width } = Dimensions.get('window')
+const defaultMaxImageWidth = width - 30 - 20
 
 function Floor({ item, navigate }) {
 
@@ -21,7 +24,7 @@ function Floor({ item, navigate }) {
         </View>
       </View>
       <View style={styles.content}>
-        <HtmlView html={item.content} />
+        <HtmlView html={item.content} styles={htmlStyles} />
       </View>
     </View>
   )
@@ -29,7 +32,7 @@ function Floor({ item, navigate }) {
 
 const styles = StyleSheet.create({
   list: {
-    marginTop: 15,
+    marginTop: 10,
     borderBottomWidth: 0.5,
     borderColor: '#d5dbdb'
   },
@@ -91,8 +94,21 @@ const styles = StyleSheet.create({
     paddingBottom: 3,
   },
 
+});
+
+
+const htmlStyles = StyleSheet.create({
+  a: {
+    color: '#4078c0',
+  },
+
   p: {
-    fontSize: 14
+    fontSize: 14,
+    lineHeight: 18,
+  },
+
+  img: {
+    width: defaultMaxImageWidth
   }
 
 });

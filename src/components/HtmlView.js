@@ -4,11 +4,7 @@ import HTMLView from 'react-native-htmlview';
 
 class HtmlView extends React.Component {
   render() {
-    const { html, styles = {
-      a: {
-        color: '#4078c0',
-      },
-    } } = this.props;
+    const { html, styles } = this.props;
 
     return (
       <HTMLView

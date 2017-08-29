@@ -76654,6 +76654,11 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+var _Dimensions$get = _reactNative.Dimensions.get('window'),
+    width = _Dimensions$get.width;
+
+var defaultMaxImageWidth = width - 30 - 20;
+
 var Detail = function (_PureComponent) {
   _inherits(Detail, _PureComponent);
 
@@ -76693,8 +76698,8 @@ var Detail = function (_PureComponent) {
           loading = _props.loading;
       var navigate = this.props.navigation.navigate;
 
-      var _Dimensions$get = _reactNative.Dimensions.get('window'),
-          width = _Dimensions$get.width;
+      var _Dimensions$get2 = _reactNative.Dimensions.get('window'),
+          width = _Dimensions$get2.width;
 
       var infoProps = { data: data, navigate: navigate };
       var htmlProps = { html: data.content, styles: htmlStyles };
@@ -76705,26 +76710,26 @@ var Detail = function (_PureComponent) {
         _reactNative.ScrollView,
         { style: _style2.default.container, __source: {
             fileName: _jsxFileName,
-            lineNumber: 53
+            lineNumber: 56
           }
         },
         _react2.default.createElement(_Info2.default, _extends({}, infoProps, {
           __source: {
             fileName: _jsxFileName,
-            lineNumber: 54
+            lineNumber: 57
           }
         })),
         data.content ? _react2.default.createElement(
           _reactNative.View,
           { style: _style2.default.connect, __source: {
               fileName: _jsxFileName,
-              lineNumber: 58
+              lineNumber: 61
             }
           },
           _react2.default.createElement(_components2.HtmlView, _extends({}, htmlProps, {
             __source: {
               fileName: _jsxFileName,
-              lineNumber: 59
+              lineNumber: 62
             }
           }))
         ) : null,
@@ -76732,7 +76737,7 @@ var Detail = function (_PureComponent) {
           _reactNative.View,
           { style: _style2.default.reply, __source: {
               fileName: _jsxFileName,
-              lineNumber: 63
+              lineNumber: 66
             }
           },
           _react2.default.createElement(
@@ -76740,7 +76745,7 @@ var Detail = function (_PureComponent) {
             {
               __source: {
                 fileName: _jsxFileName,
-                lineNumber: 64
+                lineNumber: 67
               }
             },
             replies.length,
@@ -76758,13 +76763,13 @@ var Detail = function (_PureComponent) {
             var item = _ref.item;
             return _react2.default.createElement(_Floor2.default, { navigate: navigate, item: item, __source: {
                 fileName: _jsxFileName,
-                lineNumber: 72
+                lineNumber: 75
               }
             });
           },
           __source: {
             fileName: _jsxFileName,
-            lineNumber: 67
+            lineNumber: 70
           }
         })
       );
@@ -76784,19 +76789,19 @@ Detail.navigationOptions = function (_ref2) {
       _reactNative.View,
       { style: _style2.default.headerRight, __source: {
           fileName: _jsxFileName,
-          lineNumber: 19
+          lineNumber: 22
         }
       },
       _react2.default.createElement(
         _reactNative.TouchableOpacity,
         { style: _style2.default.headerTouch, onPress: function onPress() {}, __source: {
             fileName: _jsxFileName,
-            lineNumber: 20
+            lineNumber: 23
           }
         },
         _react2.default.createElement(_reactNative.Image, { style: [_style2.default.headerBtn, _style2.default.headerImg], source: require(543                              ), resizeMode: 'contain', __source: { // 543 = ../../assets/images/collect.png
             fileName: _jsxFileName,
-            lineNumber: 21
+            lineNumber: 24
           }
         })
       )
@@ -76844,6 +76849,10 @@ var htmlStyles = _reactNative.StyleSheet.create({
 
   h3: {
     fontSize: 24
+  },
+
+  img: {
+    width: defaultMaxImageWidth
   }
 
 });
@@ -86547,12 +86556,7 @@ var HtmlView = _wrapComponent('HtmlView')(function (_React$Component) {
     value: function render() {
       var _props = this.props,
           html = _props.html,
-          _props$styles = _props.styles,
-          styles = _props$styles === undefined ? {
-        a: {
-          color: '#4078c0'
-        }
-      } : _props$styles;
+          styles = _props.styles;
 
 
       return _react3.default.createElement(_reactNativeHtmlview2.default, {
@@ -86560,7 +86564,7 @@ var HtmlView = _wrapComponent('HtmlView')(function (_React$Component) {
         stylesheet: styles,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 14
+          lineNumber: 10
         }
       });
     }
@@ -90218,6 +90222,11 @@ var _components2 = require(533                  ); // 533 = ../../../components
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var _Dimensions$get = _reactNative.Dimensions.get('window'),
+    width = _Dimensions$get.width;
+
+var defaultMaxImageWidth = width - 30 - 20;
+
 function Floor(_ref) {
   var item = _ref.item,
       navigate = _ref.navigate;
@@ -90227,40 +90236,40 @@ function Floor(_ref) {
     _reactNative.View,
     { style: styles.list, __source: {
         fileName: _jsxFileName,
-        lineNumber: 9
+        lineNumber: 12
       }
     },
     _react2.default.createElement(
       _reactNative.View,
       { style: styles.user, __source: {
           fileName: _jsxFileName,
-          lineNumber: 10
+          lineNumber: 13
         }
       },
       _react2.default.createElement(_reactNative.Image, { source: { uri: item.author.avatar_url }, style: styles.head, __source: {
           fileName: _jsxFileName,
-          lineNumber: 11
+          lineNumber: 14
         }
       }),
       _react2.default.createElement(
         _reactNative.View,
         { style: styles.info, __source: {
             fileName: _jsxFileName,
-            lineNumber: 12
+            lineNumber: 15
           }
         },
         _react2.default.createElement(
           _reactNative.View,
           { style: styles.cl, __source: {
               fileName: _jsxFileName,
-              lineNumber: 13
+              lineNumber: 16
             }
           },
           _react2.default.createElement(
             _reactNative.Text,
             { style: styles.name, __source: {
                 fileName: _jsxFileName,
-                lineNumber: 14
+                lineNumber: 17
               }
             },
             item.author.loginname
@@ -90269,7 +90278,7 @@ function Floor(_ref) {
             _reactNative.Text,
             { style: styles.name, __source: {
                 fileName: _jsxFileName,
-                lineNumber: 15
+                lineNumber: 18
               }
             },
             item.create_at
@@ -90279,21 +90288,21 @@ function Floor(_ref) {
           _reactNative.View,
           { style: styles.cr, __source: {
               fileName: _jsxFileName,
-              lineNumber: 17
+              lineNumber: 20
             }
           },
           _react2.default.createElement(
             _reactNative.Text,
             { style: styles.ups, __source: {
                 fileName: _jsxFileName,
-                lineNumber: 18
+                lineNumber: 21
               }
             },
             item.ups.length
           ),
           _react2.default.createElement(_reactNative.Image, { style: styles.icon, source: require(540                              ), resizeMode: 'contain', __source: { // 540 = ../../../assets/images/like.png
               fileName: _jsxFileName,
-              lineNumber: 19
+              lineNumber: 22
             }
           })
         )
@@ -90303,12 +90312,12 @@ function Floor(_ref) {
       _reactNative.View,
       { style: styles.content, __source: {
           fileName: _jsxFileName,
-          lineNumber: 23
+          lineNumber: 26
         }
       },
-      _react2.default.createElement(_components2.HtmlView, { html: item.content, __source: {
+      _react2.default.createElement(_components2.HtmlView, { html: item.content, styles: htmlStyles, __source: {
           fileName: _jsxFileName,
-          lineNumber: 24
+          lineNumber: 27
         }
       })
     )
@@ -90317,7 +90326,7 @@ function Floor(_ref) {
 
 var styles = _reactNative.StyleSheet.create({
   list: {
-    marginTop: 15,
+    marginTop: 10,
     borderBottomWidth: 0.5,
     borderColor: '#d5dbdb'
   },
@@ -90377,10 +90386,22 @@ var styles = _reactNative.StyleSheet.create({
     color: '#626262',
     paddingTop: 3,
     paddingBottom: 3
+  }
+
+});
+
+var htmlStyles = _reactNative.StyleSheet.create({
+  a: {
+    color: '#4078c0'
   },
 
   p: {
-    fontSize: 14
+    fontSize: 14,
+    lineHeight: 18
+  },
+
+  img: {
+    width: defaultMaxImageWidth
   }
 
 });

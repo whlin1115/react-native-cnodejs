@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva/mobile';
-import { Wrap } from '../../components';
+import Wrap from './components/Wrap';
 import { View, Text, Button, Image, StatusBar, FlatList, Dimensions, TouchableOpacity } from 'react-native'
 import styles from './style';
 
@@ -13,9 +13,6 @@ class Home extends React.PureComponent {
   static navigationOptions = ({ navigation }) => {
     const { state, setParams } = navigation;
     return {
-      headerStyle: {
-        backgroundColor: '#2D2D2D'
-      },
       headerLeft: (
         <Image style={styles.headerLeft} source={require('../../assets/images/logo.png')} resizeMode='contain' />
       ),
@@ -37,7 +34,10 @@ class Home extends React.PureComponent {
   }
 
   componentWillReceiveProps(next) {
+    const { params } = this.props;
+    if (next.params !== params) {
 
+    }
   }
 
   render() {

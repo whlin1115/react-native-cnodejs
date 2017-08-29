@@ -1,4 +1,8 @@
-export const formatDate = function (str) {
+import moment from 'moment';
+import 'moment/locale/zh-cn';
+moment.locale('zh-cn');
+
+const formatDate = function (str) {
   const date = new Date(str);
   const time = new Date().getTime() - date.getTime();
   if (time < 0) {
@@ -19,3 +23,5 @@ export const formatDate = function (str) {
     return year + '年前';
   }
 };
+
+export { formatDate, moment }

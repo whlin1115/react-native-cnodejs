@@ -1,65 +1,55 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { connect } from 'dva/mobile';
-import { Link } from 'dva/router';
-import * as service from './service';
-import { Card, Layout } from '../../components';
-import { plates, avators } from '../../config';
-import '../../assets/font/iconfont.css';
-import './style.css';
+import Info from './components/Info';
+import { View, Text, Button, Image, StatusBar, FlatList, Dimensions, TouchableOpacity } from 'react-native'
+import styles from './style';
 
-const { Wrap } = Card;
-const { Header, Navbar, Loading } = Layout;
+class Detail extends React.PureComponent {
+  constructor(props) {
+    super(props)
+    this.state = {}
+  }
 
-class Home extends React.PureComponent {
+  static navigationOptions = ({ navigation }) => {
+    const { state, setParams } = navigation;
+    return {
+      headerRight: (
+        <View style={styles.headerRight}>
+          <TouchableOpacity style={styles.headerTouch} onPress={() => { }}>
+            <Image style={[styles.headerBtn, styles.headerImg]} source={require('../../assets/images/collect.png')} resizeMode='contain' />
+          </TouchableOpacity>
+        </View>
+      )
+    };
+  };
 
   componentDidMount() {
-    const { params } = this.props;
-    const { plate } = params;
-    const { cache } = service.cacheControl({ plate });
-    if (cache) this.props.cache(cache);
-    else this.props.query(params);
+    const { params } = this.props.navigation.state;
+    this.props.query(params)
   }
 
   componentWillReceiveProps(next) {
     const { params } = this.props;
-    const { plate } = params;
     if (next.params !== params) {
-      const { cache } = service.cacheControl({ plate });
-      if (cache) this.props.cache(cache);
-      else this.props.query(params);
+
     }
   }
 
   render() {
     const { data, loading } = this.props;
-    const navbarProps = { datas: plates };
-    const wrapProps = { data, loading };
+    const { navigate } = this.props.navigation;
+    const infoProps = { data, navigate }
 
     return (
-      <div className="home">
-        <Header >
-          <div className="title">虎扑社区</div>
-          <div className="right">
-            <Link to="search">
-              <div className="button">
-                <i className="icon iconfont icon-sousuo" />
-              </div>
-            </Link>
-            <div className="avator">
-              <img src={avators[Math.floor(Math.random() * 30)]} alt="头像" />
-            </div>
-          </div>
-        </Header>
-        <Navbar {...navbarProps} />
-        <Loading type="cylon" loading={loading} />
-        <Wrap {...wrapProps} />
-      </div>
+      <View style={styles.container}>
+        <Info {...infoProps}></Info>
+      </View>
     );
   }
 }
 
 function mapStateToProps(state) {
-  const { data, loading } = state.home;
+  const { data, loading } = state.detail;
   return { data, loading };
 }
 
@@ -67,20 +57,11 @@ function mapDispatchToProps(dispatch) {
   return {
     query(params) {
       dispatch({
-        type: 'home/query',
-        payload: params,
-      });
-      dispatch({
-        type: 'home/init',
-      });
-    },
-    cache(params) {
-      dispatch({
-        type: 'home/cache',
+        type: 'detail/query',
         payload: params,
       });
     },
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Home);
+export default connect(mapStateToProps, mapDispatchToProps)(Detail);

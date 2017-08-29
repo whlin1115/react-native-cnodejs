@@ -1,40 +1,24 @@
 import * as service from './service';
 
 export default {
-  namespace: 'home',
+  namespace: 'detail',
   state: {
-    data: [],
+    data: {},
     loading: false,
-    plate: 'hots',
   },
   effects: {
     *query({ payload = {} }, { call, put }) {
-      const { plate } = payload;
       yield put({ type: 'loading', payload: true });
-      let result = {};
-      if (plate === 'hots') result = yield call(service.queryHots);
-      else result = yield call(service.query, plate);
-      const { data } = result;
+      const { data } = yield call(service.queryTopic, payload);
       yield put({ type: 'loading', payload: false });
-      yield put({ type: 'query/success', payload: { data, plate } });
+      yield put({ type: 'query/success', payload: data });
     },
   },
   reducers: {
-    'query/success'(state, { payload: { data, plate } }) {
-      let lists = [];
-      if (plate === 'hots') lists = service.parseHots(data);
-      else lists = service.parsePlate(data);
-      const { posts, cache } = service.cacheControl({ plate });
-      if (cache) return { ...state, data: cache };
-      else posts.push({ plate, lists });
-      localStorage.setItem('posts', JSON.stringify(posts));
-      return { ...state, data: lists, plate };
-    },
-    'init'(state) {
-      return { ...state, data: [] };
-    },
-    'cache'(state, { payload: data }) {
-      return { ...state, data };
+    'query/success'(state, { payload }) {
+      const [, data] = payload
+      const topics = service.parseTopic(data.data)
+      return { ...state, data: topics };
     },
     'loading'(state, { payload: data }) {
       return { ...state, loading: data };

@@ -1,47 +1,25 @@
-import { requestHtml } from '../../utils/request';
-import cheerio from 'cheerio';
-var $;
+import { request } from '../../utils/request';
+import { moment } from '../../utils/tool';
 
-export async function queryHots() {
-  return requestHtml('/bbs/all-gambia');
+export async function queryTopic(params) {
+  const { id, mdrender = true, accesstoken = null } = params
+  return request(`/topic/${id}?mdrender=${mdrender}&accesstoken=${accesstoken}`);
 }
 
-export async function query(plate) {
-  return requestHtml(`/mbbs/${plate}`);
-}
-
-export function parseHots(html) {
-  $ = cheerio.load(html);
-  var lists = [];
-  const datas = $('.bbsHotPit').find('.list li');
-  datas.each(function () {
-    const id = $(this).find('.textSpan a').attr('href').replace(/\/(\d+)(.*?)$/, "$1");
-    const title = $(this).find('.textSpan a').attr('title');
-    const like = $(this).find('.textSpan em').text().replace(/(\d+).*?$/, "$1") || 0;
-    const reply = $(this).find('.textSpan em').text().replace(/([\d]+).*?([\d]+).*?$/, "$2") || 0;
-    const plate = $(this).find('.forum a').text();
-    const list = { id, title, like, reply, plate };
-    lists.push(list);
-  });
-  return lists;
-}
-
-
-export function parsePlate(html) {
-  $ = cheerio.load(html);
-  var lists = [];
-  const datas = $('.news-list li');
-  datas.each(function () {
-    const id = $(this).find('a').attr('href').replace(/.*?(\d+).*?$/, '$1');
-    const title = $(this).find('.news-txt h3').text();
-    const like = $(this).find('.icon-bright').next().text() || 0;
-    const reply = $(this).find('.icon-comment').next().text() || 0;
-    const author = $(this).find('.news-source').text();
-    const plate = $(this).find('.news-time').text();
-    const list = { id, title, like, reply, plate, author };
-    lists.push(list);
-  });
-  return lists;
+export function parseTopic(data) {
+  const create_at = moment(data.create_at).startOf('minute').fromNow()
+  const last_reply_at = moment(data.last_reply_at).startOf('minute').fromNow()
+  const avatar_url = data.author.avatar_url
+  if (!avatar_url.startsWith('https')) data.author.avatar_url = 'https:' + avatar_url
+  const replies = data.replies.map(reply => {
+    const create_at = moment(reply.create_at).startOf('minute').fromNow()
+    const last_reply_at = moment(reply.last_reply_at).startOf('minute').fromNow()
+    const avatar_url = reply.author.avatar_url
+    if (!avatar_url.startsWith('https')) reply.author.avatar_url = 'https:' + avatar_url
+    return { ...reply, create_at, last_reply_at }
+  })
+  const topic = { ...data, create_at, last_reply_at, replies }
+  return topic;
 }
 
 export function cacheControl(payload) {

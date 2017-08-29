@@ -9,7 +9,7 @@ export default {
   effects: {
     *query({ payload = {} }, { call, put }) {
       yield put({ type: 'loading', payload: true });
-      const { data } = yield call(service.queryTopics, ...payload);
+      const { data } = yield call(service.queryTopics, payload);
       yield put({ type: 'loading', payload: false });
       yield put({ type: 'query/success', payload: data });
     },

@@ -22,8 +22,8 @@ function checkStatus(response) {
  * @return {object}           An object containing either "data" or "err"
  */
 export function request(url, options) {
-  const URL = HOME_URL + url;
-  return fetch(URL, options)
+  if (!url.startsWith('https')) url = HOME_URL + url;
+  return fetch(url, options)
     .then(checkStatus)
     .then(parseJSON)
     .then(data => ({ data }))

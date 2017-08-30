@@ -18,10 +18,11 @@ class Detail extends PureComponent {
   static navigationOptions = ({ navigation }) => {
     const { state, setParams } = navigation;
     return {
+      headerTitle: '主题',
       headerRight: (
         <View style={styles.headerRight}>
           <TouchableOpacity style={styles.headerTouch} onPress={() => { }}>
-            <Image style={[styles.headerBtn, styles.headerImg]} source={require('../../assets/images/collect.png')} resizeMode='contain' />
+            <Image style={styles.headerBtn} source={require('../../assets/images/collect.png')} resizeMode='contain' />
           </TouchableOpacity>
         </View>
       )
@@ -64,7 +65,7 @@ class Detail extends PureComponent {
         }
         {
           replies ? <View style={styles.reply}>
-            <Text>{replies.length} 回复</Text>
+            <Text style={styles.total}>{replies.length}</Text><Text> 回复</Text>
           </View> : null
         }
         <FlatList

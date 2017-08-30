@@ -4,6 +4,10 @@ function parseJSON(response) {
   return Promise.all([response, response.json()])
 }
 
+function fetchHtml(response) {
+  return Promise.all([response, response.text()])
+}
+
 function checkStatus(response) {
   if (response.status >= 200 && response.status < 300) {
     return response;
@@ -26,6 +30,14 @@ export function request(url, options) {
   return fetch(url, options)
     .then(checkStatus)
     .then(parseJSON)
+    .then(data => ({ data }))
+    .catch(err => ({ err }));
+}
+
+export function requestHtml(url, options) {
+  return fetch(url, options)
+    .then(checkStatus)
+    .then(fetchHtml)
     .then(data => ({ data }))
     .catch(err => ({ err }));
 }

@@ -1,6 +1,11 @@
 import { StyleSheet } from 'react-native'
 
 export default StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#F8F8F8',
+    },
+
     headerLeft: {
         width: 80,
         marginLeft: 15
@@ -20,28 +25,24 @@ export default StyleSheet.create({
         flex: 1,
         width: 30,
         height: 30,
-        marginRight: 15
-    },
-
-    headerImg: {
-        borderRadius: 15,
-    },
-
-    container: {
-        flex: 1,
-        backgroundColor: '#FFFFFF',
+        marginRight: 10
     },
 
     connect: {
-        fontFamily: 'Helvetica Neue,Helvetica,Segoe UI,Arial,freesans,sans-serif',
         padding: 15,
         borderBottomWidth: 0.5,
         borderColor: '#d5dbdb',
     },
 
     reply: {
+        flexDirection: 'row',
         padding: 15,
         borderBottomWidth: 0.5,
         borderColor: '#d5dbdb',
+    },
+
+    total: {
+        color: '#42b983',
+        fontWeight: 'bold',
     }
 });

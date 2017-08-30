@@ -11,17 +11,17 @@ class Home extends PureComponent {
   }
 
   static navigationOptions = ({ navigation }) => {
-    const { state, setParams } = navigation;
+    const { state, setParams, navigate } = navigation;
     return {
       headerLeft: (
         <Image style={styles.headerLeft} source={require('../../assets/images/logo.png')} resizeMode='contain' />
       ),
       headerRight: (
         <View style={styles.headerRight}>
-          <TouchableOpacity style={styles.headerTouch} onPress={() => { }}>
+          <TouchableOpacity style={styles.headerTouch} onPress={() => { navigate('Search') }}>
             <Image style={styles.headerBtn} source={require('../../assets/images/search.png')} resizeMode='contain' />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.headerTouch} onPress={() => { }}>
+          <TouchableOpacity style={styles.headerTouch} onPress={() => { navigate('Zone', { user: 'alsotang' }) }}>
             <Image style={[styles.headerBtn, styles.headerImg]} source={require('../../assets/images/header.png')} resizeMode='contain' />
           </TouchableOpacity>
         </View>

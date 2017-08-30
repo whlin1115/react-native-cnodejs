@@ -33,8 +33,8 @@ function Floor({ item, navigate }) {
 const styles = StyleSheet.create({
   list: {
     marginTop: 10,
-    borderBottomWidth: 0.5,
-    borderColor: '#d5dbdb'
+    borderBottomWidth: 1,
+    borderColor: '#F0F0F0'
   },
 
   user: {

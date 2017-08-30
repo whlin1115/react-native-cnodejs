@@ -7,18 +7,23 @@ export default StyleSheet.create({
   },
 
   header: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    padding: 10,
-    borderBottomWidth: 0.5,
-    borderColor: '#d5dbdb',
     backgroundColor: '#FFFFFF',
   },
 
+  inner: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    marginLeft: 15,
+    marginRight: 15,
+    padding: 15,
+    borderBottomWidth: 0.5,
+    borderColor: '#F0F0F0',
+  },
+
   avatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
     marginRight: 15,
   },
 
@@ -39,17 +44,17 @@ export default StyleSheet.create({
   },
 
   info: {
-    padding: 10,
+    padding: 20,
     alignItems: 'center',
     flexDirection: 'row',
-    borderBottomWidth: 1,
-    borderColor: '#d5dbdb',
+    borderBottomWidth: 0.5,
+    borderColor: '#FFFFFF',
     backgroundColor: '#FFFFFF',
   },
 
   block: {
     flex: 1,
-    justifyContent: 'center',
+    paddingLeft: 15,
     alignItems: 'center',
     flexDirection: 'row',
   },
@@ -57,10 +62,46 @@ export default StyleSheet.create({
   infoBtn: {
     width: 36,
     height: 36,
+    marginRight: 15,
   },
 
   text: {
+    fontSize: 12,
+    padding: 3,
+  },
 
-  }
+  sub: {
+    color: '#A4A4A4',
+  },
+
+  rowList: {
+    marginTop: 10,
+  },
+
+  row: {
+    paddingLeft: 30,
+    paddingRight: 30,
+    alignItems: 'center',
+    flexDirection: 'row',
+    backgroundColor: '#FFFFFF',
+  },
+
+  rowImg: {
+    width: 20,
+    height: 20,
+    marginRight: 20,
+  },
+
+  rowInner: {
+    flex: 1,
+    paddingTop: 20,
+    paddingBottom: 20,
+    borderBottomWidth: 0.5,
+    borderColor: '#F0F0F0',
+  },
+
+  rowText: {
+    fontSize: 14,
+  },
 
 });

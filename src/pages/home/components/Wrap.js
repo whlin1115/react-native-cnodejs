@@ -40,9 +40,9 @@ const styles = StyleSheet.create({
     paddingLeft: 15,
     paddingRight: 15,
     paddingBottom: 10,
-    backgroundColor: '#fff',
-    borderBottomWidth: 0.5,
-    borderColor: '#d5dbdb'
+    backgroundColor: '#FFFFFF',
+    borderBottomWidth: 1,
+    borderColor: '#F0F0F0'
   },
 
   header: {

@@ -30,15 +30,15 @@ export default StyleSheet.create({
 
     connect: {
         padding: 15,
-        borderBottomWidth: 0.5,
-        borderColor: '#d5dbdb',
+        borderBottomWidth: 1,
+        borderColor: '#F0F0F0',
     },
 
     reply: {
         flexDirection: 'row',
         padding: 15,
-        borderBottomWidth: 0.5,
-        borderColor: '#d5dbdb',
+        borderBottomWidth: 1,
+        borderColor: '#F0F0F0',
     },
 
     total: {

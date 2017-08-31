@@ -18,8 +18,8 @@ class Recruit extends PureComponent {
       ),
       headerRight: (
         <View style={styles.headerRight}>
-          <TouchableOpacity style={styles.headerTouch} onPress={() => { navigate('Search') }}>
-            <Image style={styles.headerBtn} source={require('../../assets/images/search.png')} resizeMode='contain' />
+          <TouchableOpacity style={styles.headerTouch} onPress={() => { navigate('Publish') }}>
+            <Image style={styles.headerBtn} source={require('../../assets/images/recruit.png')} resizeMode='contain' />
           </TouchableOpacity>
         </View>
       ),
@@ -27,7 +27,7 @@ class Recruit extends PureComponent {
         <Image
           resizeMode="contain"
           style={styles.iconBtn}
-          source={focused ? require('../../assets/images/github.png') : require('../../assets/images/integral.png')} />
+          source={!focused ? require('../../assets/images/job_0.png') : require('../../assets/images/job_1.png')} />
       ),
       tabBarLabel: '招聘',
     };

@@ -27,7 +27,7 @@ class Home extends PureComponent {
         <Image
           resizeMode="contain"
           style={styles.iconBtn}
-          source={focused ? require('../../assets/images/github.png') : require('../../assets/images/integral.png')} />
+          source={!focused ? require('../../assets/images/home_0.png') : require('../../assets/images/home_1.png')} />
       ),
       tabBarLabel: '话题',
       mode: 'card',

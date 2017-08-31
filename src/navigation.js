@@ -1,8 +1,8 @@
 import { StackNavigator, TabNavigator } from 'react-navigation';
 import Home from './pages/home';
+import Login from './pages/login';
 import Detail from './pages/detail';
 import Search from './pages/search';
-
 import Publish from './pages/publish';
 import Notice from './pages/notice';
 import Recruit from './pages/recruit';
@@ -18,7 +18,7 @@ const Tabs = TabNavigator({
   Zone: { screen: Zone },
 }, {
     tabBarOptions: {
-      activeTintColor: '#73B601',
+      activeTintColor: '#7a86a2',
       style: {
         backgroundColor: '#fff',
       },
@@ -28,6 +28,7 @@ const Tabs = TabNavigator({
 
 const Navigation = StackNavigator({
   Tabs: { screen: Tabs },
+  Login: { screen: Login },
   Detail: { screen: Detail },
   Search: { screen: Search },
   Setting: { screen: Setting },

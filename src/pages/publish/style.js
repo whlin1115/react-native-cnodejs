@@ -3,12 +3,7 @@ import { StyleSheet } from 'react-native'
 export default StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8F8F8',
-  },
-  
-  headerLeft: {
-    width: 80,
-    marginLeft: 15
+    backgroundColor: '#FFFFFF',
   },
 
   headerRight: {
@@ -31,5 +26,40 @@ export default StyleSheet.create({
   headerImg: {
     borderRadius: 15,
   },
+
+  title: {
+    height: 44,
+    borderRadius: 5,
+    borderWidth: 1,
+    margin: 15,
+    marginBottom: 0,
+    borderColor: '#FFFFFF',
+    justifyContent: 'center',
+    backgroundColor: '#F8F8F8',
+  },
+
+  input: {
+    fontSize: 14,
+    paddingLeft: 15,
+    paddingRight: 15,
+  },
+
+  content: {
+    borderRadius: 5,
+    borderWidth: 1,
+    margin: 15,
+    marginBottom: 0,
+    borderColor: '#FFFFFF',
+    justifyContent: 'center',
+    backgroundColor: '#F8F8F8',
+  },
+
+  textarea: {
+    fontSize: 14,
+    marginTop: 10,
+    marginBottom: 10,
+    marginLeft: 15,
+    marginRight: 15,
+  }
 
 });

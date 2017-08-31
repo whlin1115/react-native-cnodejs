@@ -18,7 +18,7 @@ class Zone extends PureComponent {
         <Image
           resizeMode="contain"
           style={styles.iconBtn}
-          source={focused ? require('../../assets/images/github.png') : require('../../assets/images/integral.png')} />
+          source={!focused ? require('../../assets/images/zone_0.png') : require('../../assets/images/zone_1.png')} />
       ),
       tabBarLabel: '我的',
     };
@@ -26,7 +26,7 @@ class Zone extends PureComponent {
 
   componentDidMount() {
     const { params } = this.props.navigation.state;
-    this.props.query({ user: 'alsotang' })
+    this.props.query({ user: 'linwh1115' })
   }
 
   componentWillReceiveProps(next) {
@@ -43,15 +43,17 @@ class Zone extends PureComponent {
     return (
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
-        <View style={styles.header}>
-          <View style={styles.inner}>
-            <Image source={{ uri: data.avatar_url }} style={styles.avatar} />
-            <View style={styles.col}>
-              <Text style={[styles.span, styles.name]}>{data.loginname}</Text>
-              <Text style={styles.span}>注册于： {data.create_at}</Text>
+        <TouchableOpacity onPress={() => { navigate('Login')}}>
+          <View style={styles.header}>
+            <View style={styles.inner}>
+              <Image source={{ uri: data.avatar_url }} style={styles.avatar} />
+              <View style={styles.col}>
+                <Text style={[styles.span, styles.name]}>{data.loginname}</Text>
+                <Text style={styles.span}>注册于： {data.create_at}</Text>
+              </View>
             </View>
           </View>
-        </View>
+        </TouchableOpacity>
         <View style={styles.info}>
           <View style={styles.block}>
             <Image style={styles.infoBtn} source={require('../../assets/images/integral.png')} resizeMode='contain' />

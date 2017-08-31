@@ -6,30 +6,35 @@ export default StyleSheet.create({
     backgroundColor: '#F8F8F8',
   },
   
-  headerLeft: {
-    width: 80,
-    marginLeft: 15
+  rowList: {
+    marginTop: 10,
   },
 
-  headerRight: {
-    flex: 1,
+  row: {
+    paddingLeft: 30,
+    paddingRight: 30,
+    alignItems: 'center',
     flexDirection: 'row',
-    alignItems: 'center'
+    backgroundColor: '#FFFFFF',
   },
 
-  headerTouch: {
-    height: 30
+  rowImg: {
+    width: 20,
+    height: 20,
+    marginRight: 20,
   },
 
-  headerBtn: {
+  rowInner: {
     flex: 1,
-    width: 30,
-    height: 30,
-    marginRight: 15
+    paddingTop: 20,
+    paddingBottom: 20,
+    borderBottomWidth: 0.5,
+    borderColor: '#F0F0F0',
   },
 
-  headerImg: {
-    borderRadius: 15,
+  rowText: {
+    fontSize: 14,
+    fontWeight: '400',
   },
 
   iconBtn: {

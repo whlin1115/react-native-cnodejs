@@ -18,7 +18,7 @@ class Notice extends PureComponent {
         <Image
           resizeMode="contain"
           style={styles.iconBtn}
-          source={focused ? require('../../assets/images/github.png') : require('../../assets/images/integral.png')} />
+          source={!focused ? require('../../assets/images/notic_0.png') : require('../../assets/images/notic_1.png')} />
       ),
       tabBarLabel: '通知',
     };
@@ -42,14 +42,28 @@ class Notice extends PureComponent {
     return (
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
-        <Text>消息页面</Text>
-        {/* <FlatList
-          style={{ width: width }}
-          data={data}
-          extraData={this.state}
-          keyExtractor={(item, index) => index}
-          renderItem={({ item }) => <Wrap navigate={navigate} item={item} />}
-        /> */}
+        <View style={styles.rowList}>
+          <View style={styles.row}>
+            <Image style={styles.rowImg} source={require('../../assets/images/notice.png')} resizeMode='contain' />
+            <View style={styles.rowInner}>
+              <Text style={styles.rowText}>系统消息</Text>
+            </View>
+          </View>
+        </View>
+        <View style={styles.rowList}>
+          <View style={styles.row}>
+            <Image style={styles.rowImg} source={require('../../assets/images/post.png')} resizeMode='contain' />
+            <View style={styles.rowInner}>
+              <Text style={styles.rowText}>未读消息</Text>
+            </View>
+          </View>
+          <View style={styles.row}>
+            <Image style={styles.rowImg} source={require('../../assets/images/comment.png')} resizeMode='contain' />
+            <View style={styles.rowInner}>
+              <Text style={styles.rowText}>已读消息</Text>
+            </View>
+          </View>
+        </View>
       </View>
     );
   }

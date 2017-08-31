@@ -1,22 +1,26 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva/mobile';
 import Wrap from './components/Wrap';
-import { View, Text, Button, Image, StatusBar, FlatList, Dimensions, TouchableOpacity } from 'react-native'
+import { View, ScrollView, Text, TextInput, Image, StatusBar, Dimensions, TouchableOpacity } from 'react-native'
 import styles from './style';
 
 class Publish extends PureComponent {
   constructor(props) {
     super(props)
-    this.state = {}
+    this.state = {
+      text: '',
+      content: '',
+    }
   }
 
   static navigationOptions = ({ navigation }) => {
     const { state, setParams, navigate } = navigation;
     return {
+      headerTitle: '发布',
       headerRight: (
         <View style={styles.headerRight}>
           <TouchableOpacity style={styles.headerTouch} onPress={() => { navigate('Zone', { user: 'alsotang' }) }}>
-            <Image style={[styles.headerBtn, styles.headerImg]} source={require('../../assets/images/header.png')} resizeMode='contain' />
+            <Image style={[styles.headerBtn, styles.headerImg]} source={require('../../assets/images/public.png')} resizeMode='contain' />
           </TouchableOpacity>
         </View>
       ),
@@ -37,19 +41,29 @@ class Publish extends PureComponent {
   render() {
     const { data, loading } = this.props
     const { navigate } = this.props.navigation;
-    const { width } = Dimensions.get('window');
+    const { height } = Dimensions.get('window');
+    const textareaHeight = height - 64 - 74 - 35
+
     return (
-      <View style={styles.container}>
+      <ScrollView style={styles.container}>
         <StatusBar barStyle="light-content" />
-        <Text>发布页面</Text>
-        {/* <FlatList
-          style={{ width: width }}
-          data={data}
-          extraData={this.state}
-          keyExtractor={(item, index) => index}
-          renderItem={({ item }) => <Wrap navigate={navigate} item={item} />}
-        /> */}
-      </View>
+        <View style={styles.title}>
+          <TextInput style={styles.input}
+            placeholder='输入标题'
+            underlineColorAndroid="transparent"
+            onChangeText={(text) => { this.setState({ text }) }}
+          />
+        </View>
+        <View style={styles.content}>
+          <TextInput style={styles.textarea}
+            multiline={true}
+            minHeight={textareaHeight}
+            placeholder='输入正文（至少12个字符）'
+            underlineColorAndroid="transparent"
+            onChangeText={(content) => { this.setState({ content }) }}
+          />
+        </View>
+      </ScrollView>
     );
   }
 }

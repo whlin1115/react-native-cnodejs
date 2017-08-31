@@ -2,7 +2,7 @@ import { request } from '../../utils/request';
 import { moment } from '../../utils/tool';
 
 export async function queryTopic(params) {
-  const { id, mdrender = true, accesstoken = null } = params
+  const { id, mdrender = false, accesstoken = null } = params
   return request(`/topic/${id}?mdrender=${mdrender}&accesstoken=${accesstoken}`);
 }
 

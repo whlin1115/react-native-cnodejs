@@ -20,11 +20,11 @@ class Input extends Component {
 
     return (
       <View style={styles.headerRight}>
-        <View style={styles.view}>
+        <View style={styles.inputView}>
           <Image style={styles.headerBtn} source={require('../../../assets/images/searchbar.png')} resizeMode='contain' />
           <TextInput style={styles.input}
-            placeholder={this.props.name}
             placeholder='搜索话题'
+            underlineColorAndroid="transparent"
             onChangeText={(text) => { this.setState({ text }) }}
           />
         </View>
@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     marginRight: 15
   },
 
-  view: {
+  inputView: {
     flexDirection: 'row',
     height: 28,
     backgroundColor: '#FFFFFF',

@@ -4,7 +4,7 @@ import Wrap from './components/Wrap';
 import { View, Text, Button, Image, StatusBar, FlatList, Dimensions, TouchableOpacity } from 'react-native'
 import styles from './style';
 
-class Home extends PureComponent {
+class Recruit extends PureComponent {
   constructor(props) {
     super(props)
     this.state = {}
@@ -29,14 +29,12 @@ class Home extends PureComponent {
           style={styles.iconBtn}
           source={focused ? require('../../assets/images/github.png') : require('../../assets/images/integral.png')} />
       ),
-      tabBarLabel: '话题',
-      mode: 'card',
-      headerMode: 'float',
+      tabBarLabel: '招聘',
     };
   };
 
   componentDidMount() {
-    this.props.query()
+    this.props.query({ tab: 'job' })
   }
 
   componentWillReceiveProps(next) {
@@ -60,16 +58,13 @@ class Home extends PureComponent {
           keyExtractor={(item, index) => index}
           renderItem={({ item }) => <Wrap navigate={navigate} item={item} />}
         />
-        <TouchableOpacity onPress={() => { navigate('Publish') }}>
-          <Image style={styles.pubilsh} source={require('../../assets/images/add.png')} resizeMode='contain' />
-        </TouchableOpacity>
       </View>
     );
   }
 }
 
 function mapStateToProps(state) {
-  const { data, loading } = state.home;
+  const { data, loading } = state.recruit;
   return { data, loading };
 }
 
@@ -77,11 +72,11 @@ function mapDispatchToProps(dispatch) {
   return {
     query(params) {
       dispatch({
-        type: 'home/query',
+        type: 'recruit/query',
         payload: params,
       });
     },
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Home);
+export default connect(mapStateToProps, mapDispatchToProps)(Recruit);

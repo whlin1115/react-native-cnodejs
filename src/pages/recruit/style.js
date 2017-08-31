@@ -28,21 +28,13 @@ export default StyleSheet.create({
     marginRight: 15
   },
 
-  iconBtn: {
-    width: 25,
-    height: 25,
-  },
-
   headerImg: {
     borderRadius: 15,
   },
 
-  pubilsh: {
-    position: 'absolute',
-    bottom: 15,
-    right: 15,
-    width: 44,
-    height: 44,
+  iconBtn: {
+    width: 25,
+    height: 25,
   },
 
 });

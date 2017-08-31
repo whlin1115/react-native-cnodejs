@@ -74,24 +74,16 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 
-  top: {
-    backgroundColor: '#e74c3c',
-  },
-
-  ask: {
-    backgroundColor: '#3498db',
-  },
-
-  good: {
-    backgroundColor: '#e67e22',
-  },
-
-  share: {
+  one: {
     backgroundColor: '#1abc9c',
   },
 
-  job: {
+  new: {
     backgroundColor: '#6A8FFF',
+  },
+
+  two: {
+    backgroundColor: '#e67e22',
   },
 
   default: {

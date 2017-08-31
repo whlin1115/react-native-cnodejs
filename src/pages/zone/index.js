@@ -14,12 +14,19 @@ class Zone extends PureComponent {
     const { state, setParams } = navigation;
     return {
       headerTitle: '空间',
+      tabBarIcon: ({ focused, tintColor }) => (
+        <Image
+          resizeMode="contain"
+          style={styles.iconBtn}
+          source={focused ? require('../../assets/images/github.png') : require('../../assets/images/integral.png')} />
+      ),
+      tabBarLabel: '我的',
     };
   };
 
   componentDidMount() {
     const { params } = this.props.navigation.state;
-    this.props.query(params)
+    this.props.query({ user: 'alsotang' })
   }
 
   componentWillReceiveProps(next) {
@@ -88,12 +95,14 @@ class Zone extends PureComponent {
           </View>
         </View>
         <View style={styles.rowList}>
-          <View style={styles.row}>
-            <Image style={styles.rowImg} source={require('../../assets/images/setting.png')} resizeMode='contain' />
-            <View style={styles.rowInner}>
-              <Text style={styles.rowText}>设置</Text>
+          <TouchableOpacity onPress={() => { navigate('Setting') }}>
+            <View style={styles.row}>
+              <Image style={styles.rowImg} source={require('../../assets/images/setting.png')} resizeMode='contain' />
+              <View style={styles.rowInner}>
+                <Text style={styles.rowText}>设置</Text>
+              </View>
             </View>
-          </View>
+          </TouchableOpacity>
         </View>
         {/* <FlatList
           style={{ width: width }}

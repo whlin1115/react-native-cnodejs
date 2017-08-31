@@ -7,7 +7,7 @@ export async function queryTopic(params) {
 }
 
 export function parseTopic(data) {
-  const tabs = { 'top': '置顶', 'ask': '问答', 'good': '精华', 'share': '分享', 'default': '暂无' }
+  const tabs = { 'top': '置顶', 'ask': '问答', 'good': '精华', 'share': '分享', 'job': '招聘', 'default': '暂无' }
   const create_at = moment(data.create_at).startOf('minute').fromNow()
   const last_reply_at = moment(data.last_reply_at).startOf('minute').fromNow()
   const avatar_url = data.author.avatar_url

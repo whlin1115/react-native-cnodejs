@@ -102,6 +102,12 @@ export default StyleSheet.create({
 
   rowText: {
     fontSize: 14,
+    fontWeight: '400',
+  },
+
+  iconBtn: {
+    width: 25,
+    height: 25,
   },
 
 });

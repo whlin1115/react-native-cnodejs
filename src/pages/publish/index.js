@@ -4,7 +4,7 @@ import Wrap from './components/Wrap';
 import { View, Text, Button, Image, StatusBar, FlatList, Dimensions, TouchableOpacity } from 'react-native'
 import styles from './style';
 
-class Home extends PureComponent {
+class Publish extends PureComponent {
   constructor(props) {
     super(props)
     this.state = {}
@@ -13,30 +13,18 @@ class Home extends PureComponent {
   static navigationOptions = ({ navigation }) => {
     const { state, setParams, navigate } = navigation;
     return {
-      headerLeft: (
-        <Image style={styles.headerLeft} source={require('../../assets/images/logo.png')} resizeMode='contain' />
-      ),
       headerRight: (
         <View style={styles.headerRight}>
-          <TouchableOpacity style={styles.headerTouch} onPress={() => { navigate('Search') }}>
-            <Image style={styles.headerBtn} source={require('../../assets/images/search.png')} resizeMode='contain' />
+          <TouchableOpacity style={styles.headerTouch} onPress={() => { navigate('Zone', { user: 'alsotang' }) }}>
+            <Image style={[styles.headerBtn, styles.headerImg]} source={require('../../assets/images/header.png')} resizeMode='contain' />
           </TouchableOpacity>
         </View>
       ),
-      tabBarIcon: ({ focused, tintColor }) => (
-        <Image
-          resizeMode="contain"
-          style={styles.iconBtn}
-          source={focused ? require('../../assets/images/github.png') : require('../../assets/images/integral.png')} />
-      ),
-      tabBarLabel: '话题',
-      mode: 'card',
-      headerMode: 'float',
     };
   };
 
   componentDidMount() {
-    this.props.query()
+    // this.props.query()
   }
 
   componentWillReceiveProps(next) {
@@ -53,23 +41,21 @@ class Home extends PureComponent {
     return (
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
-        <FlatList
+        <Text>发布页面</Text>
+        {/* <FlatList
           style={{ width: width }}
           data={data}
           extraData={this.state}
           keyExtractor={(item, index) => index}
           renderItem={({ item }) => <Wrap navigate={navigate} item={item} />}
-        />
-        <TouchableOpacity onPress={() => { navigate('Publish') }}>
-          <Image style={styles.pubilsh} source={require('../../assets/images/add.png')} resizeMode='contain' />
-        </TouchableOpacity>
+        /> */}
       </View>
     );
   }
 }
 
 function mapStateToProps(state) {
-  const { data, loading } = state.home;
+  const { data, loading } = state.publish;
   return { data, loading };
 }
 
@@ -77,11 +63,11 @@ function mapDispatchToProps(dispatch) {
   return {
     query(params) {
       dispatch({
-        type: 'home/query',
+        type: 'publish/query',
         payload: params,
       });
     },
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Home);
+export default connect(mapStateToProps, mapDispatchToProps)(Publish);

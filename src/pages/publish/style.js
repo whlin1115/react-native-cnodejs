@@ -5,7 +5,7 @@ export default StyleSheet.create({
     flex: 1,
     backgroundColor: '#F8F8F8',
   },
-
+  
   headerLeft: {
     width: 80,
     marginLeft: 15
@@ -28,21 +28,8 @@ export default StyleSheet.create({
     marginRight: 15
   },
 
-  iconBtn: {
-    width: 25,
-    height: 25,
-  },
-
   headerImg: {
     borderRadius: 15,
-  },
-
-  pubilsh: {
-    position: 'absolute',
-    bottom: 15,
-    right: 15,
-    width: 44,
-    height: 44,
   },
 
 });

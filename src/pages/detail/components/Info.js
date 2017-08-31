@@ -111,6 +111,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#1abc9c',
   },
 
+  job: {
+    backgroundColor: '#6A8FFF',
+  },
+
   default: {
     backgroundColor: '#e7e7e7',
   },

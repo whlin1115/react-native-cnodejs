@@ -1,8 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva/mobile';
 import Wrap from './components/Wrap';
-import { View, Text, Button, Image, StatusBar, FlatList, Dimensions, TouchableOpacity } from 'react-native'
-import styles from './style';
+import { StyleSheet, View, Text, Button, Image, StatusBar, FlatList, Dimensions, TouchableOpacity } from 'react-native'
 
 class Recruit extends PureComponent {
   constructor(props) {
@@ -78,5 +77,43 @@ function mapDispatchToProps(dispatch) {
     },
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F8F8F8',
+  },
+
+  headerLeft: {
+    width: 80,
+    marginLeft: 15
+  },
+
+  headerRight: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+
+  headerTouch: {
+    height: 30
+  },
+
+  headerBtn: {
+    flex: 1,
+    width: 30,
+    height: 30,
+    marginRight: 15
+  },
+
+  headerImg: {
+    borderRadius: 15,
+  },
+
+  iconBtn: {
+    width: 25,
+    height: 25,
+  },
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(Recruit);

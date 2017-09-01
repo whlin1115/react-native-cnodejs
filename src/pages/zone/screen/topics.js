@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva/mobile';
-import { View, Text, Button, Image, StatusBar, FlatList, Dimensions, TouchableOpacity } from 'react-native'
-import styles from '../style';
+import { StyleSheet, View, Text, Button, Image, StatusBar, FlatList, Dimensions, TouchableOpacity } from 'react-native'
 
 class Setting extends PureComponent {
   constructor(props) {
@@ -35,40 +34,7 @@ class Setting extends PureComponent {
     return (
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
-        <View style={styles.rowList}>
-          <View style={styles.row}>
-            <Image style={styles.rowImg} source={require('../../../assets/images/notice.png')} resizeMode='contain' />
-            <View style={styles.rowInner}>
-              <Text style={styles.rowText}>我的消息</Text>
-            </View>
-          </View>
-          <View style={styles.row}>
-            <Image style={styles.rowImg} source={require('../../../assets/images/comment.png')} resizeMode='contain' />
-            <View style={styles.rowInner}>
-              <Text style={styles.rowText}>我的评论</Text>
-            </View>
-          </View>
-          <View style={styles.row}>
-            <Image style={styles.rowImg} source={require('../../../assets/images/post.png')} resizeMode='contain' />
-            <View style={styles.rowInner}>
-              <Text style={styles.rowText}>我的话题</Text>
-            </View>
-          </View>
-          <View style={styles.row}>
-            <Image style={styles.rowImg} source={require('../../../assets/images/collection.png')} resizeMode='contain' />
-            <View style={styles.rowInner}>
-              <Text style={styles.rowText}>我的收藏</Text>
-            </View>
-          </View>
-        </View>
-        <View style={styles.rowList}>
-          <View style={styles.row}>
-            <Image style={styles.rowImg} source={require('../../../assets/images/setting.png')} resizeMode='contain' />
-            <View style={styles.rowInner}>
-              <Text style={styles.rowText}>设置</Text>
-            </View>
-          </View>
-        </View>
+        <Text>话题页面</Text>
       </View >
     );
   }
@@ -89,5 +55,13 @@ function mapDispatchToProps(dispatch) {
     },
   }
 }
+
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F8F8F8',
+  },
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(Setting);

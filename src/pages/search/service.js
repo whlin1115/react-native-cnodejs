@@ -1,4 +1,4 @@
-import { request, requestHtml } from '../../utils/request';
+import { requestHtml } from '../../utils/request';
 import { moment } from '../../utils/tool';
 import cheerio from 'cheerio-without-node-native';
 

@@ -52,7 +52,6 @@ const styles = StyleSheet.create({
     color: '#999',
     fontWeight: 'bold',
   },
-
 });
 
 export default Card

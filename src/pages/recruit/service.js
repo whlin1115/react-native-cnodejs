@@ -1,9 +1,9 @@
-import { request } from '../../utils/request';
+import { get } from '../../utils/request';
 import { moment, city } from '../../utils/tool';
 
 export async function queryTopics(params) {
   const { page = 1, tab = 'all', limit = 20, mdrender = true } = params
-  return request(`/topics?page=${page}&limit=${limit}&tab=${tab}&mdrender=${mdrender}`);
+  return get(`/topics?page=${page}&limit=${limit}&tab=${tab}&mdrender=${mdrender}`);
 }
 
 export function parseTopics(data) {

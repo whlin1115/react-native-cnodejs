@@ -1,8 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva/mobile';
 import Card from './components/Card';
-import { View, Text, Button, Image, StatusBar, FlatList, Dimensions, TouchableOpacity } from 'react-native'
-import styles from './style';
+import { StyleSheet, View, Text, Button, Image, StatusBar, FlatList, Dimensions, TouchableOpacity } from 'react-native'
 
 class Zone extends PureComponent {
   constructor(props) {
@@ -43,7 +42,7 @@ class Zone extends PureComponent {
     return (
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
-        <TouchableOpacity onPress={() => { navigate('Login')}}>
+        <TouchableOpacity onPress={() => { navigate('Login') }}>
           <View style={styles.header}>
             <View style={styles.inner}>
               <Image source={{ uri: data.avatar_url }} style={styles.avatar} />
@@ -133,5 +132,116 @@ function mapDispatchToProps(dispatch) {
     },
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F8F8F8',
+  },
+
+  header: {
+    backgroundColor: '#FFFFFF',
+  },
+
+  inner: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    marginLeft: 15,
+    marginRight: 15,
+    padding: 15,
+    borderBottomWidth: 0.5,
+    borderColor: '#F0F0F0',
+  },
+
+  avatar: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    marginRight: 15,
+  },
+
+  span: {
+    paddingTop: 5,
+    paddingBottom: 5,
+    color: '#999',
+    fontSize: 12,
+  },
+
+  name: {
+    color: '#000000',
+    fontSize: 16,
+  },
+
+  col: {
+    flex: 1,
+  },
+
+  info: {
+    padding: 20,
+    alignItems: 'center',
+    flexDirection: 'row',
+    borderBottomWidth: 0.5,
+    borderColor: '#FFFFFF',
+    backgroundColor: '#FFFFFF',
+  },
+
+  block: {
+    flex: 1,
+    paddingLeft: 15,
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+
+  infoBtn: {
+    width: 36,
+    height: 36,
+    marginRight: 15,
+  },
+
+  text: {
+    fontSize: 14,
+    padding: 3,
+  },
+
+  sub: {
+    color: '#A4A4A4',
+  },
+
+  rowList: {
+    marginTop: 10,
+  },
+
+  row: {
+    paddingLeft: 30,
+    paddingRight: 30,
+    alignItems: 'center',
+    flexDirection: 'row',
+    backgroundColor: '#FFFFFF',
+  },
+
+  rowImg: {
+    width: 20,
+    height: 20,
+    marginRight: 20,
+  },
+
+  rowInner: {
+    flex: 1,
+    paddingTop: 20,
+    paddingBottom: 20,
+    borderBottomWidth: 0.5,
+    borderColor: '#F0F0F0',
+  },
+
+  rowText: {
+    fontSize: 16,
+    fontWeight: '400',
+  },
+
+  iconBtn: {
+    width: 25,
+    height: 25,
+  },
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(Zone);

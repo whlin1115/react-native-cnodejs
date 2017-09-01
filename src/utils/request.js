@@ -25,8 +25,25 @@ function checkStatus(response) {
  * @param  {object} [options] The options we want to pass to "fetch"
  * @return {object}           An object containing either "data" or "err"
  */
-export function request(url, options) {
+export function get(url, options) {
   if (!url.startsWith('https')) url = HOME_URL + url;
+  return fetch(url, options)
+    .then(checkStatus)
+    .then(parseJSON)
+    .then(data => ({ data }))
+    .catch(err => ({ err }));
+}
+
+export function post(url, body) {
+  if (!url.startsWith('https')) url = HOME_URL + url;
+  const options = {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(body)
+  }
   return fetch(url, options)
     .then(checkStatus)
     .then(parseJSON)

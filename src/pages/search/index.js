@@ -2,8 +2,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva/mobile';
 import Card from './components/Card';
 import Seek from './components/Seek';
-import { View, Text, TextInput, Button, Image, StatusBar, FlatList, Dimensions, TouchableOpacity } from 'react-native'
-import styles from './style';
+import { StyleSheet, View, Text, TextInput, Button, Image, StatusBar, FlatList, Dimensions, TouchableOpacity } from 'react-native'
 
 class Search extends PureComponent {
   constructor(props) {
@@ -65,5 +64,17 @@ function mapDispatchToProps(dispatch) {
     },
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F8F8F8',
+  },
+
+  headerLeft: {
+    width: 80,
+    marginLeft: 15
+  },
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(Search);

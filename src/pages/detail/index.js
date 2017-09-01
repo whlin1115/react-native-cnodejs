@@ -3,8 +3,7 @@ import { connect } from 'dva/mobile';
 import Info from './components/Info';
 import { Html, HtmlView } from '../../components';
 import Floor from './components/Floor';
-import { View, Text, Button, Image, StatusBar, FlatList, Dimensions, ScrollView, TouchableOpacity, StyleSheet } from 'react-native'
-import styles from './style';
+import { StyleSheet, View, Text, Button, Image, StatusBar, FlatList, Dimensions, ScrollView, WebView, TouchableOpacity } from 'react-native'
 
 const { width } = Dimensions.get('window')
 const defaultMaxImageWidth = width - 30 - 20
@@ -56,7 +55,6 @@ class Detail extends PureComponent {
     return (
       <ScrollView style={styles.container}>
         <Info {...infoProps} />
-        {/* <Html {...htmlProps} /> */}
         {
           data.content ?
             <View style={styles.connect}>
@@ -101,6 +99,53 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F8F8F8',
+  },
+
+  headerLeft: {
+    width: 80,
+    marginLeft: 15
+  },
+
+  headerRight: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+
+  headerTouch: {
+    height: 30
+  },
+
+  headerBtn: {
+    flex: 1,
+    width: 30,
+    height: 30,
+    marginRight: 10
+  },
+
+  connect: {
+    padding: 15,
+    borderBottomWidth: 1,
+    borderColor: '#F0F0F0',
+  },
+
+  reply: {
+    flexDirection: 'row',
+    padding: 15,
+    borderBottomWidth: 1,
+    borderColor: '#F0F0F0',
+  },
+
+  total: {
+    color: '#42b983',
+    fontWeight: 'bold',
+  }
+});
+
 const htmlStyles = StyleSheet.create({
   a: {
     color: '#4078c0',
@@ -122,7 +167,6 @@ const htmlStyles = StyleSheet.create({
   img: {
     width: defaultMaxImageWidth
   }
-
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Detail);

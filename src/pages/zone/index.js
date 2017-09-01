@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva/mobile';
 import Card from './components/Card';
-import { StyleSheet, View, Text, Button, Image, StatusBar, FlatList, Dimensions, TouchableOpacity } from 'react-native'
+import { StyleSheet, View, ScrollView, Text, Button, Image, StatusBar, FlatList, Dimensions, TouchableOpacity } from 'react-native'
 
 class Zone extends PureComponent {
   constructor(props) {
@@ -40,7 +40,7 @@ class Zone extends PureComponent {
     const { navigate } = this.props.navigation;
     const { width } = Dimensions.get('window');
     return (
-      <View style={styles.container}>
+      <ScrollView style={styles.container}>
         <StatusBar barStyle="light-content" />
         <TouchableOpacity onPress={() => { navigate('Login') }}>
           <View style={styles.header}>
@@ -105,14 +105,7 @@ class Zone extends PureComponent {
             </View>
           </TouchableOpacity>
         </View>
-        {/* <FlatList
-          style={{ width: width }}
-          data={data.recent_topics}
-          extraData={this.state}
-          keyExtractor={(item, index) => index}
-          renderItem={({ item }) => <Card navigate={navigate} item={item} />}
-        /> */}
-      </View >
+      </ScrollView >
     );
   }
 }

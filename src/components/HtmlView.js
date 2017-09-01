@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View } from 'react-native';
 import HTMLView from 'react-native-htmlview';
 
 class HtmlView extends React.Component {

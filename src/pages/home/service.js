@@ -12,7 +12,7 @@ export function parseTopics(data) {
     const create_at = moment(topic.create_at).startOf('minute').fromNow()
     const last_reply_at = moment(topic.last_reply_at).startOf('minute').fromNow()
     const avatar_url = topic.author.avatar_url
-    if (!avatar_url.startsWith('https')) topic.author.avatar_url = 'https:' + avatar_url
+    if (avatar_url && !avatar_url.startsWith('https')) topic.author.avatar_url = 'https:' + avatar_url
     let tab = topic.tab ? topic.tab : 'default'
     if (topic.top) tab = 'top'
     const sort = tabs[tab]

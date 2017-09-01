@@ -12,7 +12,7 @@ export function parseTopic(data) {
   const last_reply_at = moment(data.last_reply_at).startOf('minute').fromNow()
   const avatar_url = data.author.avatar_url
   const content = data.content.replace(/[\r\n]/g, '')
-  if (!avatar_url.startsWith('https')) data.author.avatar_url = 'https:' + avatar_url
+  if (avatar_url && !avatar_url.startsWith('https')) data.author.avatar_url = 'https:' + avatar_url
   let tab = data.tab ? data.tab : 'default'
   if (data.top) tab = 'top'
   const sort = tabs[tab]
@@ -20,7 +20,7 @@ export function parseTopic(data) {
     const create_at = moment(reply.create_at).startOf('minute').fromNow()
     const last_reply_at = moment(reply.last_reply_at).startOf('minute').fromNow()
     const avatar_url = reply.author.avatar_url
-    if (!avatar_url.startsWith('https')) reply.author.avatar_url = 'https:' + avatar_url
+    if (avatar_url && !avatar_url.startsWith('https')) reply.author.avatar_url = 'https:' + avatar_url
     const content = reply.content.replace(/[\r\n]/g, '')
     return { ...reply, create_at, last_reply_at, content }
   })

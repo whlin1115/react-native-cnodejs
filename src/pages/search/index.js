@@ -2,7 +2,8 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva/mobile';
 import Card from './components/Card';
 import Seek from './components/Seek';
-import { StyleSheet, View, Text, TextInput, Button, Image, StatusBar, FlatList, Dimensions, TouchableOpacity } from 'react-native'
+import History from './components/History';
+import { StyleSheet, View, ScrollView, Text, TextInput, Button, Image, StatusBar, FlatList, Dimensions, TouchableOpacity } from 'react-native'
 
 class Search extends PureComponent {
   constructor(props) {
@@ -18,6 +19,7 @@ class Search extends PureComponent {
   };
 
   componentDidMount() {
+
   }
 
   componentWillReceiveProps(next) {
@@ -32,27 +34,33 @@ class Search extends PureComponent {
   }
 
   render() {
-    const { data, loading } = this.props
+    const { data, visible, loading } = this.props
     const { navigate } = this.props.navigation;
     const { width } = Dimensions.get('window');
     return (
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
-        <FlatList
-          style={{ width: width }}
-          data={data}
-          extraData={this.state}
-          keyExtractor={(item, index) => index}
-          renderItem={({ item }) => <Card navigate={navigate} item={item} />}
-        />
+        {
+          visible ?
+            <ScrollView>
+              <History />
+            </ScrollView>
+            : <FlatList
+              style={{ width: width }}
+              data={data}
+              extraData={this.state}
+              keyExtractor={(item, index) => index}
+              renderItem={({ item }) => <Card navigate={navigate} item={item} />}
+            />
+        }
       </View>
     );
   }
 }
 
 function mapStateToProps(state) {
-  const { data, loading } = state.search;
-  return { data, loading };
+  const { data, visible, loading } = state.search;
+  return { data, visible, loading };
 }
 
 function mapDispatchToProps(dispatch) {
@@ -61,6 +69,12 @@ function mapDispatchToProps(dispatch) {
       dispatch({
         type: 'search/clean',
       })
+    },
+    record(params) {
+      dispatch({
+        type: 'search/record',
+        payload: params,
+      });
     },
   }
 }

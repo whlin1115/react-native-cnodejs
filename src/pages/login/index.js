@@ -34,15 +34,12 @@ class Login extends PureComponent {
     return (
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
-        {/* <View style={styles.bgImageWrapper}>
-          <Image source={require('../../assets/images/launch_bg.png')} style={styles.bgImage} />
-        </View> */}
         <View style={styles.logoView}>
           <Image style={styles.logo} source={require('../../assets/images/logo.png')} resizeMode='contain' />
         </View>
         <View style={styles.inputView}>
           <TextInput style={styles.input}
-            placeholder='输入Access Token'
+            placeholder='输入 Access Token'
             underlineColorAndroid="transparent"
             onChangeText={(text) => { this.setState({ text }) }}
           />

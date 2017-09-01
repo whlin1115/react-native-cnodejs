@@ -1,47 +1,79 @@
+import React, { Component } from 'react';
+import { connect } from 'dva/mobile';
+import { StyleSheet, Text, View, Image, TextInput, FlatList, Dimensions, TouchableOpacity, AsyncStorage } from 'react-native';
 
-import React from 'react'
-import { connect } from 'dva/mobile'
-import { StyleSheet, View, Image, Text, FlatList, TouchableOpacity } from 'react-native'
+const { height } = Dimensions.get('window')
 
-class Input extends Component {
+class History extends Component {
   constructor(props) {
     super(props);
-    this.state = { text: '' }
+  }
+
+  async componentDidMount() {
+    var data = await AsyncStorage.getItem('records') || '[]'
+    this.props.history(JSON.parse(data));
   }
 
   render() {
-    const { width } = Dimensions.get('window');
+    const hosts = ['NodeJs', 'Web', 'ReactJs', 'Vuejs', 'Mysql', 'JavaScript', 'Express', 'ES6']
+    const { records, visible, loading } = this.props
+
+    const _onSearch = (text) => {
+      const params = { content: text }
+      this.props.query(params)
+    }
+
+    const _onDelet = (text) => {
+      const datas = records.filter(history => history !== text);
+      AsyncStorage.setItem('records', JSON.stringify(datas));
+      this.props.history(datas);
+    }
 
     return (
-      <View style={styles.history}>
+      <View style={styles.container}>
         <View style={styles.hots}>
-          <TouchableOpacity style={styles.hotsBtn}>
-            <Text style={styles.hotsText}>NodeJs</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.hotsBtn}>
-            <Text style={styles.hotsText}>NodeJs</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.hotsBtn}>
-            <Text style={styles.hotsText}>NodeJs</Text>
-          </TouchableOpacity>
+          <View style={styles.titleView}>
+            <Text style={styles.title}>热门搜索</Text>
+          </View>
+          <View style={styles.hotsRow}>
+            {
+              hosts.map((host, index) => (
+                <TouchableOpacity key={index} style={styles.hotsBtn} onPress={() => { _onSearch(host) }}>
+                  <Text style={styles.hotsText}>{host}</Text>
+                </TouchableOpacity>
+              ))
+            }
+          </View>
         </View>
-        <View style={styles.records}>
-          <FlatList
-            style={{ width: width }}
-            data={data}
-            extraData={this.state}
-            keyExtractor={(item, index) => index}
-            renderItem={({ item }) => <Card navigate={navigate} item={item} />}
-          />
-        </View>
+        {
+          records.length > 0 ?
+            <View style={styles.records}>
+              <View style={styles.titleView}>
+                <Text style={styles.title}>搜索记录</Text>
+              </View>
+              {
+                records.map((record, index) => (
+                  <TouchableOpacity key={index} style={styles.recordRow} onPress={() => { _onSearch(record) }}>
+                    <View style={styles.left}>
+                      <Image style={styles.icon} source={require('../../../assets/images/history.png')} resizeMode='contain' />
+                      <Text style={styles.recordText}>{record}</Text>
+                    </View>
+                    <TouchableOpacity key={index} style={styles.delet} onPress={() => { _onDelet(record) }}>
+                      <Image style={styles.icon} source={require('../../../assets/images/close.png')} resizeMode='contain' />
+                    </TouchableOpacity>
+                  </TouchableOpacity>
+                ))
+              }
+            </View> : null
+        }
       </View>
-    )
+    );
   }
 }
 
 function mapStateToProps(state) {
-  const { data, loading } = state.search;
-  return { data, loading };
+  const { records, loading } = state.search;
+  return { records, loading };
 }
 
 function mapDispatchToProps(dispatch) {
@@ -52,13 +84,85 @@ function mapDispatchToProps(dispatch) {
         payload: params,
       });
     },
+    history(params) {
+      dispatch({
+        type: 'search/history',
+        payload: params,
+      });
+    },
   }
 }
 
 const styles = StyleSheet.create({
-  history:{
+  container: {
+    backgroundColor: '#FFFFFF',
+  },
 
-  }
+  hots: {
+    marginLeft: 15,
+    marginTop: 15,
+  },
+
+  titleView: {
+    marginBottom: 15,
+  },
+
+  title: {
+    color: '#999999',
+    fontSize: 12,
+  },
+
+  hotsRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
+
+  hotsBtn: {
+    paddingTop: 5,
+    paddingBottom: 5,
+    paddingRight: 12,
+    paddingLeft: 12,
+    borderRadius: 3,
+    marginRight: 15,
+    marginBottom: 15,
+    backgroundColor: '#7A86A2',
+  },
+
+  hotsText: {
+    color: '#FFFFFF',
+  },
+
+  records: {
+    marginLeft: 15,
+    marginRight: 15,
+  },
+
+  recordRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    borderTopWidth: 0.5,
+    borderColor: '#eee',
+    paddingTop: 15,
+    paddingBottom: 15,
+  },
+
+  left: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+
+  icon: {
+    width: 20,
+    height: 20,
+    marginLeft: 6,
+    marginRight: 12,
+  },
+
+  recordText: {
+    fontSize: 14,
+  },
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(History);

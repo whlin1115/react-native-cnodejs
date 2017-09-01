@@ -3,19 +3,36 @@ import { connect } from 'dva/mobile';
 import { StyleSheet, Text, View, Image, TextInput, Dimensions, TouchableOpacity } from 'react-native';
 
 const { width } = Dimensions.get('window')
-const inputWidth = width - (44 + 15) * 2 - 39
+const inputWidth = width - (44 + 15) * 2 - 35 - 4 - 24 // 减去的宽度分别是 导航栏按钮+margin*2，关闭按钮
 const rightWidth = width - 44
 
-class Input extends Component {
+class Seek extends Component {
   constructor(props) {
     super(props);
-    this.state = { text: '' }
+    this.state = { text: "" }
+  }
+
+  componentWillReceiveProps(next) {
+    const { content } = this.props;
+    if (next.content !== content) {
+      this.setState({ text: next.content })
+    }
   }
 
   render() {
-    const _onPress = () => {
-      const params = { content: this.state.text }
+    const { records, visible, loading } = this.props
+
+    const _onSearch = () => {
+      const text = this.state.text
+      if (!text) return
+      const params = { content: text }
       this.props.query(params)
+    }
+
+    const _onClean = () => {
+      const text = ''
+      this.setState({ text })
+      this.props.clean()
     }
 
     return (
@@ -24,15 +41,40 @@ class Input extends Component {
           <Image style={styles.headerBtn} source={require('../../../assets/images/searchbar.png')} resizeMode='contain' />
           <TextInput style={styles.input}
             placeholder='搜索话题'
+            value={this.state.text}
             underlineColorAndroid="transparent"
             onChangeText={(text) => { this.setState({ text }) }}
           />
+          <TouchableOpacity style={styles.closeBtn} onPress={() => { _onClean() }}>
+            {!visible ? <Image style={styles.closeImg} source={require('../../../assets/images/clean.png')} resizeMode='contain' /> : null}
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity style={styles.headerTouch} onPress={() => { _onPress() }}>
+        <TouchableOpacity style={styles.headerTouch} onPress={() => { _onSearch() }}>
           <Text style={styles.text}>搜索</Text>
         </TouchableOpacity>
       </View>
     );
+  }
+}
+
+function mapStateToProps(state) {
+  const { records, content, visible, loading } = state.search;
+  return { records, content, visible, loading };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    query(params) {
+      dispatch({
+        type: 'search/query',
+        payload: params,
+      });
+    },
+    clean() {
+      dispatch({
+        type: 'search/clean',
+      })
+    },
   }
 }
 
@@ -71,7 +113,6 @@ const styles = StyleSheet.create({
 
   input: {
     fontSize: 14,
-    marginRight: 10,
     width: inputWidth,
   },
 
@@ -81,22 +122,16 @@ const styles = StyleSheet.create({
     margin: 4,
   },
 
+  closeImg: {
+    width: 20,
+    height: 20,
+  },
+
+  closeBtn: {
+    width: 20,
+    height: 20,
+    margin: 4,
+  }
 });
 
-function mapStateToProps(state) {
-  const { data, loading } = state.search;
-  return { data, loading };
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    query(params) {
-      dispatch({
-        type: 'search/query',
-        payload: params,
-      });
-    },
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Input);
+export default connect(mapStateToProps, mapDispatchToProps)(Seek);

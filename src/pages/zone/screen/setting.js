@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva/mobile';
-import { View, Text, Button, Image, StatusBar, FlatList, Dimensions, TouchableOpacity, StyleSheet } from 'react-native'
+import { StyleSheet, View, Text, Button, Image, StatusBar, FlatList, Dimensions, TouchableOpacity, AsyncStorage } from 'react-native'
 
 class Notice extends PureComponent {
   constructor(props) {
@@ -15,60 +15,38 @@ class Notice extends PureComponent {
     };
   };
 
-  componentDidMount() {
-    const { params } = this.props.navigation.state;
-    // this.props.query(params)
-  }
-
-  componentWillReceiveProps(next) {
-    const { params } = this.props;
-    if (next.params !== params) {
-
-    }
-  }
-
   render() {
-    const { data, loading } = this.props
-    const { navigate } = this.props.navigation;
-    const { width } = Dimensions.get('window');
+    const { data, loading, navigation } = this.props
+    const { navigate } = this.props.navigation
+
+    const _onLogout = () => {
+      AsyncStorage.removeItem('user')
+      this.props.clean()
+      navigation.goBack()
+    }
+
     return (
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
         <View style={styles.rowList}>
-          <View style={styles.row}>
-            <Image style={styles.rowImg} source={require('../../../assets/images/notice.png')} resizeMode='contain' />
-            <View style={styles.rowInner}>
-              <Text style={styles.rowText}>我的消息</Text>
+          <TouchableOpacity onPress={() => { navigate('Password') }}>
+            <View style={styles.row}>
+              <View style={styles.rowInner}>
+                <Text style={[styles.rowText, styles.rowBtn]}>修改密码</Text>
+              </View>
             </View>
-          </View>
-          <View style={styles.row}>
-            <Image style={styles.rowImg} source={require('../../../assets/images/comment.png')} resizeMode='contain' />
-            <View style={styles.rowInner}>
-              <Text style={styles.rowText}>我的评论</Text>
-            </View>
-          </View>
-          <View style={styles.row}>
-            <Image style={styles.rowImg} source={require('../../../assets/images/post.png')} resizeMode='contain' />
-            <View style={styles.rowInner}>
-              <Text style={styles.rowText}>我的话题</Text>
-            </View>
-          </View>
-          <View style={styles.row}>
-            <Image style={styles.rowImg} source={require('../../../assets/images/collection.png')} resizeMode='contain' />
-            <View style={styles.rowInner}>
-              <Text style={styles.rowText}>我的收藏</Text>
-            </View>
-          </View>
+          </TouchableOpacity>
         </View>
         <View style={styles.rowList}>
-          <View style={styles.row}>
-            <Image style={styles.rowImg} source={require('../../../assets/images/setting.png')} resizeMode='contain' />
-            <View style={styles.rowInner}>
-              <Text style={styles.rowText}>设置</Text>
+          <TouchableOpacity onPress={() => { _onLogout() }}>
+            <View style={styles.row}>
+              <View style={styles.rowInner}>
+                <Text style={[styles.rowText, styles.rowBtn]}>退出登录</Text>
+              </View>
             </View>
-          </View>
+          </TouchableOpacity>
         </View>
-      </View >
+      </View>
     );
   }
 }
@@ -80,9 +58,9 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    query(params) {
+    clean(params) {
       dispatch({
-        type: 'zone/query',
+        type: 'zone/clean',
         payload: params,
       });
     },
@@ -119,6 +97,10 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
     borderBottomWidth: 0.5,
     borderColor: '#F0F0F0',
+  },
+
+  rowBtn: {
+    textAlign: 'center',
   },
 
   rowText: {

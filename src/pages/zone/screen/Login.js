@@ -1,12 +1,18 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva/mobile';
-import Wrap from './components/Wrap';
 import { StyleSheet, View, Text, TextInput, Button, Image, StatusBar, FlatList, Dimensions, TouchableOpacity } from 'react-native'
 
 class Login extends PureComponent {
   constructor(props) {
     super(props)
-    this.state = {}
+    this.state = { text: '49564492-25c9-4650-a49e-078ac4c7c383' }
+  }
+
+  componentWillReceiveProps(next) {
+    const { data, navigation } = this.props;
+    if (next.data && next.data !== data) {
+      navigation.goBack()
+    }
   }
 
   static navigationOptions = ({ navigation }) => {
@@ -16,35 +22,31 @@ class Login extends PureComponent {
     };
   };
 
-  componentDidMount() {
-    // this.props.query()
-  }
-
-  componentWillReceiveProps(next) {
-    const { params } = this.props;
-    if (next.params !== params) {
-
-    }
-  }
-
   render() {
-    const { data, loading } = this.props
-    const { navigate } = this.props.navigation;
+    const { loading, navigation } = this.props
+
+    const _onLogin = () => {
+      const token = this.state.text
+      if (!token) return
+      const params = { accesstoken: token }
+      this.props.login(params)
+    }
 
     return (
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
         <View style={styles.logoView}>
-          <Image style={styles.logo} source={require('../../assets/images/logo.png')} resizeMode='contain' />
+          <Image style={styles.logo} source={require('../../../assets/images/logo.png')} resizeMode='contain' />
         </View>
         <View style={styles.inputView}>
           <TextInput style={styles.input}
+            value={this.state.text}
             placeholder='输入 Access Token'
             underlineColorAndroid="transparent"
             onChangeText={(text) => { this.setState({ text }) }}
           />
         </View>
-        <TouchableOpacity style={styles.loginBtn} onPress={() => { }}>
+        <TouchableOpacity style={styles.loginBtn} onPress={() => { _onLogin() }}>
           <Text style={styles.login}>登录</Text>
         </TouchableOpacity>
       </View>
@@ -53,15 +55,15 @@ class Login extends PureComponent {
 }
 
 function mapStateToProps(state) {
-  const { data, loading } = state.login;
+  const { data, loading } = state.zone;
   return { data, loading };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    query(params) {
+    login(params) {
       dispatch({
-        type: 'login/query',
+        type: 'zone/login',
         payload: params,
       });
     },

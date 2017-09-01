@@ -14,7 +14,7 @@ class Seek extends Component {
 
   componentWillReceiveProps(next) {
     const { content } = this.props;
-    if (next.content !== content) {
+    if (next.content && next.content !== content) {
       this.setState({ text: next.content })
     }
   }

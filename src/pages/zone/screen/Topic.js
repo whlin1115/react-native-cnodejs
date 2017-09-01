@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva/mobile';
 import { StyleSheet, View, Text, Button, Image, StatusBar, FlatList, Dimensions, TouchableOpacity } from 'react-native'
 
-class Setting extends PureComponent {
+class Topic extends PureComponent {
   constructor(props) {
     super(props)
     this.state = {}
@@ -11,7 +11,7 @@ class Setting extends PureComponent {
   static navigationOptions = ({ navigation }) => {
     const { state, setParams } = navigation;
     return {
-      headerTitle: '回复',
+      headerTitle: '我的话题',
     };
   };
 
@@ -34,7 +34,7 @@ class Setting extends PureComponent {
     return (
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
-        <Text>回复页面</Text>
+        <Text>话题页面</Text>
       </View >
     );
   }
@@ -56,6 +56,7 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -63,4 +64,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Setting);
+export default connect(mapStateToProps, mapDispatchToProps)(Topic);

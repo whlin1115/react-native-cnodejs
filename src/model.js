@@ -5,6 +5,5 @@ import zone from './pages/zone/model';
 import publish from './pages/publish/model';
 import notice from './pages/notice/model';
 import recruit from './pages/recruit/model';
-import login from './pages/login/model';
 
-export default { home, detail, search, zone, publish, notice, recruit, login }
+export default { home, detail, search, zone, publish, notice, recruit }

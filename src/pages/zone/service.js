@@ -1,9 +1,13 @@
-import { get } from '../../utils/request';
+import { get, post } from '../../utils/request';
 import { moment } from '../../utils/tool';
 
 export async function queryUser(params) {
   const { user } = params
   return get(`/user/${user}`);
+}
+
+export async function postToken(params) {
+  return post('/accesstoken', params);
 }
 
 export function parseUser(data) {

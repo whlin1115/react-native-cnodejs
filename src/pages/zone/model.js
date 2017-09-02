@@ -7,6 +7,7 @@ export default {
     user: {},
     data: {},
     info: {},
+    collects: [],
     accesstoken: '',
     setting: { draft: true, notic: true },
     loading: false,
@@ -20,12 +21,6 @@ export default {
       if (accesstoken) yield put({ type: 'token', payload: accesstoken })
       if (setting) yield put({ type: 'config', payload: JSON.parse(setting) })
     },
-    *information({ payload = {} }, { call, put }) {
-      yield put({ type: 'loading', payload: true });
-      const { data, err } = yield call(service.getInfo, payload);
-      yield put({ type: 'information/success', payload: data });
-      yield put({ type: 'loading', payload: false });
-    },
     *login({ payload = {} }, { call, put }) {
       const { accesstoken } = payload
       yield put({ type: 'loading', payload: true });
@@ -38,11 +33,24 @@ export default {
       yield put({ type: 'loading', payload: false });
     },
     *query({ payload = {} }, { call, put }) {
+      const { loginname } = payload
       yield put({ type: 'loading', payload: true });
       yield put({ type: 'user', payload: payload });
-      const { data } = yield call(service.queryUser, { user: payload.loginname });
+      const { data } = yield call(service.queryUser, { user: loginname });
       yield put({ type: 'query/success', payload: data });
       yield put({ type: 'loading', payload: false });
+    },
+    *information({ payload = {} }, { call, put }) {
+      yield put({ type: 'loading', payload: true });
+      const { data, err } = yield call(service.getInfo, payload);
+      yield put({ type: 'information/success', payload: data });
+      yield put({ type: 'loading', payload: false });
+    },
+    *collects({ payload = {} }, { call, put }) {
+      yield put({ type: 'loading', payload: true });
+      const { data } = yield call(service.queryCollects, payload);
+      yield put({ type: 'loading', payload: false });
+      yield put({ type: 'collects/success', payload: data });
     },
   },
   reducers: {
@@ -54,12 +62,21 @@ export default {
     'query/success'(state, { payload }) {
       const [, result] = payload
       const data = service.parseUser(result.data)
-      return { ...state, data: data };
+      return { ...state, data };
     },
     'information/success'(state, { payload }) {
       const [, data] = payload
       const info = service.parseInformation(data)
       return { ...state, info };
+    },
+    'collects/success'(state, { payload }) {
+      const [, data] = payload
+      const collects = service.parseCollects(data.data)
+      return { ...state, collects };
+    },
+    'de_collect'(state, { payload }) {
+      const collects = state.collects.filter(collect => collect.id !== payload);
+      return { ...state, collects };
     },
     'loading'(state, { payload: data }) {
       return { ...state, loading: data };

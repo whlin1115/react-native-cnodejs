@@ -32,7 +32,7 @@ class Zone extends PureComponent {
   }
 
   render() {
-    const { user, data, loading } = this.props
+    const { user, collects, data, loading } = this.props
     const { navigate } = this.props.navigation;
     const headerProps = { data, navigate }
 
@@ -41,23 +41,25 @@ class Zone extends PureComponent {
         <StatusBar barStyle="light-content" />
         <Header {...headerProps} />
         <View style={styles.rowList}>
-          <TouchableOpacity onPress={() => { navigate('Reply') }}>
+          <TouchableOpacity onPress={() => { navigate('Dynamic', { type: 'reply' }) }}>
             <View style={styles.row}>
               <Image style={styles.rowImg} source={require('../../assets/images/comment.png')} resizeMode='contain' />
               <View style={styles.rowInner}>
                 <Text style={styles.rowText}>最近回复</Text>
+                <Text style={styles.span}>{data.recent_replies ? data.recent_replies.length : '0'}</Text>
               </View>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => { navigate('Topic') }}>
+          <TouchableOpacity onPress={() => { navigate('Dynamic', { type: 'topic' }) }}>
             <View style={styles.row}>
               <Image style={styles.rowImg} source={require('../../assets/images/post.png')} resizeMode='contain' />
               <View style={styles.rowInner}>
                 <Text style={styles.rowText}>最新发布</Text>
+                <Text style={styles.span}>{data.recent_topics ? data.recent_topics.length : '0'}</Text>
               </View>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => { navigate('Collect') }}>
+          <TouchableOpacity onPress={() => { navigate('Collect', { user: data.loginname }) }}>
             <View style={styles.row}>
               <Image style={styles.rowImg} source={require('../../assets/images/collection.png')} resizeMode='contain' />
               <View style={styles.rowInner}>
@@ -82,8 +84,8 @@ class Zone extends PureComponent {
 }
 
 function mapStateToProps(state) {
-  const { user, data, loading } = state.zone;
-  return { user, data, loading };
+  const { user, data, collects, loading } = state.zone;
+  return { user, data, collects, loading };
 }
 
 function mapDispatchToProps(dispatch) {
@@ -130,6 +132,8 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 20,
     paddingBottom: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     borderBottomWidth: 0.5,
     borderColor: '#F0F0F0',
   },
@@ -143,6 +147,11 @@ const styles = StyleSheet.create({
     width: 25,
     height: 25,
   },
+
+  span: {
+    color: '#999',
+    fontSize: 14,
+  }
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Zone);

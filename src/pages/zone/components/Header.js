@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Image, Dimensions, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Image, Linking, Dimensions, TouchableOpacity } from 'react-native';
 
 class Header extends Component {
   constructor(props) {
@@ -22,47 +22,33 @@ class Header extends Component {
           </View>
         </TouchableOpacity>
         : <View>
-          <TouchableOpacity onPress={() => { navigate('Personal') }}>
+          <TouchableOpacity onPress={() => { navigate('Personal', { user: data.loginname }) }}>
             <View style={styles.header}>
               <View style={styles.inner}>
                 <Image source={{ uri: data.avatar_url }} style={styles.avatar} />
                 <View style={styles.col}>
                   <Text style={[styles.span, styles.name]}>{data.loginname}</Text>
-                  <Text style={styles.span}>注册于： {data.create_at}</Text>
+                  <Text style={styles.sub}>注册于： {data.create_at}</Text>
                 </View>
               </View>
             </View>
           </TouchableOpacity>
-          {/* <View style={styles.info}>
-            <View style={styles.block}>
-              <Image style={styles.infoBtn} source={require('../../../assets/images/integral.png')} resizeMode='contain' />
-              <View>
-                <Text style={styles.text}>积分</Text>
-                <Text style={[styles.text, styles.sub]}>{data.score}</Text>
-              </View>
-            </View>
-            <View style={styles.block}>
-              <Image style={styles.infoBtn} source={require('../../../assets/images/github.png')} resizeMode='contain' />
-              <View>
-                <Text style={styles.text}>Github</Text>
-                <Text style={[styles.text, styles.sub]}>{data.githubUsername}</Text>
-              </View>
-            </View>
-          </View> */}
           <View style={styles.rowList}>
             <TouchableOpacity onPress={() => { navigate('Credits') }}>
               <View style={styles.row}>
                 <Image style={styles.rowImg} source={require('../../../assets/images/integral.png')} resizeMode='contain' />
                 <View style={styles.rowInner}>
                   <Text style={styles.rowText}>论坛积分</Text>
+                  <Text style={styles.span}>{data.score}</Text>
                 </View>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => { navigate('Github') }}>
+            <TouchableOpacity onPress={() => { Linking.openURL(`https://github.com/${data.githubUsername}`) }}>
               <View style={styles.row}>
                 <Image style={styles.rowImg} source={require('../../../assets/images/github.png')} resizeMode='contain' />
                 <View style={styles.rowInner}>
                   <Text style={styles.rowText}>代码仓库</Text>
+                  <Text style={styles.span}>{data.githubUsername}</Text>
                 </View>
               </View>
             </TouchableOpacity>
@@ -94,7 +80,7 @@ const styles = StyleSheet.create({
     marginRight: 15,
   },
 
-  span: {
+  sub: {
     paddingTop: 5,
     paddingBottom: 5,
     color: '#999',
@@ -114,38 +100,6 @@ const styles = StyleSheet.create({
   col: {
     flex: 1,
   },
-
-  info: {
-    padding: 20,
-    alignItems: 'center',
-    flexDirection: 'row',
-    borderBottomWidth: 0.5,
-    borderColor: '#FFFFFF',
-    backgroundColor: '#FFFFFF',
-  },
-
-  block: {
-    flex: 1,
-    paddingLeft: 15,
-    alignItems: 'center',
-    flexDirection: 'row',
-  },
-
-  infoBtn: {
-    width: 36,
-    height: 36,
-    marginRight: 15,
-  },
-
-  text: {
-    fontSize: 14,
-    padding: 3,
-  },
-
-  sub: {
-    color: '#A4A4A4',
-  },
-
 
   rowList: {
     marginTop: 10,
@@ -169,6 +123,8 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 20,
     paddingBottom: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     borderBottomWidth: 0.5,
     borderColor: '#F0F0F0',
   },
@@ -181,6 +137,11 @@ const styles = StyleSheet.create({
   iconBtn: {
     width: 25,
     height: 25,
+  },
+
+  span: {
+    color: '#999',
+    fontSize: 14,
   },
 });
 

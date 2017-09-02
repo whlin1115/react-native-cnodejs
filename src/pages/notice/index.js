@@ -1,7 +1,9 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva/mobile';
-import Wrap from './components/Wrap';
-import { StyleSheet, View, Text, Button, Image, StatusBar, FlatList, Dimensions, TouchableOpacity } from 'react-native'
+import Message from './components/Message';
+import { StyleSheet, View, ScrollView, Text, Button, Image, StatusBar, FlatList, Dimensions, TouchableOpacity } from 'react-native'
+
+const { width } = Dimensions.get('window');
 
 class Notice extends PureComponent {
   constructor(props) {
@@ -24,14 +26,7 @@ class Notice extends PureComponent {
   };
 
   componentDidMount() {
-    // this.props.query()
-  }
-
-  componentWillReceiveProps(next) {
-    const { params } = this.props;
-    if (next.params !== params) {
-
-    }
+    this.props.init()
   }
 
   render() {
@@ -39,7 +34,7 @@ class Notice extends PureComponent {
     const { navigate } = this.props.navigation;
 
     return (
-      <View style={styles.container}>
+      <ScrollView style={styles.container}>
         <StatusBar barStyle="light-content" />
         <View style={styles.rowList}>
           <TouchableOpacity onPress={() => { navigate('System') }}>
@@ -50,17 +45,7 @@ class Notice extends PureComponent {
               </View>
             </View>
           </TouchableOpacity>
-        </View>
-        <View style={styles.rowList}>
-          <TouchableOpacity onPress={() => { navigate('Unread') }}>
-            <View style={styles.row}>
-              <Image style={styles.rowImg} source={require('../../assets/images/post.png')} resizeMode='contain' />
-              <View style={styles.rowInner}>
-                <Text style={styles.rowText}>未读消息</Text>
-              </View>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => { navigate('Read') }}>
+          <TouchableOpacity onPress={() => { navigate('Read', { data: data.has_read_messages }) }}>
             <View style={styles.row}>
               <Image style={styles.rowImg} source={require('../../assets/images/comment.png')} resizeMode='contain' />
               <View style={styles.rowInner}>
@@ -69,18 +54,32 @@ class Notice extends PureComponent {
             </View>
           </TouchableOpacity>
         </View>
-      </View>
+        <View style={styles.rowList}>
+          <FlatList
+            style={{ width: width }}
+            data={data.hasnot_read_messages}
+            extraData={this.state}
+            keyExtractor={(item, index) => index}
+            renderItem={({ item }) => <Message navigate={navigate} item={item} />}
+          />
+        </View>
+      </ScrollView>
     );
   }
 }
 
 function mapStateToProps(state) {
-  const { data, loading } = state.notice;
-  return { data, loading };
+  const { data, accesstoken, loading } = state.notice;
+  return { data, accesstoken, loading };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
+    init() {
+      dispatch({
+        type: 'notice/init',
+      });
+    },
     query(params) {
       dispatch({
         type: 'notice/query',

@@ -1,51 +1,62 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva/mobile';
-import Message from '../components/Message';
+import Card from '../components/Card';
 import { StyleSheet, View, Text, Button, Image, StatusBar, FlatList, Dimensions, TouchableOpacity } from 'react-native'
 
 const { width } = Dimensions.get('window');
 
-class Read extends PureComponent {
+class Dynamic extends PureComponent {
   constructor(props) {
     super(props)
     this.state = {}
   }
 
   static navigationOptions = ({ navigation }) => {
-    const { state, setParams } = navigation;
+    const { type } = navigation.state.params;
+    const title = { 'reply': '最近回复', 'topic': '最新发布' }
     return {
-      headerTitle: '已读消息',
+      headerTitle: title[type],
     };
   };
 
   render() {
-    const { loading } = this.props
+    const { data } = this.props
     const { navigate, state } = this.props.navigation;
-    const { data } = state.params
-
+    const { type } = state.params
+    const recent = { 'reply': 'recent_replies', 'topic': 'recent_topics' }
+    const list = data[recent[type]]
+    
     return (
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
         <FlatList
           style={{ width: width }}
-          data={data}
+          data={list}
           extraData={this.state}
           keyExtractor={(item, index) => index}
-          renderItem={({ item }) => <Message navigate={navigate} item={item} />}
+          renderItem={({ item }) => <Card navigate={navigate} item={item} />}
         />
-      </View>
+      </View >
     );
   }
 }
 
 function mapStateToProps(state) {
-  const { loading } = state.zone;
-  return { loading };
+  const { data, collects, loading } = state.zone;
+  return { data, collects, loading };
 }
 
 function mapDispatchToProps(dispatch) {
-  return { dispatch }
+  return {
+    query(params) {
+      dispatch({
+        type: 'zone/query',
+        payload: params,
+      });
+    },
+  }
 }
+
 
 const styles = StyleSheet.create({
   container: {
@@ -54,4 +65,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Read);
+export default connect(mapStateToProps, mapDispatchToProps)(Dynamic);

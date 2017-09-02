@@ -11,14 +11,11 @@ function Card({ item, navigate }) {
           <Text numberOfLines={1} style={styles.h3}>{item.title}</Text>
         </View >
         <View style={styles.content}>
-          <Image source={{ uri: item.author.avatar_url }} style={styles.avatar} />
-          <View style={styles.info}>
-            <View style={styles.p}>
-              <Text style={styles.name}>{item.author.loginname}</Text>
-            </View>
-            <View style={styles.p}>
-              <Text style={styles.time}>{item.last_reply_at}</Text>
-            </View>
+          <View style={styles.timeView}>
+            <Text style={styles.time}>{item.last_reply_at}</Text>
+          </View>
+          <View style={styles.p}>
+            <Text style={styles.name}>{item.author.loginname}</Text>
           </View>
         </View>
       </View >
@@ -28,35 +25,17 @@ function Card({ item, navigate }) {
 
 const styles = StyleSheet.create({
   list: {
-    paddingTop: 10,
-    paddingLeft: 15,
-    paddingRight: 15,
-    paddingBottom: 10,
-    backgroundColor: '#fff',
+    padding: 20,
+    backgroundColor: '#FFFFFF',
     borderBottomWidth: 1,
     borderColor: '#F0F0F0'
   },
 
   header: {
     flex: 1,
-    alignItems: 'center',
     flexWrap: 'wrap',
+    alignItems: 'center',
     flexDirection: 'row'
-  },
-
-  tab: {
-    marginRight: 10,
-    paddingTop: 5,
-    paddingLeft: 6,
-    paddingBottom: 5,
-    paddingRight: 6,
-    borderRadius: 3,
-  },
-
-  sort: {
-    fontSize: 12,
-    color: '#FFFFFF',
-    fontWeight: 'bold',
   },
 
   h3: {
@@ -66,28 +45,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 
-  top: {
-    backgroundColor: '#e74c3c',
-  },
-
-  ask: {
-    backgroundColor: '#3498db',
-  },
-
-  good: {
-    backgroundColor: '#e67e22',
-  },
-
-  share: {
-    backgroundColor: '#1abc9c',
-  },
-
-  default: {
-    backgroundColor: '#e7e7e7',
-  },
-
   content: {
+    flex: 1,
     paddingTop: 10,
+    alignItems: 'center',
     flexDirection: 'row'
   },
 
@@ -98,36 +59,29 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
 
-  info: {
-    flex: 1,
+  timeView: {
+    flex: 2,
+    padding: 3,
+    borderRadius: 3,
+    marginRight: 10,
+    backgroundColor: '#4B8CE2',
   },
 
   p: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flex: 8,
     padding: 3,
   },
 
-  status: {
-    flexDirection: 'row',
-  },
-
   name: {
+    color: '#999',
     fontSize: 12,
   },
 
   time: {
+    color: '#FFFFFF',
+    textAlign: 'center',
     fontSize: 12,
   },
-
-  b: {
-    fontSize: 12,
-    fontWeight: 'bold',
-  },
-
-  reply: {
-    color: '#42b983',
-  }
 });
 
 export default Card

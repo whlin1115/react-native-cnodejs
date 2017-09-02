@@ -1,6 +1,9 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva/mobile';
+import Card from '../components/Card';
 import { StyleSheet, View, Text, Button, Image, StatusBar, FlatList, Dimensions, TouchableOpacity } from 'react-native'
+
+const { width } = Dimensions.get('window');
 
 class Collect extends PureComponent {
   constructor(props) {
@@ -17,39 +20,38 @@ class Collect extends PureComponent {
 
   componentDidMount() {
     const { params } = this.props.navigation.state;
-    // this.props.query(params)
-  }
-
-  componentWillReceiveProps(next) {
-    const { params } = this.props;
-    if (next.params !== params) {
-
-    }
+    this.props.query(params)
   }
 
   render() {
-    const { data, loading } = this.props
+    const { collects, loading } = this.props
     const { navigate } = this.props.navigation;
-    const { width } = Dimensions.get('window');
+
     return (
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
-        <Text>收藏页面</Text>
+        <FlatList
+          style={{ width: width }}
+          data={collects}
+          extraData={this.state}
+          keyExtractor={(item, index) => index}
+          renderItem={({ item }) => <Card navigate={navigate} item={item} />}
+        />
       </View >
     );
   }
 }
 
 function mapStateToProps(state) {
-  const { data, loading } = state.zone;
-  return { data, loading };
+  const { collects, loading } = state.zone;
+  return { collects, loading };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
     query(params) {
       dispatch({
-        type: 'zone/query',
+        type: 'zone/collects',
         payload: params,
       });
     },

@@ -3,6 +3,8 @@ import { connect } from 'dva/mobile';
 import Wrap from './components/Wrap';
 import { StyleSheet, View, Text, Button, Image, StatusBar, FlatList, Dimensions, TouchableOpacity } from 'react-native'
 
+const { width } = Dimensions.get('window');
+
 class Home extends PureComponent {
   constructor(props) {
     super(props)
@@ -48,7 +50,7 @@ class Home extends PureComponent {
   render() {
     const { data, loading } = this.props
     const { navigate } = this.props.navigation;
-    const { width } = Dimensions.get('window');
+   
     return (
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />

@@ -1,8 +1,9 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva/mobile';
 import Info from './components/Info';
-import { Html, HtmlView } from '../../components';
 import Floor from './components/Floor';
+import Collect from './components/Collect';
+import { Html, HtmlView } from '../../components';
 import { StyleSheet, View, Text, Button, Image, StatusBar, FlatList, Dimensions, ScrollView, WebView, TouchableOpacity } from 'react-native'
 
 const { width } = Dimensions.get('window')
@@ -17,27 +18,15 @@ class Detail extends PureComponent {
   static navigationOptions = ({ navigation }) => {
     const { state, setParams } = navigation;
     return {
-      headerTitle: '主题',
-      headerRight: (
-        <View style={styles.headerRight}>
-          <TouchableOpacity style={styles.headerTouch} onPress={() => { }}>
-            <Image style={styles.headerBtn} source={require('../../assets/images/collect.png')} resizeMode='contain' />
-          </TouchableOpacity>
-        </View>
-      )
+      headerTitle: '话题',
+      headerRight: (<Collect />)
     };
   };
 
   componentDidMount() {
     const { params } = this.props.navigation.state;
-    this.props.query(params)
-  }
-
-  componentWillReceiveProps(next) {
-    const { params } = this.props;
-    if (next.params !== params) {
-
-    }
+    const { accesstoken } = this.props
+    this.props.query({ ...params, accesstoken })
   }
 
   componentWillUnmount() {
@@ -47,7 +36,6 @@ class Detail extends PureComponent {
   render() {
     const { data, loading } = this.props;
     const { navigate } = this.props.navigation;
-    const { width } = Dimensions.get('window');
     const infoProps = { data, navigate }
     const htmlProps = { html: data.content, styles: htmlStyles }
     const { replies } = data
@@ -80,7 +68,8 @@ class Detail extends PureComponent {
 
 function mapStateToProps(state) {
   const { data, loading } = state.detail;
-  return { data, loading };
+  const { accesstoken } = state.zone
+  return { data, accesstoken, loading };
 }
 
 function mapDispatchToProps(dispatch) {
@@ -108,23 +97,6 @@ const styles = StyleSheet.create({
   headerLeft: {
     width: 80,
     marginLeft: 15
-  },
-
-  headerRight: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center'
-  },
-
-  headerTouch: {
-    height: 30
-  },
-
-  headerBtn: {
-    flex: 1,
-    width: 30,
-    height: 30,
-    marginRight: 10
   },
 
   connect: {

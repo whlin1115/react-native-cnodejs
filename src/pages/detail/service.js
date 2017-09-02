@@ -1,9 +1,21 @@
-import { get } from '../../utils/request';
+import { get, post } from '../../utils/request';
 import { moment } from '../../utils/tool';
 
 export async function queryTopic(params) {
   const { id, mdrender = false, accesstoken = null } = params
   return get(`/topic/${id}?mdrender=${mdrender}&accesstoken=${accesstoken}`);
+}
+
+export async function collect(params) {
+  const { topic_id, accesstoken = null } = params
+  const body = { accesstoken, topic_id }
+  return post('/topic_collect/collect', body);
+}
+
+export async function de_collect(params) {
+  const { topic_id, accesstoken = null } = params
+  const body = { accesstoken, topic_id }
+  return post('/topic_collect/de_collect', body);
 }
 
 export function parseTopic(data) {

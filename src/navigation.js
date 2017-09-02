@@ -9,17 +9,15 @@ import Recruit from './pages/recruit';
 // Notice Navigator
 import Notice from './pages/notice';
 import Read from './pages/notice/screen/Read';
-import Unread from './pages/notice/screen/Unread';
 import System from './pages/notice/screen/System';
 
 // Zone Navigator
 import Zone from './pages/zone';
 import Login from './pages/zone/screen/Login';
-import Reply from './pages/zone/screen/Reply';
-import Topic from './pages/zone/screen/Topic';
 import Github from './pages/zone/screen/Github';
-import Credits from './pages/zone/screen/Credits';
 import Collect from './pages/zone/screen/Collect';
+import Dynamic from './pages/zone/screen/Dynamic';
+import Credits from './pages/zone/screen/Credits';
 import Setting from './pages/zone/screen/Setting';
 import Personal from './pages/zone/screen/Personal';
 import Password from './pages/zone/screen/Password';
@@ -46,14 +44,12 @@ const Navigation = StackNavigator({
   Publish: { screen: Publish },
   // Notice Navigator
   Read: { screen: Read },
-  Unread: { screen: Unread },
   System: { screen: System },
   // Zone Navigator
   Login: { screen: Login },
-  Reply: { screen: Reply },
-  Topic: { screen: Topic },
   Github: { screen: Github },
   Credits: { screen: Credits },
+  Dynamic: { screen: Dynamic },
   Collect: { screen: Collect },
   Setting: { screen: Setting },
   Personal: { screen: Personal },
@@ -64,7 +60,8 @@ const Navigation = StackNavigator({
       headerStyle: {
         backgroundColor: '#2D2D2D',
       },
-      headerTintColor: '#FFFFFF'
+      headerBackTitle: null,
+      headerTintColor: '#FFFFFF',
     },
     transitionConfig: () => ({
       screenInterpolator: CardStackStyleInterpolator.forHorizontal, // 安卓导航进入 左右方式

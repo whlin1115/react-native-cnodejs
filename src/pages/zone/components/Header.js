@@ -22,7 +22,7 @@ class Header extends Component {
           </View>
         </TouchableOpacity>
         : <View>
-          <TouchableOpacity onPress={() => { navigate('About') }}>
+          <TouchableOpacity onPress={() => { navigate('Personal') }}>
             <View style={styles.header}>
               <View style={styles.inner}>
                 <Image source={{ uri: data.avatar_url }} style={styles.avatar} />

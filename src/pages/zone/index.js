@@ -3,7 +3,7 @@ import { connect } from 'dva/mobile';
 import Card from './components/Card';
 import Header from './components/Header';
 import { RowItem } from '../../components';
-import { StyleSheet, View, ScrollView, Text, Button, Image, StatusBar, FlatList, Dimensions, TouchableOpacity, AsyncStorage } from 'react-native'
+import { StyleSheet, View, ScrollView, Text, Button, Image, StatusBar, FlatList, Dimensions, TouchableOpacity } from 'react-native'
 
 const { width } = Dimensions.get('window');
 
@@ -27,10 +27,8 @@ class Zone extends PureComponent {
     };
   };
 
-  async componentDidMount() {
-    var data = await AsyncStorage.getItem('user') || '{}'
-    const user = JSON.parse(data)
-    if (user.success) this.props.query(user)
+  componentDidMount() {
+    this.props.init()
   }
 
   render() {
@@ -47,7 +45,7 @@ class Zone extends PureComponent {
             <View style={styles.row}>
               <Image style={styles.rowImg} source={require('../../assets/images/comment.png')} resizeMode='contain' />
               <View style={styles.rowInner}>
-                <Text style={styles.rowText}>我的评论</Text>
+                <Text style={styles.rowText}>最近回复</Text>
               </View>
             </View>
           </TouchableOpacity>
@@ -55,7 +53,7 @@ class Zone extends PureComponent {
             <View style={styles.row}>
               <Image style={styles.rowImg} source={require('../../assets/images/post.png')} resizeMode='contain' />
               <View style={styles.rowInner}>
-                <Text style={styles.rowText}>我的话题</Text>
+                <Text style={styles.rowText}>最新发布</Text>
               </View>
             </View>
           </TouchableOpacity>
@@ -63,7 +61,7 @@ class Zone extends PureComponent {
             <View style={styles.row}>
               <Image style={styles.rowImg} source={require('../../assets/images/collection.png')} resizeMode='contain' />
               <View style={styles.rowInner}>
-                <Text style={styles.rowText}>我的收藏</Text>
+                <Text style={styles.rowText}>话题收藏</Text>
               </View>
             </View>
           </TouchableOpacity>
@@ -90,6 +88,11 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
+    init() {
+      dispatch({
+        type: 'zone/init',
+      });
+    },
     query(params) {
       dispatch({
         type: 'zone/query',
@@ -110,8 +113,8 @@ const styles = StyleSheet.create({
   },
 
   row: {
-    paddingLeft: 30,
-    paddingRight: 30,
+    paddingLeft: 27,
+    paddingRight: 27,
     alignItems: 'center',
     flexDirection: 'row',
     backgroundColor: '#FFFFFF',

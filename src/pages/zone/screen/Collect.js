@@ -11,7 +11,7 @@ class Collect extends PureComponent {
   static navigationOptions = ({ navigation }) => {
     const { state, setParams } = navigation;
     return {
-      headerTitle: '我的收藏',
+      headerTitle: '话题收藏',
     };
   };
 

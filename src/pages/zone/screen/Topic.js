@@ -11,7 +11,7 @@ class Topic extends PureComponent {
   static navigationOptions = ({ navigation }) => {
     const { state, setParams } = navigation;
     return {
-      headerTitle: '我的话题',
+      headerTitle: '最新发布',
     };
   };
 

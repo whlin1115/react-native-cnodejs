@@ -25,8 +25,12 @@ function checkStatus(response) {
  * @param  {object} [options] The options we want to pass to "fetch"
  * @return {object}           An object containing either "data" or "err"
  */
-export function get(url, options) {
+export function get(url, headers = {}) {
   if (!url.startsWith('https')) url = HOME_URL + url;
+  const options = {
+    method: 'GET',
+    headers: headers
+  }
   return fetch(url, options)
     .then(checkStatus)
     .then(parseJSON)
@@ -51,7 +55,11 @@ export function post(url, body) {
     .catch(err => ({ err }));
 }
 
-export function requestHtml(url, options) {
+export function requestHtml(url, headers = {}) {
+  const options = {
+    method: 'GET',
+    headers: headers
+  }
   return fetch(url, options)
     .then(checkStatus)
     .then(fetchHtml)

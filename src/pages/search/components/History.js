@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva/mobile';
-import { StyleSheet, Text, View, Image, TextInput, FlatList, Dimensions, TouchableOpacity, AsyncStorage } from 'react-native';
+import { StyleSheet, Text, View, Image, TextInput, FlatList, Dimensions, TouchableOpacity } from 'react-native';
 
 const { height } = Dimensions.get('window')
 
@@ -9,9 +9,8 @@ class History extends Component {
     super(props);
   }
 
-  async componentDidMount() {
-    var data = await AsyncStorage.getItem('records') || '[]'
-    this.props.history(JSON.parse(data));
+  componentDidMount() {
+    this.props.init();
   }
 
   render() {
@@ -78,15 +77,14 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
+    init() {
+      dispatch({
+        type: 'search/init',
+      });
+    },
     query(params) {
       dispatch({
         type: 'search/query',
-        payload: params,
-      });
-    },
-    history(params) {
-      dispatch({
-        type: 'search/history',
         payload: params,
       });
     },

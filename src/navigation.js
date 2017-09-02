@@ -4,19 +4,24 @@ import Home from './pages/home';
 import Detail from './pages/detail';
 import Search from './pages/search';
 import Publish from './pages/publish';
-import Notice from './pages/notice';
 import Recruit from './pages/recruit';
+
+// Notice Navigator
+import Notice from './pages/notice';
+import Read from './pages/notice/screen/Read';
+import Unread from './pages/notice/screen/Unread';
+import System from './pages/notice/screen/System';
 
 // Zone Navigator
 import Zone from './pages/zone';
 import Login from './pages/zone/screen/Login';
-import About from './pages/zone/screen/About';
 import Reply from './pages/zone/screen/Reply';
 import Topic from './pages/zone/screen/Topic';
 import Github from './pages/zone/screen/Github';
 import Credits from './pages/zone/screen/Credits';
 import Collect from './pages/zone/screen/Collect';
 import Setting from './pages/zone/screen/Setting';
+import Personal from './pages/zone/screen/Personal';
 import Password from './pages/zone/screen/Password';
 
 const Tabs = TabNavigator({
@@ -39,15 +44,19 @@ const Navigation = StackNavigator({
   Detail: { screen: Detail },
   Search: { screen: Search },
   Publish: { screen: Publish },
-  // Zone
+  // Notice Navigator
+  Read: { screen: Read },
+  Unread: { screen: Unread },
+  System: { screen: System },
+  // Zone Navigator
   Login: { screen: Login },
-  About: { screen: About },
   Reply: { screen: Reply },
   Topic: { screen: Topic },
   Github: { screen: Github },
   Credits: { screen: Credits },
   Collect: { screen: Collect },
   Setting: { screen: Setting },
+  Personal: { screen: Personal },
   Password: { screen: Password },
 }, {
     initialRouteName: 'Tabs',

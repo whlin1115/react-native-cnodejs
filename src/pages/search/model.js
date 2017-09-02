@@ -11,6 +11,11 @@ export default {
     visible: true,
   },
   effects: {
+    *init({ payload = {} }, { call, put }) {
+      const data = yield AsyncStorage.getItem('records') || '[]';
+      const records = JSON.parse(data)
+      yield put({ type: 'records', payload: records });
+    },
     *query({ payload = {} }, { call, put }) {
       const { content } = payload
       yield put({ type: 'loading', payload: true });
@@ -34,7 +39,7 @@ export default {
     'loading'(state, { payload: data }) {
       return { ...state, loading: data };
     },
-    'history'(state, { payload: data }) {
+    'records'(state, { payload: data }) {
       return { ...state, records: data };
     },
     'clean'(state, { payload: data }) {

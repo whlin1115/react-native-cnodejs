@@ -37,31 +37,37 @@ class Notice extends PureComponent {
   render() {
     const { data, loading } = this.props
     const { navigate } = this.props.navigation;
-    const { width } = Dimensions.get('window');
+
     return (
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
         <View style={styles.rowList}>
-          <View style={styles.row}>
-            <Image style={styles.rowImg} source={require('../../assets/images/notice.png')} resizeMode='contain' />
-            <View style={styles.rowInner}>
-              <Text style={styles.rowText}>系统消息</Text>
+          <TouchableOpacity onPress={() => { navigate('System') }}>
+            <View style={styles.row}>
+              <Image style={styles.rowImg} source={require('../../assets/images/notice.png')} resizeMode='contain' />
+              <View style={styles.rowInner}>
+                <Text style={styles.rowText}>系统消息</Text>
+              </View>
             </View>
-          </View>
+          </TouchableOpacity>
         </View>
         <View style={styles.rowList}>
-          <View style={styles.row}>
-            <Image style={styles.rowImg} source={require('../../assets/images/post.png')} resizeMode='contain' />
-            <View style={styles.rowInner}>
-              <Text style={styles.rowText}>未读消息</Text>
+          <TouchableOpacity onPress={() => { navigate('Unread') }}>
+            <View style={styles.row}>
+              <Image style={styles.rowImg} source={require('../../assets/images/post.png')} resizeMode='contain' />
+              <View style={styles.rowInner}>
+                <Text style={styles.rowText}>未读消息</Text>
+              </View>
             </View>
-          </View>
-          <View style={styles.row}>
-            <Image style={styles.rowImg} source={require('../../assets/images/comment.png')} resizeMode='contain' />
-            <View style={styles.rowInner}>
-              <Text style={styles.rowText}>已读消息</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => { navigate('Read') }}>
+            <View style={styles.row}>
+              <Image style={styles.rowImg} source={require('../../assets/images/comment.png')} resizeMode='contain' />
+              <View style={styles.rowInner}>
+                <Text style={styles.rowText}>已读消息</Text>
+              </View>
             </View>
-          </View>
+          </TouchableOpacity>
         </View>
       </View>
     );
@@ -95,8 +101,8 @@ const styles = StyleSheet.create({
   },
 
   row: {
-    paddingLeft: 30,
-    paddingRight: 30,
+    paddingLeft: 27,
+    paddingRight: 27,
     alignItems: 'center',
     flexDirection: 'row',
     backgroundColor: '#FFFFFF',

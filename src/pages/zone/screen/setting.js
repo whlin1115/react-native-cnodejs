@@ -1,11 +1,14 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva/mobile';
-import { StyleSheet, View, Text, Button, Image, StatusBar, FlatList, Dimensions, TouchableOpacity, AsyncStorage } from 'react-native'
+import { StyleSheet, View, Text, Button, Image, StatusBar, FlatList, Switch, Dimensions, TouchableOpacity } from 'react-native'
 
 class Notice extends PureComponent {
   constructor(props) {
     super(props)
-    this.state = {}
+    this.state = {
+      draft: true,
+      notic: true,
+    }
   }
 
   static navigationOptions = ({ navigation }) => {
@@ -15,12 +18,23 @@ class Notice extends PureComponent {
     };
   };
 
+  componentDidMount() {
+    const { setting } = this.props
+    const { draft, notic } = setting
+    this.setState({ draft, notic })
+  }
+
+  componentWillUnmount() {
+    const { draft, notic } = this.state
+    const setting = { draft, notic }
+    this.props.config(setting)
+  }
+
   render() {
     const { data, loading, navigation } = this.props
     const { navigate } = this.props.navigation
 
     const _onLogout = () => {
-      AsyncStorage.removeItem('user')
       this.props.clean()
       navigation.goBack()
     }
@@ -29,35 +43,81 @@ class Notice extends PureComponent {
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
         <View style={styles.rowList}>
-          <TouchableOpacity onPress={() => { navigate('Password') }}>
-            <View style={styles.row}>
-              <View style={styles.rowInner}>
-                <Text style={[styles.rowText, styles.rowBtn]}>修改密码</Text>
+          <View style={styles.row}>
+            <View style={styles.rowInner}>
+              <View style={styles.left}>
+                <Text style={styles.rowText}>新消息通知</Text>
+                <View style={styles.subView}>
+                  <Text style={styles.sub}>接收评论消息及系统消息通知</Text>
+                </View>
               </View>
+              <Switch style={styles.switch} value={this.state.notic} onValueChange={(value) => { this.setState({ notic: value }) }}></Switch>
             </View>
-          </TouchableOpacity>
+          </View>
+          <View style={styles.row}>
+            <View style={styles.rowInner}>
+              <View style={styles.left}>
+                <Text style={styles.rowText}>保存草稿</Text>
+                <View style={styles.subView}>
+                  <Text style={styles.sub}>未发布的话题内容自动保存</Text>
+                </View>
+              </View>
+              <Switch style={styles.switch} value={this.state.draft} onValueChange={(value) => { this.setState({ draft: value }) }}></Switch>
+            </View>
+          </View>
         </View>
         <View style={styles.rowList}>
-          <TouchableOpacity onPress={() => { _onLogout() }}>
+          <TouchableOpacity onPress={() => { navigate('Cache') }}>
             <View style={styles.row}>
               <View style={styles.rowInner}>
-                <Text style={[styles.rowText, styles.rowBtn]}>退出登录</Text>
+                <Text style={styles.rowText}>清除缓存</Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => { navigate('Cache') }}>
+            <View style={styles.row}>
+              <View style={styles.rowInner}>
+                <View style={styles.left}>
+                  <Text style={styles.rowText}>检查更新</Text>
+                  <View style={styles.subView}>
+                    <Text style={styles.sub}>当前版本 0.1.2</Text>
+                  </View>
+                </View>
               </View>
             </View>
           </TouchableOpacity>
         </View>
+        {
+          Object.keys(data).length > 0 ?
+            <View style={styles.rowList}>
+              <TouchableOpacity onPress={() => { _onLogout() }}>
+                <View style={styles.row}>
+                  <View style={styles.rowInner}>
+                    <Text style={styles.rowText}>退出登录</Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            </View>
+            : null
+        }
       </View>
     );
   }
 }
 
 function mapStateToProps(state) {
-  const { data, loading } = state.zone;
-  return { data, loading };
+  const { data, setting, loading } = state.zone;
+  return { data, setting, loading };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
+    config(params) {
+      dispatch({
+        type: 'zone/config',
+        payload: params,
+      });
+    },
     clean(params) {
       dispatch({
         type: 'zone/clean',
@@ -78,8 +138,8 @@ const styles = StyleSheet.create({
   },
 
   row: {
-    paddingLeft: 30,
-    paddingRight: 30,
+    paddingLeft: 27,
+    paddingRight: 27,
     alignItems: 'center',
     flexDirection: 'row',
     backgroundColor: '#FFFFFF',
@@ -96,17 +156,32 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     paddingBottom: 20,
     borderBottomWidth: 0.5,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     borderColor: '#F0F0F0',
-  },
-
-  rowBtn: {
-    textAlign: 'center',
   },
 
   rowText: {
     fontSize: 16,
     fontWeight: '400',
   },
+
+  subView: {
+    marginTop: 8,
+  },
+
+  sub: {
+    color: '#999',
+    fontSize: 12,
+  },
+
+  left: {
+    flex: 1
+  },
+
+  switch: {
+  }
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Notice);

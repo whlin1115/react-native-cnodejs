@@ -6,6 +6,9 @@ export default {
   state: {
     data: [],
     accesstoken: '',
+    system_messages: [],
+    has_read_messages: [],
+    hasnot_read_messages: [],
     loading: false,
   },
   effects: {
@@ -26,7 +29,7 @@ export default {
     'query/success'(state, { payload }) {
       const [, data] = payload
       const messages = service.parseMessages(data.data)
-      return { ...state, data: messages };
+      return { ...state, data: messages, ...messages };
     },
     'token'(state, { payload: data }) {
       return { ...state, accesstoken: data };

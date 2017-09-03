@@ -30,7 +30,7 @@ class Notice extends PureComponent {
   }
 
   render() {
-    const { data, loading } = this.props
+    const { data, has_read_messages, hasnot_read_messages, loading } = this.props
     const { navigate } = this.props.navigation;
 
     return (
@@ -45,7 +45,7 @@ class Notice extends PureComponent {
               </View>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => { navigate('Read', { data: data.has_read_messages }) }}>
+          <TouchableOpacity onPress={() => { navigate('Read') }}>
             <View style={styles.row}>
               <Image style={styles.rowImg} source={require('../../assets/images/comment.png')} resizeMode='contain' />
               <View style={styles.rowInner}>
@@ -54,23 +54,29 @@ class Notice extends PureComponent {
             </View>
           </TouchableOpacity>
         </View>
-        <View style={styles.rowList}>
-          <FlatList
-            style={{ width: width }}
-            data={data.hasnot_read_messages}
-            extraData={this.state}
-            keyExtractor={(item, index) => index}
-            renderItem={({ item }) => <Message navigate={navigate} item={item} />}
-          />
-        </View>
+        {
+          hasnot_read_messages.length > 0 ?
+            <View style={styles.rowList}>
+              <FlatList
+                style={{ width: width }}
+                data={hasnot_read_messages}
+                extraData={this.state}
+                keyExtractor={(item, index) => index}
+                renderItem={({ item }) => <Message navigate={navigate} item={item} />}
+              />
+            </View>
+            : <View style={styles.msgViw}>
+              <Text style={styles.msg}>暂无消息</Text>
+            </View>
+        }
       </ScrollView>
     );
   }
 }
 
 function mapStateToProps(state) {
-  const { data, accesstoken, loading } = state.notice;
-  return { data, accesstoken, loading };
+  const { data, has_read_messages, hasnot_read_messages, accesstoken, loading } = state.notice;
+  return { data, has_read_messages, hasnot_read_messages, accesstoken, loading };
 }
 
 function mapDispatchToProps(dispatch) {
@@ -130,6 +136,17 @@ const styles = StyleSheet.create({
     width: 25,
     height: 25,
   },
+
+  msgViw: {
+    padding: 30,
+    justifyContent: 'center',
+  },
+
+  msg: {
+    textAlign: 'center',
+    fontSize: 14,
+    color: '#999'
+  }
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Notice);

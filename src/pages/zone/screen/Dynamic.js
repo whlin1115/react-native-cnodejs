@@ -25,17 +25,22 @@ class Dynamic extends PureComponent {
     const { type } = state.params
     const recent = { 'reply': 'recent_replies', 'topic': 'recent_topics' }
     const list = data[recent[type]]
-    
+
     return (
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
-        <FlatList
-          style={{ width: width }}
-          data={list}
-          extraData={this.state}
-          keyExtractor={(item, index) => index}
-          renderItem={({ item }) => <Card navigate={navigate} item={item} />}
-        />
+        {
+          list.length > 0 ? <FlatList
+            style={{ width: width }}
+            data={list}
+            extraData={this.state}
+            keyExtractor={(item, index) => index}
+            renderItem={({ item }) => <Card navigate={navigate} item={item} />}
+          /> :
+            <View style={styles.msgViw}>
+              <Text style={styles.msg}>暂无消息</Text>
+            </View>
+        }
       </View >
     );
   }
@@ -63,6 +68,17 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F8F8F8',
   },
+
+  msgViw: {
+    padding: 30,
+    justifyContent: 'center',
+  },
+
+  msg: {
+    textAlign: 'center',
+    fontSize: 14,
+    color: '#999'
+  }
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dynamic);

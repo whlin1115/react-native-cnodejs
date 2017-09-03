@@ -1,6 +1,9 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva/mobile';
+import Message from '../components/Message';
 import { StyleSheet, View, Text, Button, Image, StatusBar, FlatList, Dimensions, TouchableOpacity } from 'react-native'
+
+const { width } = Dimensions.get('window');
 
 class System extends PureComponent {
   constructor(props) {
@@ -15,34 +18,36 @@ class System extends PureComponent {
     };
   };
 
-  componentDidMount() {
-    const { params } = this.props.navigation.state;
-    // this.props.query(params)
-  }
-
-  componentWillReceiveProps(next) {
-    const { params } = this.props;
-    if (next.params !== params) {
-
-    }
-  }
-
   render() {
-    const { data, loading } = this.props
+    const { system_messages, loading } = this.props
     const { navigate } = this.props.navigation;
 
     return (
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
-        <Text>系统消息</Text>
+        {
+          system_messages.length > 0 ?
+            <View style={styles.rowList}>
+              <FlatList
+                style={{ width: width }}
+                data={system_messages}
+                extraData={this.state}
+                keyExtractor={(item, index) => index}
+                renderItem={({ item }) => <Message navigate={navigate} item={item} />}
+              />
+            </View>
+            : <View style={styles.msgViw}>
+              <Text style={styles.msg}>暂无消息</Text>
+            </View>
+        }
       </View>
     );
   }
 }
 
 function mapStateToProps(state) {
-  const { data, loading } = state.zone;
-  return { data, loading };
+  const { system_messages, loading } = state.notice;
+  return { system_messages, loading };
 }
 
 function mapDispatchToProps(dispatch) {
@@ -61,6 +66,17 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F8F8F8',
   },
+
+  msgViw: {
+    padding: 30,
+    justifyContent: 'center',
+  },
+
+  msg: {
+    textAlign: 'center',
+    fontSize: 14,
+    color: '#999'
+  }
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(System);

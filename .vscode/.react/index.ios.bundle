@@ -82022,6 +82022,9 @@ exports.default = {
   state: {
     data: [],
     accesstoken: '',
+    system_messages: [],
+    has_read_messages: [],
+    hasnot_read_messages: [],
     loading: false
   },
   effects: {
@@ -82114,7 +82117,7 @@ exports.default = {
           data = _payload[1];
 
       var messages = service.parseMessages(data.data);
-      return _extends({}, state, { data: messages });
+      return _extends({}, state, { data: messages }, messages);
     },
     'token': function token(state, _ref7) {
       var data = _ref7.payload;
@@ -103456,6 +103459,8 @@ var Notice = function (_PureComponent) {
     value: function render() {
       var _props = this.props,
           data = _props.data,
+          has_read_messages = _props.has_read_messages,
+          hasnot_read_messages = _props.hasnot_read_messages,
           loading = _props.loading;
       var navigate = this.props.navigation.navigate;
 
@@ -103522,7 +103527,7 @@ var Notice = function (_PureComponent) {
           _react2.default.createElement(
             _reactNative.TouchableOpacity,
             { onPress: function onPress() {
-                navigate('Read', { data: data.has_read_messages });
+                navigate('Read');
               }, __source: {
                 fileName: _jsxFileName,
                 lineNumber: 48
@@ -103560,16 +103565,16 @@ var Notice = function (_PureComponent) {
             )
           )
         ),
-        _react2.default.createElement(
+        hasnot_read_messages.length > 0 ? _react2.default.createElement(
           _reactNative.View,
           { style: styles.rowList, __source: {
               fileName: _jsxFileName,
-              lineNumber: 57
+              lineNumber: 59
             }
           },
           _react2.default.createElement(_reactNative.FlatList, {
             style: { width: width },
-            data: data.hasnot_read_messages,
+            data: hasnot_read_messages,
             extraData: this.state,
             keyExtractor: function keyExtractor(item, index) {
               return index;
@@ -103578,15 +103583,31 @@ var Notice = function (_PureComponent) {
               var item = _ref.item;
               return _react2.default.createElement(_Message2.default, { navigate: navigate, item: item, __source: {
                   fileName: _jsxFileName,
-                  lineNumber: 63
+                  lineNumber: 65
                 }
               });
             },
             __source: {
               fileName: _jsxFileName,
-              lineNumber: 58
+              lineNumber: 60
             }
           })
+        ) : _react2.default.createElement(
+          _reactNative.View,
+          { style: styles.msgViw, __source: {
+              fileName: _jsxFileName,
+              lineNumber: 68
+            }
+          },
+          _react2.default.createElement(
+            _reactNative.Text,
+            { style: styles.msg, __source: {
+                fileName: _jsxFileName,
+                lineNumber: 69
+              }
+            },
+            '\u6682\u65E0\u6D88\u606F'
+          )
         )
       );
     }
@@ -103622,10 +103643,12 @@ Notice.navigationOptions = function (_ref2) {
 function mapStateToProps(state) {
   var _state$notice = state.notice,
       data = _state$notice.data,
+      has_read_messages = _state$notice.has_read_messages,
+      hasnot_read_messages = _state$notice.hasnot_read_messages,
       accesstoken = _state$notice.accesstoken,
       loading = _state$notice.loading;
 
-  return { data: data, accesstoken: accesstoken, loading: loading };
+  return { data: data, has_read_messages: has_read_messages, hasnot_read_messages: hasnot_read_messages, accesstoken: accesstoken, loading: loading };
 }
 
 function mapDispatchToProps(dispatch) {
@@ -103684,6 +103707,17 @@ var styles = _reactNative.StyleSheet.create({
   iconBtn: {
     width: 25,
     height: 25
+  },
+
+  msgViw: {
+    padding: 30,
+    justifyContent: 'center'
+  },
+
+  msg: {
+    textAlign: 'center',
+    fontSize: 14,
+    color: '#999'
   }
 });
 
@@ -103935,28 +103969,29 @@ var Read = function (_PureComponent) {
   _createClass(Read, [{
     key: 'render',
     value: function render() {
-      var loading = this.props.loading;
+      var _props = this.props,
+          has_read_messages = _props.has_read_messages,
+          loading = _props.loading;
       var _props$navigation = this.props.navigation,
           navigate = _props$navigation.navigate,
           state = _props$navigation.state;
-      var data = state.params.data;
 
 
       return _react2.default.createElement(
         _reactNative.View,
         { style: styles.container, __source: {
             fileName: _jsxFileName,
-            lineNumber: 27
+            lineNumber: 26
           }
         },
         _react2.default.createElement(_reactNative.StatusBar, { barStyle: 'light-content', __source: {
             fileName: _jsxFileName,
-            lineNumber: 28
+            lineNumber: 27
           }
         }),
-        _react2.default.createElement(_reactNative.FlatList, {
+        has_read_messages.length > 0 ? _react2.default.createElement(_reactNative.FlatList, {
           style: { width: width },
-          data: data,
+          data: has_read_messages,
           extraData: this.state,
           keyExtractor: function keyExtractor(item, index) {
             return index;
@@ -103965,15 +104000,31 @@ var Read = function (_PureComponent) {
             var item = _ref.item;
             return _react2.default.createElement(_Message2.default, { navigate: navigate, item: item, __source: {
                 fileName: _jsxFileName,
-                lineNumber: 34
+                lineNumber: 35
               }
             });
           },
           __source: {
             fileName: _jsxFileName,
-            lineNumber: 29
+            lineNumber: 30
           }
-        })
+        }) : _react2.default.createElement(
+          _reactNative.View,
+          { style: styles.msgViw, __source: {
+              fileName: _jsxFileName,
+              lineNumber: 36
+            }
+          },
+          _react2.default.createElement(
+            _reactNative.Text,
+            { style: styles.msg, __source: {
+                fileName: _jsxFileName,
+                lineNumber: 37
+              }
+            },
+            '\u6682\u65E0\u6D88\u606F'
+          )
+        )
       );
     }
   }]);
@@ -103992,19 +104043,39 @@ Read.navigationOptions = function (_ref2) {
 };
 
 function mapStateToProps(state) {
-  var loading = state.zone.loading;
+  var _state$notice = state.notice,
+      has_read_messages = _state$notice.has_read_messages,
+      loading = _state$notice.loading;
 
-  return { loading: loading };
+  return { has_read_messages: has_read_messages, loading: loading };
 }
 
 function mapDispatchToProps(dispatch) {
-  return { dispatch: dispatch };
+  return {
+    query: function query(params) {
+      dispatch({
+        type: 'notice/query',
+        payload: params
+      });
+    }
+  };
 }
 
 var styles = _reactNative.StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F8F8F8'
+  },
+
+  msgViw: {
+    padding: 30,
+    justifyContent: 'center'
+  },
+
+  msg: {
+    textAlign: 'center',
+    fontSize: 14,
+    color: '#999'
   }
 });
 
@@ -104023,6 +104094,10 @@ var _react2 = _interopRequireDefault(_react);
 
 var _mobile = require(460         ); // 460 = dva/mobile
 
+var _Message = require(773                    ); // 773 = ../components/Message
+
+var _Message2 = _interopRequireDefault(_Message);
+
 var _reactNative = require(26            ); // 26 = react-native
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -104032,6 +104107,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var _Dimensions$get = _reactNative.Dimensions.get('window'),
+    width = _Dimensions$get.width;
 
 var System = function (_PureComponent) {
   _inherits(System, _PureComponent);
@@ -104046,22 +104124,10 @@ var System = function (_PureComponent) {
   }
 
   _createClass(System, [{
-    key: 'componentDidMount',
-    value: function componentDidMount() {
-      var params = this.props.navigation.state.params;
-    }
-  }, {
-    key: 'componentWillReceiveProps',
-    value: function componentWillReceiveProps(next) {
-      var params = this.props.params;
-
-      if (next.params !== params) {}
-    }
-  }, {
     key: 'render',
     value: function render() {
       var _props = this.props,
-          data = _props.data,
+          system_messages = _props.system_messages,
           loading = _props.loading;
       var navigate = this.props.navigation.navigate;
 
@@ -104070,23 +104136,57 @@ var System = function (_PureComponent) {
         _reactNative.View,
         { style: styles.container, __source: {
             fileName: _jsxFileName,
-            lineNumber: 35
+            lineNumber: 26
           }
         },
         _react2.default.createElement(_reactNative.StatusBar, { barStyle: 'light-content', __source: {
             fileName: _jsxFileName,
-            lineNumber: 36
+            lineNumber: 27
           }
         }),
-        _react2.default.createElement(
-          _reactNative.Text,
-          {
-            __source: {
+        system_messages.length > 0 ? _react2.default.createElement(
+          _reactNative.View,
+          { style: styles.rowList, __source: {
               fileName: _jsxFileName,
-              lineNumber: 37
+              lineNumber: 30
             }
           },
-          '\u7CFB\u7EDF\u6D88\u606F'
+          _react2.default.createElement(_reactNative.FlatList, {
+            style: { width: width },
+            data: system_messages,
+            extraData: this.state,
+            keyExtractor: function keyExtractor(item, index) {
+              return index;
+            },
+            renderItem: function renderItem(_ref) {
+              var item = _ref.item;
+              return _react2.default.createElement(_Message2.default, { navigate: navigate, item: item, __source: {
+                  fileName: _jsxFileName,
+                  lineNumber: 36
+                }
+              });
+            },
+            __source: {
+              fileName: _jsxFileName,
+              lineNumber: 31
+            }
+          })
+        ) : _react2.default.createElement(
+          _reactNative.View,
+          { style: styles.msgViw, __source: {
+              fileName: _jsxFileName,
+              lineNumber: 39
+            }
+          },
+          _react2.default.createElement(
+            _reactNative.Text,
+            { style: styles.msg, __source: {
+                fileName: _jsxFileName,
+                lineNumber: 40
+              }
+            },
+            '\u6682\u65E0\u6D88\u606F'
+          )
         )
       );
     }
@@ -104095,8 +104195,8 @@ var System = function (_PureComponent) {
   return System;
 }(_react.PureComponent);
 
-System.navigationOptions = function (_ref) {
-  var navigation = _ref.navigation;
+System.navigationOptions = function (_ref2) {
+  var navigation = _ref2.navigation;
   var state = navigation.state,
       setParams = navigation.setParams;
 
@@ -104106,11 +104206,11 @@ System.navigationOptions = function (_ref) {
 };
 
 function mapStateToProps(state) {
-  var _state$zone = state.zone,
-      data = _state$zone.data,
-      loading = _state$zone.loading;
+  var _state$notice = state.notice,
+      system_messages = _state$notice.system_messages,
+      loading = _state$notice.loading;
 
-  return { data: data, loading: loading };
+  return { system_messages: system_messages, loading: loading };
 }
 
 function mapDispatchToProps(dispatch) {
@@ -104128,6 +104228,17 @@ var styles = _reactNative.StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F8F8F8'
+  },
+
+  msgViw: {
+    padding: 30,
+    justifyContent: 'center'
+  },
+
+  msg: {
+    textAlign: 'center',
+    fontSize: 14,
+    color: '#999'
   }
 });
 
@@ -105496,7 +105607,7 @@ var Collect = function (_PureComponent) {
             lineNumber: 32
           }
         }),
-        _react2.default.createElement(_reactNative.FlatList, {
+        collects.length > 0 ? _react2.default.createElement(_reactNative.FlatList, {
           style: { width: width },
           data: collects,
           extraData: this.state,
@@ -105507,15 +105618,31 @@ var Collect = function (_PureComponent) {
             var item = _ref.item;
             return _react2.default.createElement(_Card2.default, { navigate: navigate, item: item, __source: {
                 fileName: _jsxFileName,
-                lineNumber: 38
+                lineNumber: 40
               }
             });
           },
           __source: {
             fileName: _jsxFileName,
-            lineNumber: 33
+            lineNumber: 35
           }
-        })
+        }) : _react2.default.createElement(
+          _reactNative.View,
+          { style: styles.msgViw, __source: {
+              fileName: _jsxFileName,
+              lineNumber: 41
+            }
+          },
+          _react2.default.createElement(
+            _reactNative.Text,
+            { style: styles.msg, __source: {
+                fileName: _jsxFileName,
+                lineNumber: 42
+              }
+            },
+            '\u6682\u65E0\u6D88\u606F'
+          )
+        )
       );
     }
   }]);
@@ -105556,6 +105683,17 @@ var styles = _reactNative.StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F8F8F8'
+  },
+
+  msgViw: {
+    padding: 30,
+    justifyContent: 'center'
+  },
+
+  msg: {
+    textAlign: 'center',
+    fontSize: 14,
+    color: '#999'
   }
 });
 
@@ -105627,7 +105765,7 @@ var Dynamic = function (_PureComponent) {
             lineNumber: 31
           }
         }),
-        _react2.default.createElement(_reactNative.FlatList, {
+        list.length > 0 ? _react2.default.createElement(_reactNative.FlatList, {
           style: { width: width },
           data: list,
           extraData: this.state,
@@ -105638,15 +105776,31 @@ var Dynamic = function (_PureComponent) {
             var item = _ref.item;
             return _react2.default.createElement(_Card2.default, { navigate: navigate, item: item, __source: {
                 fileName: _jsxFileName,
-                lineNumber: 37
+                lineNumber: 38
               }
             });
           },
           __source: {
             fileName: _jsxFileName,
-            lineNumber: 32
+            lineNumber: 33
           }
-        })
+        }) : _react2.default.createElement(
+          _reactNative.View,
+          { style: styles.msgViw, __source: {
+              fileName: _jsxFileName,
+              lineNumber: 40
+            }
+          },
+          _react2.default.createElement(
+            _reactNative.Text,
+            { style: styles.msg, __source: {
+                fileName: _jsxFileName,
+                lineNumber: 41
+              }
+            },
+            '\u6682\u65E0\u6D88\u606F'
+          )
+        )
       );
     }
   }]);
@@ -105688,6 +105842,17 @@ var styles = _reactNative.StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F8F8F8'
+  },
+
+  msgViw: {
+    padding: 30,
+    justifyContent: 'center'
+  },
+
+  msg: {
+    textAlign: 'center',
+    fontSize: 14,
+    color: '#999'
   }
 });
 
@@ -105748,8 +105913,6 @@ var Credits = function (_PureComponent) {
           loading = _props.loading;
       var navigate = this.props.navigation.navigate;
 
-      var _Dimensions$get = _reactNative.Dimensions.get('window'),
-          width = _Dimensions$get.width;
 
       return _react2.default.createElement(
         _reactNative.View,
@@ -105764,14 +105927,163 @@ var Credits = function (_PureComponent) {
           }
         }),
         _react2.default.createElement(
-          _reactNative.Text,
-          {
-            __source: {
+          _reactNative.View,
+          { style: styles.scoreView, __source: {
               fileName: _jsxFileName,
               lineNumber: 37
             }
           },
-          '\u79EF\u5206\u9875\u9762'
+          _react2.default.createElement(
+            _reactNative.Text,
+            { style: styles.scoreText, __source: {
+                fileName: _jsxFileName,
+                lineNumber: 38
+              }
+            },
+            data.score
+          )
+        ),
+        _react2.default.createElement(
+          _reactNative.View,
+          { style: styles.subTitle, __source: {
+              fileName: _jsxFileName,
+              lineNumber: 40
+            }
+          },
+          _react2.default.createElement(
+            _reactNative.Text,
+            { style: styles.subText, __source: {
+                fileName: _jsxFileName,
+                lineNumber: 41
+              }
+            },
+            '\u5982\u4F55\u83B7\u53D6\u79EF\u5206'
+          )
+        ),
+        _react2.default.createElement(
+          _reactNative.View,
+          { style: styles.rowList, __source: {
+              fileName: _jsxFileName,
+              lineNumber: 43
+            }
+          },
+          _react2.default.createElement(
+            _reactNative.View,
+            { style: styles.row, __source: {
+                fileName: _jsxFileName,
+                lineNumber: 44
+              }
+            },
+            _react2.default.createElement(_reactNative.Image, { style: styles.rowImg, source: require(783                                ), resizeMode: 'contain', __source: { // 783 = ../../../assets/images/header.png
+                fileName: _jsxFileName,
+                lineNumber: 45
+              }
+            }),
+            _react2.default.createElement(
+              _reactNative.View,
+              { style: styles.rowInner, __source: {
+                  fileName: _jsxFileName,
+                  lineNumber: 46
+                }
+              },
+              _react2.default.createElement(
+                _reactNative.Text,
+                { style: styles.rowText, __source: {
+                    fileName: _jsxFileName,
+                    lineNumber: 47
+                  }
+                },
+                '\u767B\u5F55\u8BBA\u575B'
+              ),
+              _react2.default.createElement(
+                _reactNative.Text,
+                { style: styles.span, __source: {
+                    fileName: _jsxFileName,
+                    lineNumber: 48
+                  }
+                },
+                '+1'
+              )
+            )
+          ),
+          _react2.default.createElement(
+            _reactNative.View,
+            { style: styles.row, __source: {
+                fileName: _jsxFileName,
+                lineNumber: 51
+              }
+            },
+            _react2.default.createElement(_reactNative.Image, { style: styles.rowImg, source: require(786                              ), resizeMode: 'contain', __source: { // 786 = ../../../assets/images/post.png
+                fileName: _jsxFileName,
+                lineNumber: 52
+              }
+            }),
+            _react2.default.createElement(
+              _reactNative.View,
+              { style: styles.rowInner, __source: {
+                  fileName: _jsxFileName,
+                  lineNumber: 53
+                }
+              },
+              _react2.default.createElement(
+                _reactNative.Text,
+                { style: styles.rowText, __source: {
+                    fileName: _jsxFileName,
+                    lineNumber: 54
+                  }
+                },
+                '\u53D1\u5E03\u8BDD\u9898'
+              ),
+              _react2.default.createElement(
+                _reactNative.Text,
+                { style: styles.span, __source: {
+                    fileName: _jsxFileName,
+                    lineNumber: 55
+                  }
+                },
+                '+5'
+              )
+            )
+          ),
+          _react2.default.createElement(
+            _reactNative.View,
+            { style: styles.row, __source: {
+                fileName: _jsxFileName,
+                lineNumber: 58
+              }
+            },
+            _react2.default.createElement(_reactNative.Image, { style: styles.rowImg, source: require(775                                 ), resizeMode: 'contain', __source: { // 775 = ../../../assets/images/comment.png
+                fileName: _jsxFileName,
+                lineNumber: 59
+              }
+            }),
+            _react2.default.createElement(
+              _reactNative.View,
+              { style: styles.rowInner, __source: {
+                  fileName: _jsxFileName,
+                  lineNumber: 60
+                }
+              },
+              _react2.default.createElement(
+                _reactNative.Text,
+                { style: styles.rowText, __source: {
+                    fileName: _jsxFileName,
+                    lineNumber: 61
+                  }
+                },
+                '\u53D1\u8868\u8BC4\u8BBA'
+              ),
+              _react2.default.createElement(
+                _reactNative.Text,
+                { style: styles.span, __source: {
+                    fileName: _jsxFileName,
+                    lineNumber: 62
+                  }
+                },
+                '+3'
+              )
+            )
+          )
         )
       );
     }
@@ -105813,6 +106125,71 @@ var styles = _reactNative.StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F8F8F8'
+  },
+
+  scoreView: {
+    padding: 30,
+    backgroundColor: '#FFF',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+
+  scoreText: {
+    fontSize: 30,
+    fontWeight: 'bold'
+  },
+
+  subTitle: {
+    paddingTop: 15,
+    paddingLeft: 15
+  },
+
+  subText: {
+    fontSize: 14,
+    color: '#999'
+  },
+
+  rowList: {
+    marginTop: 15
+  },
+
+  row: {
+    paddingLeft: 27,
+    paddingRight: 27,
+    alignItems: 'center',
+    flexDirection: 'row',
+    backgroundColor: '#FFFFFF'
+  },
+
+  rowImg: {
+    width: 20,
+    height: 20,
+    marginRight: 20
+  },
+
+  rowInner: {
+    flex: 1,
+    paddingTop: 20,
+    paddingBottom: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    borderBottomWidth: 0.5,
+    borderColor: '#F0F0F0'
+  },
+
+  rowText: {
+    fontSize: 16,
+    fontWeight: '400'
+  },
+
+  iconBtn: {
+    width: 25,
+    height: 25
+  },
+
+  span: {
+    color: '#4E8EDF',
+    fontSize: 16
   }
 });
 

@@ -33,7 +33,7 @@ class Recruit extends PureComponent {
   };
 
   componentDidMount() {
-    this.props.query({ tab: 'job' })
+    this.props.query()
   }
 
   componentWillReceiveProps(next) {
@@ -43,10 +43,16 @@ class Recruit extends PureComponent {
     }
   }
 
+  _onEndReached = (pageSize) => {
+    const page = pageSize + 1
+    this.props.query({ page })
+  }
+
   render() {
-    const { data, loading } = this.props
+    const { data, page, loading } = this.props
     const { navigate } = this.props.navigation;
     const { width } = Dimensions.get('window');
+
     return (
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
@@ -56,6 +62,10 @@ class Recruit extends PureComponent {
           extraData={this.state}
           keyExtractor={(item, index) => index}
           renderItem={({ item }) => <Wrap navigate={navigate} item={item} />}
+          onRefresh={() => { this.props.query() }}
+          onEndReached={() => { this._onEndReached(page) }} // 如果直接 this.props.query() 会请求两次
+          onEndReachedThreshold={0.5}
+          refreshing={loading}
         />
       </View>
     );
@@ -63,8 +73,8 @@ class Recruit extends PureComponent {
 }
 
 function mapStateToProps(state) {
-  const { data, loading } = state.recruit;
-  return { data, loading };
+  const { data, page, loading } = state.recruit;
+  return { data, page, loading };
 }
 
 function mapDispatchToProps(dispatch) {

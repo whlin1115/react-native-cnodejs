@@ -7,6 +7,11 @@ export async function queryUser(params) {
   return get(`/user/${user}`);
 }
 
+export async function queryInfo(params) {
+  const { user } = params
+  return requestHtml(`https://cnodejs.org/user/${user}`);
+}
+
 export async function getInfo(params) {
   const { user } = params
   const headers = { Cookie: `CNZZDATA1254020586=461688907-1503624954-https%253A%252F%252Fcnodejs.org%252F%7C1503887769; node_club=s%3A${user.id}%24%24%24%24.WFlKofPUPDLQuxA3BsCw66%2BtcGNqrUXgRCZ8s61yObc;` }
@@ -34,6 +39,17 @@ export function parseUser(data) {
   })
   const user = { ...data, create_at, recent_topics, recent_replies }
   return user
+}
+
+export function parseInfo(data) {
+  const $ = cheerio.load(data);
+  const avatar_url = $('.user_big_avatar img').attr('src')
+  const name = $('.user_big_avatar img').attr('title')
+  const home = $('.unstyled .fa-home').next().text()
+  const location = $('.unstyled .fa-map-marker').next().text()
+  const weibo = '@ ' + $('.unstyled .fa-twitter').next().text()
+  const signature = $('.user_card .signature').text().replace(/[\r\n\s“”]/g, '')
+  return { home, location, weibo, name, avatar_url, signature };
 }
 
 export function parseInformation(data) {

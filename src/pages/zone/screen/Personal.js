@@ -16,8 +16,8 @@ class Personal extends PureComponent {
   };
 
   componentDidMount() {
-    const { user } = this.props
-    this.props.information({ user })
+    const { params } = this.props.navigation.state;
+    this.props.information(params)
   }
 
   componentWillReceiveProps(next) {
@@ -28,7 +28,7 @@ class Personal extends PureComponent {
   }
 
   render() {
-    const { info, loading } = this.props
+    const { info, user, loading } = this.props
     const { navigate } = this.props.navigation;
 
     return (
@@ -56,7 +56,7 @@ class Personal extends PureComponent {
           <View style={styles.row}>
             <View style={styles.rowInner}>
               <Text style={styles.rowText}>个人网站</Text>
-              <Text style={styles.span}>{info.url ? info.url : '未填写'}</Text>
+              <Text style={styles.span}>{info.home ? info.home : '未填写'}</Text>
             </View>
           </View>
           <View style={styles.row}>
@@ -72,15 +72,19 @@ class Personal extends PureComponent {
             </View>
           </View>
         </View>
-        <View style={styles.rowList}>
-          <TouchableOpacity onPress={() => { navigate('Password') }}>
-            <View style={styles.row}>
-              <View style={styles.rowInner}>
-                <Text style={styles.rowText}>修改密码</Text>
-              </View>
+        {
+          user.loginname == info.name ?
+            <View style={styles.rowList}>
+              <TouchableOpacity onPress={() => { navigate('Password') }}>
+                <View style={styles.row}>
+                  <View style={styles.rowInner}>
+                    <Text style={styles.rowText}>修改密码</Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
             </View>
-          </TouchableOpacity>
-        </View>
+            : null
+        }
       </View>
     );
   }

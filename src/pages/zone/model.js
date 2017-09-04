@@ -42,7 +42,7 @@ export default {
     },
     *information({ payload = {} }, { call, put }) {
       yield put({ type: 'loading', payload: true });
-      const { data, err } = yield call(service.getInfo, payload);
+      const { data, err } = yield call(service.queryInfo, payload);
       yield put({ type: 'information/success', payload: data });
       yield put({ type: 'loading', payload: false });
     },
@@ -66,7 +66,7 @@ export default {
     },
     'information/success'(state, { payload }) {
       const [, data] = payload
-      const info = service.parseInformation(data)
+      const info = service.parseInfo(data)
       return { ...state, info };
     },
     'collects/success'(state, { payload }) {

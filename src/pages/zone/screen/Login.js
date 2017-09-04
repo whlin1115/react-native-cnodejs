@@ -8,13 +8,6 @@ class Login extends PureComponent {
     this.state = { text: '49564492-25c9-4650-a49e-078ac4c7c383' }
   }
 
-  componentWillReceiveProps(next) {
-    const { data, navigation } = this.props;
-    if (next.data && next.data !== data) {
-      navigation.goBack()
-    }
-  }
-
   static navigationOptions = ({ navigation }) => {
     const { state, setParams, navigate } = navigation;
     return {
@@ -22,15 +15,20 @@ class Login extends PureComponent {
     };
   };
 
+  componentWillReceiveProps(next) {
+    const { data, navigation } = this.props;
+    if (next.data && next.data !== data) {
+      navigation.goBack()
+    }
+  }
+
+  _onLogin = (accesstoken) => {
+    if (!accesstoken) return
+    this.props.login({ accesstoken })
+  }
+
   render() {
     const { loading, navigation } = this.props
-
-    const _onLogin = () => {
-      const token = this.state.text
-      if (!token) return
-      const params = { accesstoken: token }
-      this.props.login(params)
-    }
 
     return (
       <View style={styles.container}>
@@ -46,7 +44,7 @@ class Login extends PureComponent {
             onChangeText={(text) => { this.setState({ text }) }}
           />
         </View>
-        <TouchableOpacity style={styles.loginBtn} onPress={() => { _onLogin() }}>
+        <TouchableOpacity style={styles.loginBtn} onPress={() => { this._onLogin(this.state.text) }}>
           <Text style={styles.login}>登录</Text>
         </TouchableOpacity>
       </View>

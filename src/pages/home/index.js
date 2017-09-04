@@ -37,20 +37,20 @@ class Home extends PureComponent {
   };
 
   componentDidMount() {
-    this.props.query()
+    const { tab } = this.props
+    const params = { tab }
+    this.props.query(params)
   }
 
-  componentWillReceiveProps(next) {
-    const { params } = this.props;
-    if (next.params !== params) {
-
-    }
+  _onEndReached = (pageSize) => {
+    const page = pageSize + 1
+    this.props.query({ page })
   }
 
   render() {
-    const { data, loading } = this.props
+    const { data, page, loading } = this.props
     const { navigate } = this.props.navigation;
-   
+
     return (
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
@@ -60,6 +60,10 @@ class Home extends PureComponent {
           extraData={this.state}
           keyExtractor={(item, index) => index}
           renderItem={({ item }) => <Wrap navigate={navigate} item={item} />}
+          onRefresh={() => { this.props.query() }}
+          onEndReached={() => { this._onEndReached(page) }} // 如果直接 this.props.query() 会请求两次
+          onEndReachedThreshold={0.5}
+          refreshing={loading}
         />
         <TouchableOpacity onPress={() => { navigate('Publish') }}>
           <Image style={styles.pubilsh} source={require('../../assets/images/add.png')} resizeMode='contain' />
@@ -70,8 +74,8 @@ class Home extends PureComponent {
 }
 
 function mapStateToProps(state) {
-  const { data, loading } = state.home;
-  return { data, loading };
+  const { tab, page, data, loading } = state.home;
+  return { tab, page, data, loading };
 }
 
 function mapDispatchToProps(dispatch) {

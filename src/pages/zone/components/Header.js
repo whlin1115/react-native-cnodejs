@@ -106,8 +106,8 @@ const styles = StyleSheet.create({
   },
 
   row: {
-    paddingLeft: 30,
-    paddingRight: 30,
+    paddingLeft: 27,
+    paddingRight: 27,
     alignItems: 'center',
     flexDirection: 'row',
     backgroundColor: '#FFFFFF',

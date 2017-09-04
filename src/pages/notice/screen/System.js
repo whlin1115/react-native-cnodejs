@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva/mobile';
-import Message from '../components/Message';
+import Notice from '../components/Notice';
 import { StyleSheet, View, Text, Button, Image, StatusBar, FlatList, Dimensions, TouchableOpacity } from 'react-native'
 
 const { width } = Dimensions.get('window');
@@ -33,7 +33,7 @@ class System extends PureComponent {
                 data={system_messages}
                 extraData={this.state}
                 keyExtractor={(item, index) => index}
-                renderItem={({ item }) => <Message navigate={navigate} item={item} />}
+                renderItem={({ item }) => <Notice item={item} />}
               />
             </View>
             : <View style={styles.msgViw}>

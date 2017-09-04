@@ -64041,9 +64041,13 @@ var service = _interopRequireWildcard(_service);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 exports.default = {
   namespace: 'home',
   state: {
+    page: 1,
+    tab: 'all',
     data: [],
     loading: false
   },
@@ -64054,30 +64058,48 @@ exports.default = {
       var call = _ref2.call,
           put = _ref2.put;
 
-      var _ref3, data;
+      var _payload$page, page, _ref3, data;
 
       return regeneratorRuntime.wrap(function query$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
-              _context.next = 2;
+              _payload$page = payload.page, page = _payload$page === undefined ? 1 : _payload$page;
+              _context.next = 3;
               return put({ type: 'loading', payload: true });
 
-            case 2:
-              _context.next = 4;
+            case 3:
+              _context.next = 5;
               return call(service.queryTopics, payload);
 
-            case 4:
+            case 5:
               _ref3 = _context.sent;
               data = _ref3.data;
-              _context.next = 8;
+              _context.next = 9;
               return put({ type: 'loading', payload: false });
 
-            case 8:
-              _context.next = 10;
+            case 9:
+              _context.next = 11;
+              return put({ type: 'page', payload: page });
+
+            case 11:
+              if (!(page == 1)) {
+                _context.next = 16;
+                break;
+              }
+
+              _context.next = 14;
               return put({ type: 'query/success', payload: data });
 
-            case 10:
+            case 14:
+              _context.next = 18;
+              break;
+
+            case 16:
+              _context.next = 18;
+              return put({ type: 'more/success', payload: data });
+
+            case 18:
             case 'end':
               return _context.stop();
           }
@@ -64095,8 +64117,22 @@ exports.default = {
       var topics = service.parseTopics(data.data);
       return _extends({}, state, { data: topics });
     },
-    'loading': function loading(state, _ref5) {
-      var data = _ref5.payload;
+    'more/success': function moreSuccess(state, _ref5) {
+      var payload = _ref5.payload;
+
+      var _payload2 = _slicedToArray(payload, 2),
+          data = _payload2[1];
+
+      var topics = service.parseTopics(data.data);
+      return _extends({}, state, { data: [].concat(_toConsumableArray(state.data), _toConsumableArray(topics)) });
+    },
+    'page': function page(state, _ref6) {
+      var data = _ref6.payload;
+
+      return _extends({}, state, { page: data });
+    },
+    'loading': function loading(state, _ref7) {
+      var data = _ref7.payload;
 
       return _extends({}, state, { loading: data });
     }
@@ -68560,9 +68596,12 @@ var _reactNative = require(26            ); // 26 = react-native
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 exports.default = {
   namespace: 'search',
   state: {
+    page: 1,
     data: [],
     records: [],
     content: '',
@@ -68602,19 +68641,19 @@ exports.default = {
       var call = _ref4.call,
           put = _ref4.put;
 
-      var content, _ref5, data;
+      var _payload$page, page, content, _ref5, data;
 
       return regeneratorRuntime.wrap(function query$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
             case 0:
-              content = payload.content;
+              _payload$page = payload.page, page = _payload$page === undefined ? 1 : _payload$page, content = payload.content;
               _context2.next = 3;
               return put({ type: 'loading', payload: true });
 
             case 3:
               _context2.next = 5;
-              return put({ type: 'content', payload: content });
+              return put({ type: 'search', payload: { visible: false, content: content } });
 
             case 5:
               _context2.next = 7;
@@ -68628,9 +68667,26 @@ exports.default = {
 
             case 11:
               _context2.next = 13;
-              return put({ type: 'query/success', payload: { data: data, content: content } });
+              return put({ type: 'page', payload: page });
 
             case 13:
+              if (!(page == 1)) {
+                _context2.next = 18;
+                break;
+              }
+
+              _context2.next = 16;
+              return put({ type: 'query/success', payload: { data: data, content: content } });
+
+            case 16:
+              _context2.next = 20;
+              break;
+
+            case 18:
+              _context2.next = 20;
+              return put({ type: 'more/success', payload: data });
+
+            case 20:
             case 'end':
               return _context2.stop();
           }
@@ -68654,27 +68710,44 @@ exports.default = {
       datas.unshift(content);
       _reactNative.AsyncStorage.setItem('records', JSON.stringify(datas));
       var topics = service.parseSearch(result);
-      return _extends({}, state, { data: topics });
+      return _extends({}, state, { data: topics, content: content });
     },
-    'loading': function loading(state, _ref7) {
-      var data = _ref7.payload;
+    'more/success': function moreSuccess(state, _ref7) {
+      var payload = _ref7.payload;
+
+      var _payload = _slicedToArray(payload, 2),
+          data = _payload[1];
+
+      var topics = service.parseSearch(data);
+      return _extends({}, state, { data: [].concat(_toConsumableArray(state.data), _toConsumableArray(topics)) });
+    },
+    'page': function page(state, _ref8) {
+      var data = _ref8.payload;
+
+      return _extends({}, state, { page: data });
+    },
+    'loading': function loading(state, _ref9) {
+      var data = _ref9.payload;
 
       return _extends({}, state, { loading: data });
     },
-    'records': function records(state, _ref8) {
-      var data = _ref8.payload;
-
-      return _extends({}, state, { records: data });
-    },
-    'clean': function clean(state, _ref9) {
-      var data = _ref9.payload;
-
-      return _extends({}, state, { data: [], content: '', visible: true });
-    },
-    'content': function content(state, _ref10) {
+    'records': function records(state, _ref10) {
       var data = _ref10.payload;
 
-      return _extends({}, state, { content: data, visible: false });
+      _reactNative.AsyncStorage.setItem('records', JSON.stringify(data));
+      return _extends({}, state, { records: data });
+    },
+    'search': function search(state, _ref11) {
+      var payload = _ref11.payload;
+      var visible = payload.visible,
+          content = payload.content;
+
+      return _extends({}, state, { visible: visible, content: content });
+    },
+    'clean': function clean(state, _ref12) {
+      var data = _ref12.payload;
+
+      return _extends({}, state, { data: [], content: '', visible: true });
     }
   },
   subscriptions: {}
@@ -81606,7 +81679,7 @@ exports.default = {
 
             case 2:
               _context4.next = 4;
-              return call(service.getInfo, payload);
+              return call(service.queryInfo, payload);
 
             case 4:
               _ref11 = _context4.sent;
@@ -81688,7 +81761,7 @@ exports.default = {
       var _payload3 = _slicedToArray(payload, 2),
           data = _payload3[1];
 
-      var info = service.parseInformation(data);
+      var info = service.parseInfo(data);
       return _extends({}, state, { info: info });
     },
     'collects/success': function collectsSuccess(state, _ref18) {
@@ -81749,10 +81822,12 @@ __d(/* cnodejs/src/pages/zone/service.js */function(global, require, module, exp
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 exports.queryUser = queryUser;
+exports.queryInfo = queryInfo;
 exports.getInfo = getInfo;
 exports.postToken = postToken;
 exports.queryCollects = queryCollects;
 exports.parseUser = parseUser;
+exports.parseInfo = parseInfo;
 exports.parseInformation = parseInformation;
 exports.parseCollects = parseCollects;
 
@@ -81783,17 +81858,16 @@ function queryUser(params) {
   }, null, this);
 }
 
-function getInfo(params) {
-  var user, headers;
-  return regeneratorRuntime.async(function getInfo$(_context2) {
+function queryInfo(params) {
+  var user;
+  return regeneratorRuntime.async(function queryInfo$(_context2) {
     while (1) {
       switch (_context2.prev = _context2.next) {
         case 0:
           user = params.user;
-          headers = { Cookie: 'CNZZDATA1254020586=461688907-1503624954-https%253A%252F%252Fcnodejs.org%252F%7C1503887769; node_club=s%3A' + user.id + '%24%24%24%24.WFlKofPUPDLQuxA3BsCw66%2BtcGNqrUXgRCZ8s61yObc;' };
-          return _context2.abrupt('return', (0, _request.requestHtml)('https://cnodejs.org/setting', headers));
+          return _context2.abrupt('return', (0, _request.requestHtml)('https://cnodejs.org/user/' + user));
 
-        case 3:
+        case 2:
         case 'end':
           return _context2.stop();
       }
@@ -81801,14 +81875,17 @@ function getInfo(params) {
   }, null, this);
 }
 
-function postToken(params) {
-  return regeneratorRuntime.async(function postToken$(_context3) {
+function getInfo(params) {
+  var user, headers;
+  return regeneratorRuntime.async(function getInfo$(_context3) {
     while (1) {
       switch (_context3.prev = _context3.next) {
         case 0:
-          return _context3.abrupt('return', (0, _request.post)('/accesstoken', params));
+          user = params.user;
+          headers = { Cookie: 'CNZZDATA1254020586=461688907-1503624954-https%253A%252F%252Fcnodejs.org%252F%7C1503887769; node_club=s%3A' + user.id + '%24%24%24%24.WFlKofPUPDLQuxA3BsCw66%2BtcGNqrUXgRCZ8s61yObc;' };
+          return _context3.abrupt('return', (0, _request.requestHtml)('https://cnodejs.org/setting', headers));
 
-        case 1:
+        case 3:
         case 'end':
           return _context3.stop();
       }
@@ -81816,18 +81893,33 @@ function postToken(params) {
   }, null, this);
 }
 
-function queryCollects(params) {
-  var user;
-  return regeneratorRuntime.async(function queryCollects$(_context4) {
+function postToken(params) {
+  return regeneratorRuntime.async(function postToken$(_context4) {
     while (1) {
       switch (_context4.prev = _context4.next) {
         case 0:
+          return _context4.abrupt('return', (0, _request.post)('/accesstoken', params));
+
+        case 1:
+        case 'end':
+          return _context4.stop();
+      }
+    }
+  }, null, this);
+}
+
+function queryCollects(params) {
+  var user;
+  return regeneratorRuntime.async(function queryCollects$(_context5) {
+    while (1) {
+      switch (_context5.prev = _context5.next) {
+        case 0:
           user = params.user;
-          return _context4.abrupt('return', (0, _request.get)('/topic_collect/' + user));
+          return _context5.abrupt('return', (0, _request.get)('/topic_collect/' + user));
 
         case 2:
         case 'end':
-          return _context4.stop();
+          return _context5.stop();
       }
     }
   }, null, this);
@@ -81845,6 +81937,17 @@ function parseUser(data) {
   });
   var user = _extends({}, data, { create_at: create_at, recent_topics: recent_topics, recent_replies: recent_replies });
   return user;
+}
+
+function parseInfo(data) {
+  var $ = _cheerioWithoutNodeNative2.default.load(data);
+  var avatar_url = $('.user_big_avatar img').attr('src');
+  var name = $('.user_big_avatar img').attr('title');
+  var home = $('.unstyled .fa-home').next().text();
+  var location = $('.unstyled .fa-map-marker').next().text();
+  var weibo = '@ ' + $('.unstyled .fa-twitter').next().text();
+  var signature = $('.user_card .signature').text().replace(/[\r\n\s“”]/g, '');
+  return { home: home, location: location, weibo: weibo, name: name, avatar_url: avatar_url, signature: signature };
 }
 
 function parseInformation(data) {
@@ -82193,9 +82296,12 @@ var service = _interopRequireWildcard(_service);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 exports.default = {
   namespace: 'recruit',
   state: {
+    page: 1,
     data: [],
     loading: false
   },
@@ -82206,30 +82312,48 @@ exports.default = {
       var call = _ref2.call,
           put = _ref2.put;
 
-      var _ref3, data;
+      var _payload$page, page, _ref3, data;
 
       return regeneratorRuntime.wrap(function query$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
-              _context.next = 2;
+              _payload$page = payload.page, page = _payload$page === undefined ? 1 : _payload$page;
+              _context.next = 3;
               return put({ type: 'loading', payload: true });
 
-            case 2:
-              _context.next = 4;
+            case 3:
+              _context.next = 5;
               return call(service.queryTopics, payload);
 
-            case 4:
+            case 5:
               _ref3 = _context.sent;
               data = _ref3.data;
-              _context.next = 8;
+              _context.next = 9;
               return put({ type: 'loading', payload: false });
 
-            case 8:
-              _context.next = 10;
+            case 9:
+              _context.next = 11;
+              return put({ type: 'page', payload: page });
+
+            case 11:
+              if (!(page == 1)) {
+                _context.next = 16;
+                break;
+              }
+
+              _context.next = 14;
               return put({ type: 'query/success', payload: data });
 
-            case 10:
+            case 14:
+              _context.next = 18;
+              break;
+
+            case 16:
+              _context.next = 18;
+              return put({ type: 'more/success', payload: data });
+
+            case 18:
             case 'end':
               return _context.stop();
           }
@@ -82247,8 +82371,22 @@ exports.default = {
       var topics = service.parseTopics(data.data);
       return _extends({}, state, { data: topics });
     },
-    'loading': function loading(state, _ref5) {
-      var data = _ref5.payload;
+    'more/success': function moreSuccess(state, _ref5) {
+      var payload = _ref5.payload;
+
+      var _payload2 = _slicedToArray(payload, 2),
+          data = _payload2[1];
+
+      var topics = service.parseTopics(data.data);
+      return _extends({}, state, { data: [].concat(_toConsumableArray(state.data), _toConsumableArray(topics)) });
+    },
+    'page': function page(state, _ref6) {
+      var data = _ref6.payload;
+
+      return _extends({}, state, { page: data });
+    },
+    'loading': function loading(state, _ref7) {
+      var data = _ref7.payload;
 
       return _extends({}, state, { loading: data });
     }
@@ -82276,7 +82414,7 @@ function queryTopics(params) {
     while (1) {
       switch (_context.prev = _context.next) {
         case 0:
-          _params$page = params.page, page = _params$page === undefined ? 1 : _params$page, _params$tab = params.tab, tab = _params$tab === undefined ? 'all' : _params$tab, _params$limit = params.limit, limit = _params$limit === undefined ? 20 : _params$limit, _params$mdrender = params.mdrender, mdrender = _params$mdrender === undefined ? true : _params$mdrender;
+          _params$page = params.page, page = _params$page === undefined ? 1 : _params$page, _params$tab = params.tab, tab = _params$tab === undefined ? 'job' : _params$tab, _params$limit = params.limit, limit = _params$limit === undefined ? 20 : _params$limit, _params$mdrender = params.mdrender, mdrender = _params$mdrender === undefined ? true : _params$mdrender;
           return _context.abrupt('return', (0, _request.get)('/topics?page=' + page + '&limit=' + limit + '&tab=' + tab + '&mdrender=' + mdrender));
 
         case 2:
@@ -90185,6 +90323,11 @@ var Home = function (_PureComponent) {
 
     var _this = _possibleConstructorReturn(this, (Home.__proto__ || Object.getPrototypeOf(Home)).call(this, props));
 
+    _this._onEndReached = function (pageSize) {
+      var page = pageSize + 1;
+      _this.props.query({ page: page });
+    };
+
     _this.state = {};
     return _this;
   }
@@ -90192,20 +90335,19 @@ var Home = function (_PureComponent) {
   _createClass(Home, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
-      this.props.query();
-    }
-  }, {
-    key: 'componentWillReceiveProps',
-    value: function componentWillReceiveProps(next) {
-      var params = this.props.params;
+      var tab = this.props.tab;
 
-      if (next.params !== params) {}
+      var params = { tab: tab };
+      this.props.query(params);
     }
   }, {
     key: 'render',
     value: function render() {
+      var _this2 = this;
+
       var _props = this.props,
           data = _props.data,
+          page = _props.page,
           loading = _props.loading;
       var navigate = this.props.navigation.navigate;
 
@@ -90237,6 +90379,14 @@ var Home = function (_PureComponent) {
               }
             });
           },
+          onRefresh: function onRefresh() {
+            _this2.props.query();
+          },
+          onEndReached: function onEndReached() {
+            _this2._onEndReached(page);
+          },
+          onEndReachedThreshold: 0.5,
+          refreshing: loading,
           __source: {
             fileName: _jsxFileName,
             lineNumber: 57
@@ -90248,12 +90398,12 @@ var Home = function (_PureComponent) {
               navigate('Publish');
             }, __source: {
               fileName: _jsxFileName,
-              lineNumber: 64
+              lineNumber: 68
             }
           },
           _react2.default.createElement(_reactNative.Image, { style: styles.pubilsh, source: require(735                          ), resizeMode: 'contain', __source: { // 735 = ../../assets/images/add.png
               fileName: _jsxFileName,
-              lineNumber: 65
+              lineNumber: 69
             }
           })
         )
@@ -90319,10 +90469,12 @@ Home.navigationOptions = function (_ref2) {
 
 function mapStateToProps(state) {
   var _state$home = state.home,
+      tab = _state$home.tab,
+      page = _state$home.page,
       data = _state$home.data,
       loading = _state$home.loading;
 
-  return { data: data, loading: loading };
+  return { tab: tab, page: page, data: data, loading: loading };
 }
 
 function mapDispatchToProps(dispatch) {
@@ -101423,49 +101575,47 @@ var Collect = _wrapComponent('Collect')(function (_Component) {
 
     var _this = _possibleConstructorReturn(this, (Collect.__proto__ || Object.getPrototypeOf(Collect)).call(this, props));
 
+    _this._onCollect = function (collect) {
+      var _this$props = _this.props,
+          data = _this$props.data,
+          accesstoken = _this$props.accesstoken;
+
+      var params = { collect: collect, topic_id: data.id, accesstoken: accesstoken };
+      _this.props.collect(params);
+      if (!collect) _this.props.delete(data.id);
+    };
+
     _this.state = { is_collect: false };
     return _this;
   }
 
   _createClass(Collect, [{
-    key: 'componentDidMount',
-    value: function componentDidMount() {}
-  }, {
     key: 'render',
     value: function render() {
       var _this2 = this;
 
-      var _props = this.props,
-          data = _props.data,
-          is_collect = _props.is_collect,
-          accesstoken = _props.accesstoken;
+      var is_collect = this.props.is_collect;
 
-
-      var _onCollect = function _onCollect(collect) {
-        var params = { collect: collect, topic_id: data.id, accesstoken: accesstoken };
-        _this2.props.collect(params);
-        if (!collect) _this2.props.delete(data.id);
-      };
 
       return _react3.default.createElement(
         _reactNative.View,
         { style: styles.headerRight, __source: {
             fileName: _jsxFileName,
-            lineNumber: 25
+            lineNumber: 22
           }
         },
         _react3.default.createElement(
           _reactNative.TouchableOpacity,
           { style: styles.headerTouch, onPress: function onPress() {
-              _onCollect(!is_collect);
+              _this2._onCollect(!is_collect);
             }, __source: {
               fileName: _jsxFileName,
-              lineNumber: 26
+              lineNumber: 23
             }
           },
           _react3.default.createElement(_reactNative.Image, { style: styles.headerBtn, source: is_collect ? require(801                                   ) : require(755                                 ), resizeMode: 'contain', __source: { // 755 = ../../../assets/images/collect.png // 801 = ../../../assets/images/collected.png
               fileName: _jsxFileName,
-              lineNumber: 27
+              lineNumber: 24
             }
           })
         )
@@ -101570,21 +101720,18 @@ var Search = function (_PureComponent) {
 
     var _this = _possibleConstructorReturn(this, (Search.__proto__ || Object.getPrototypeOf(Search)).call(this, props));
 
+    _this._onEndReached = function (pageSize) {
+      var page = pageSize + 1;
+      var content = _this.props.content;
+
+      _this.props.query({ page: page, content: content });
+    };
+
     _this.state = {};
     return _this;
   }
 
   _createClass(Search, [{
-    key: 'componentDidMount',
-    value: function componentDidMount() {}
-  }, {
-    key: 'componentWillReceiveProps',
-    value: function componentWillReceiveProps(next) {
-      var params = this.props.params;
-
-      if (next.params !== params) {}
-    }
-  }, {
     key: 'componentWillUnmount',
     value: function componentWillUnmount() {
       this.props.clean();
@@ -101592,8 +101739,12 @@ var Search = function (_PureComponent) {
   }, {
     key: 'render',
     value: function render() {
+      var _this2 = this;
+
       var _props = this.props,
           data = _props.data,
+          page = _props.page,
+          content = _props.content,
           visible = _props.visible,
           loading = _props.loading;
       var navigate = this.props.navigation.navigate;
@@ -101605,12 +101756,12 @@ var Search = function (_PureComponent) {
         _reactNative.View,
         { style: styles.container, __source: {
             fileName: _jsxFileName,
-            lineNumber: 41
+            lineNumber: 37
           }
         },
         _react2.default.createElement(_reactNative.StatusBar, { barStyle: 'light-content', __source: {
             fileName: _jsxFileName,
-            lineNumber: 42
+            lineNumber: 38
           }
         }),
         visible ? _react2.default.createElement(
@@ -101618,13 +101769,13 @@ var Search = function (_PureComponent) {
           {
             __source: {
               fileName: _jsxFileName,
-              lineNumber: 45
+              lineNumber: 41
             }
           },
           _react2.default.createElement(_History2.default, {
             __source: {
               fileName: _jsxFileName,
-              lineNumber: 46
+              lineNumber: 42
             }
           })
         ) : _react2.default.createElement(_reactNative.FlatList, {
@@ -101638,13 +101789,21 @@ var Search = function (_PureComponent) {
             var item = _ref.item;
             return _react2.default.createElement(_Card2.default, { navigate: navigate, item: item, __source: {
                 fileName: _jsxFileName,
-                lineNumber: 53
+                lineNumber: 49
               }
             });
           },
+          onRefresh: function onRefresh() {
+            _this2.props.query({ content: content });
+          },
+          onEndReached: function onEndReached() {
+            _this2._onEndReached(page);
+          },
+          onEndReachedThreshold: 0.5,
+          refreshing: loading,
           __source: {
             fileName: _jsxFileName,
-            lineNumber: 48
+            lineNumber: 44
           }
         })
       );
@@ -101672,14 +101831,22 @@ Search.navigationOptions = function (_ref2) {
 function mapStateToProps(state) {
   var _state$search = state.search,
       data = _state$search.data,
+      page = _state$search.page,
+      content = _state$search.content,
       visible = _state$search.visible,
       loading = _state$search.loading;
 
-  return { data: data, visible: visible, loading: loading };
+  return { data: data, page: page, content: content, visible: visible, loading: loading };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
+    query: function query(params) {
+      dispatch({
+        type: 'search/query',
+        payload: params
+      });
+    },
     clean: function clean() {
       dispatch({
         type: 'search/clean'
@@ -101743,34 +101910,26 @@ function Card(_ref) {
         }
       },
       _react2.default.createElement(
-        _reactNative.View,
-        { style: styles.header, __source: {
+        _reactNative.Text,
+        { numberOfLines: 1, style: styles.h3, __source: {
             fileName: _jsxFileName,
             lineNumber: 10
           }
         },
-        _react2.default.createElement(
-          _reactNative.Text,
-          { numberOfLines: 1, style: styles.h3, __source: {
-              fileName: _jsxFileName,
-              lineNumber: 11
-            }
-          },
-          item.title
-        )
+        item.title
       ),
       _react2.default.createElement(
         _reactNative.View,
         { style: styles.content, __source: {
             fileName: _jsxFileName,
-            lineNumber: 13
+            lineNumber: 11
           }
         },
         _react2.default.createElement(
           _reactNative.Text,
           { numberOfLines: 2, style: styles.b, __source: {
               fileName: _jsxFileName,
-              lineNumber: 14
+              lineNumber: 12
             }
           },
           item.content
@@ -101782,37 +101941,24 @@ function Card(_ref) {
 
 var styles = _reactNative.StyleSheet.create({
   list: {
-    paddingTop: 10,
-    paddingLeft: 15,
-    paddingRight: 15,
-    paddingBottom: 10,
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderColor: '#F0F0F0'
-  },
-
-  header: {
-    flex: 1,
-    alignItems: 'center',
-    flexWrap: 'wrap',
-    flexDirection: 'row'
+    margin: 10,
+    marginBottom: 0,
+    padding: 15,
+    backgroundColor: '#FFF'
   },
 
   h3: {
-    flex: 1,
-    fontSize: 16,
-    fontWeight: 'bold'
+    fontSize: 16
   },
 
   content: {
-    paddingTop: 10
+    marginTop: 10
   },
 
   b: {
     fontSize: 14,
     lineHeight: 24,
-    color: '#999',
-    fontWeight: 'bold'
+    color: '#999'
   }
 });
 
@@ -101879,6 +102025,16 @@ var Seek = _wrapComponent('Seek')(function (_Component) {
 
     var _this = _possibleConstructorReturn(this, (Seek.__proto__ || Object.getPrototypeOf(Seek)).call(this, props));
 
+    _this._onSearch = function (content) {
+      if (!content) return;
+      _this.props.query({ content: content });
+    };
+
+    _this._onClean = function () {
+      _this.setState({ text: '' });
+      _this.props.clean();
+    };
+
     _this.state = { text: "" };
     return _this;
   }
@@ -101903,36 +102059,23 @@ var Seek = _wrapComponent('Seek')(function (_Component) {
           loading = _props.loading;
 
 
-      var _onSearch = function _onSearch() {
-        var text = _this2.state.text;
-        if (!text) return;
-        var params = { content: text };
-        _this2.props.query(params);
-      };
-
-      var _onClean = function _onClean() {
-        var text = '';
-        _this2.setState({ text: text });
-        _this2.props.clean();
-      };
-
       return _react3.default.createElement(
         _reactNative.View,
         { style: styles.headerRight, __source: {
             fileName: _jsxFileName,
-            lineNumber: 39
+            lineNumber: 36
           }
         },
         _react3.default.createElement(
           _reactNative.View,
           { style: styles.inputView, __source: {
               fileName: _jsxFileName,
-              lineNumber: 40
+              lineNumber: 37
             }
           },
           _react3.default.createElement(_reactNative.Image, { style: styles.headerBtn, source: require(759                                   ), resizeMode: 'contain', __source: { // 759 = ../../../assets/images/searchbar.png
               fileName: _jsxFileName,
-              lineNumber: 41
+              lineNumber: 38
             }
           }),
           _react3.default.createElement(_reactNative.TextInput, { style: styles.input,
@@ -101944,21 +102087,21 @@ var Seek = _wrapComponent('Seek')(function (_Component) {
             },
             __source: {
               fileName: _jsxFileName,
-              lineNumber: 42
+              lineNumber: 39
             }
           }),
           _react3.default.createElement(
             _reactNative.TouchableOpacity,
             { style: styles.closeBtn, onPress: function onPress() {
-                _onClean();
+                _this2._onClean();
               }, __source: {
                 fileName: _jsxFileName,
-                lineNumber: 48
+                lineNumber: 45
               }
             },
             !visible ? _react3.default.createElement(_reactNative.Image, { style: styles.closeImg, source: require(760                               ), resizeMode: 'contain', __source: { // 760 = ../../../assets/images/clean.png
                 fileName: _jsxFileName,
-                lineNumber: 49
+                lineNumber: 46
               }
             }) : null
           )
@@ -101966,17 +102109,17 @@ var Seek = _wrapComponent('Seek')(function (_Component) {
         _react3.default.createElement(
           _reactNative.TouchableOpacity,
           { style: styles.headerTouch, onPress: function onPress() {
-              _onSearch();
+              _this2._onSearch(_this2.state.text);
             }, __source: {
               fileName: _jsxFileName,
-              lineNumber: 52
+              lineNumber: 49
             }
           },
           _react3.default.createElement(
             _reactNative.Text,
             { style: styles.text, __source: {
                 fileName: _jsxFileName,
-                lineNumber: 53
+                lineNumber: 50
               }
             },
             '\u641C\u7D22'
@@ -102133,7 +102276,23 @@ var History = _wrapComponent('History')(function (_Component) {
   function History(props) {
     _classCallCheck(this, History);
 
-    return _possibleConstructorReturn(this, (History.__proto__ || Object.getPrototypeOf(History)).call(this, props));
+    var _this = _possibleConstructorReturn(this, (History.__proto__ || Object.getPrototypeOf(History)).call(this, props));
+
+    _this._onSearch = function (text) {
+      var params = { content: text };
+      _this.props.query(params);
+    };
+
+    _this._onDelet = function (text) {
+      var records = _this.props.records;
+
+      var datas = records.filter(function (history) {
+        return history !== text;
+      });
+      _this.props.delet(datas);
+    };
+
+    return _this;
   }
 
   _createClass(History, [{
@@ -102152,19 +102311,6 @@ var History = _wrapComponent('History')(function (_Component) {
           visible = _props.visible,
           loading = _props.loading;
 
-
-      var _onSearch = function _onSearch(text) {
-        var params = { content: text };
-        _this2.props.query(params);
-      };
-
-      var _onDelet = function _onDelet(text) {
-        var datas = records.filter(function (history) {
-          return history !== text;
-        });
-        AsyncStorage.setItem('records', JSON.stringify(datas));
-        _this2.props.history(datas);
-      };
 
       return _react3.default.createElement(
         _reactNative.View,
@@ -102208,7 +102354,7 @@ var History = _wrapComponent('History')(function (_Component) {
               return _react3.default.createElement(
                 _reactNative.TouchableOpacity,
                 { key: index, style: styles.hotsBtn, onPress: function onPress() {
-                    _onSearch(host);
+                    _this2._onSearch(host);
                   }, __source: {
                     fileName: _jsxFileName,
                     lineNumber: 40
@@ -102255,7 +102401,7 @@ var History = _wrapComponent('History')(function (_Component) {
             return _react3.default.createElement(
               _reactNative.TouchableOpacity,
               { key: index, style: styles.recordRow, onPress: function onPress() {
-                  _onSearch(record);
+                  _this2._onSearch(record);
                 }, __source: {
                   fileName: _jsxFileName,
                   lineNumber: 55
@@ -102286,7 +102432,7 @@ var History = _wrapComponent('History')(function (_Component) {
               _react3.default.createElement(
                 _reactNative.TouchableOpacity,
                 { key: index, style: styles.delet, onPress: function onPress() {
-                    _onDelet(record);
+                    _this2._onDelet(record);
                   }, __source: {
                     fileName: _jsxFileName,
                     lineNumber: 60
@@ -102326,6 +102472,12 @@ function mapDispatchToProps(dispatch) {
     query: function query(params) {
       dispatch({
         type: 'search/query',
+        payload: params
+      });
+    },
+    delet: function delet(params) {
+      dispatch({
+        type: 'search/records',
         payload: params
       });
     }
@@ -102960,6 +103112,11 @@ var Recruit = function (_PureComponent) {
 
     var _this = _possibleConstructorReturn(this, (Recruit.__proto__ || Object.getPrototypeOf(Recruit)).call(this, props));
 
+    _this._onEndReached = function (pageSize) {
+      var page = pageSize + 1;
+      _this.props.query({ page: page });
+    };
+
     _this.state = {};
     return _this;
   }
@@ -102967,7 +103124,7 @@ var Recruit = function (_PureComponent) {
   _createClass(Recruit, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
-      this.props.query({ tab: 'job' });
+      this.props.query();
     }
   }, {
     key: 'componentWillReceiveProps',
@@ -102979,8 +103136,11 @@ var Recruit = function (_PureComponent) {
   }, {
     key: 'render',
     value: function render() {
+      var _this2 = this;
+
       var _props = this.props,
           data = _props.data,
+          page = _props.page,
           loading = _props.loading;
       var navigate = this.props.navigation.navigate;
 
@@ -102991,12 +103151,12 @@ var Recruit = function (_PureComponent) {
         _reactNative.View,
         { style: styles.container, __source: {
             fileName: _jsxFileName,
-            lineNumber: 51
+            lineNumber: 57
           }
         },
         _react2.default.createElement(_reactNative.StatusBar, { barStyle: 'light-content', __source: {
             fileName: _jsxFileName,
-            lineNumber: 52
+            lineNumber: 58
           }
         }),
         _react2.default.createElement(_reactNative.FlatList, {
@@ -103010,13 +103170,21 @@ var Recruit = function (_PureComponent) {
             var item = _ref.item;
             return _react2.default.createElement(_Wrap2.default, { navigate: navigate, item: item, __source: {
                 fileName: _jsxFileName,
-                lineNumber: 58
+                lineNumber: 64
               }
             });
           },
+          onRefresh: function onRefresh() {
+            _this2.props.query();
+          },
+          onEndReached: function onEndReached() {
+            _this2._onEndReached(page);
+          },
+          onEndReachedThreshold: 0.5,
+          refreshing: loading,
           __source: {
             fileName: _jsxFileName,
-            lineNumber: 53
+            lineNumber: 59
           }
         })
       );
@@ -103080,9 +103248,10 @@ Recruit.navigationOptions = function (_ref2) {
 function mapStateToProps(state) {
   var _state$recruit = state.recruit,
       data = _state$recruit.data,
+      page = _state$recruit.page,
       loading = _state$recruit.loading;
 
-  return { data: data, loading: loading };
+  return { data: data, page: page, loading: loading };
 }
 
 function mapDispatchToProps(dispatch) {
@@ -103457,17 +103626,26 @@ var Notice = function (_PureComponent) {
   }, {
     key: 'render',
     value: function render() {
+      var _this2 = this;
+
       var _props = this.props,
           data = _props.data,
           has_read_messages = _props.has_read_messages,
           hasnot_read_messages = _props.hasnot_read_messages,
+          accesstoken = _props.accesstoken,
           loading = _props.loading;
       var navigate = this.props.navigation.navigate;
 
 
       return _react2.default.createElement(
         _reactNative.ScrollView,
-        { style: styles.container, __source: {
+        { style: styles.container, refreshControl: _react2.default.createElement(_reactNative.RefreshControl, { onRefresh: function onRefresh() {
+              _this2.props.query({ accesstoken: accesstoken });
+            }, refreshing: loading, __source: {
+              fileName: _jsxFileName,
+              lineNumber: 37
+            }
+          }), __source: {
             fileName: _jsxFileName,
             lineNumber: 37
           }
@@ -104094,9 +104272,9 @@ var _react2 = _interopRequireDefault(_react);
 
 var _mobile = require(460         ); // 460 = dva/mobile
 
-var _Message = require(773                    ); // 773 = ../components/Message
+var _Notice = require(802                   ); // 802 = ../components/Notice
 
-var _Message2 = _interopRequireDefault(_Message);
+var _Notice2 = _interopRequireDefault(_Notice);
 
 var _reactNative = require(26            ); // 26 = react-native
 
@@ -104160,7 +104338,7 @@ var System = function (_PureComponent) {
             },
             renderItem: function renderItem(_ref) {
               var item = _ref.item;
-              return _react2.default.createElement(_Message2.default, { navigate: navigate, item: item, __source: {
+              return _react2.default.createElement(_Notice2.default, { item: item, __source: {
                   fileName: _jsxFileName,
                   lineNumber: 36
                 }
@@ -104244,6 +104422,84 @@ var styles = _reactNative.StyleSheet.create({
 
 exports.default = (0, _mobile.connect)(mapStateToProps, mapDispatchToProps)(System);
 }, 779, null, "cnodejs/src/pages/notice/screen/System.js");
+__d(/* cnodejs/src/pages/notice/components/Notice.js */function(global, require, module, exports) {Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var _jsxFileName = '/Users/wenhuan/Documents/Web/react-native/cnodejs/src/pages/notice/components/Notice.js';
+
+var _react = require(12     ); // 12 = react
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactNative = require(26            ); // 26 = react-native
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function Notice(_ref) {
+  var item = _ref.item;
+
+
+  return _react2.default.createElement(
+    _reactNative.View,
+    { style: styles.container, __source: {
+        fileName: _jsxFileName,
+        lineNumber: 8
+      }
+    },
+    _react2.default.createElement(
+      _reactNative.Text,
+      { numberOfLines: 1, style: styles.h3, __source: {
+          fileName: _jsxFileName,
+          lineNumber: 9
+        }
+      },
+      item.title
+    ),
+    _react2.default.createElement(
+      _reactNative.View,
+      { style: styles.content, __source: {
+          fileName: _jsxFileName,
+          lineNumber: 10
+        }
+      },
+      _react2.default.createElement(
+        _reactNative.Text,
+        { style: styles.text, __source: {
+            fileName: _jsxFileName,
+            lineNumber: 11
+          }
+        },
+        item.content
+      )
+    )
+  );
+}
+
+var styles = _reactNative.StyleSheet.create({
+  container: {
+    margin: 10,
+    marginBottom: 0,
+    padding: 15,
+    backgroundColor: '#FFFFFF'
+  },
+
+  content: {
+    marginTop: 10
+  },
+
+  text: {
+    fontSize: 14,
+    lineHeight: 20,
+    color: '#999'
+  },
+
+  h3: {
+    fontSize: 16
+  }
+});
+
+exports.default = Notice;
+}, 802, null, "cnodejs/src/pages/notice/components/Notice.js");
 __d(/* cnodejs/src/pages/zone/index.js */function(global, require, module, exports) {Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -104303,6 +104559,8 @@ var Zone = function (_PureComponent) {
   }, {
     key: 'render',
     value: function render() {
+      var _this2 = this;
+
       var _props = this.props,
           user = _props.user,
           collects = _props.collects,
@@ -104314,7 +104572,13 @@ var Zone = function (_PureComponent) {
 
       return _react2.default.createElement(
         _reactNative.ScrollView,
-        { style: styles.container, __source: {
+        { style: styles.container, refreshControl: _react2.default.createElement(_reactNative.RefreshControl, { onRefresh: function onRefresh() {
+              _this2.props.query(user);
+            }, refreshing: loading, __source: {
+              fileName: _jsxFileName,
+              lineNumber: 40
+            }
+          }), __source: {
             fileName: _jsxFileName,
             lineNumber: 40
           }
@@ -105128,8 +105392,8 @@ var styles = _reactNative.StyleSheet.create({
   },
 
   row: {
-    paddingLeft: 30,
-    paddingRight: 30,
+    paddingLeft: 27,
+    paddingRight: 27,
     alignItems: 'center',
     flexDirection: 'row',
     backgroundColor: '#FFFFFF'
@@ -105216,6 +105480,11 @@ var Login = function (_PureComponent) {
 
     var _this = _possibleConstructorReturn(this, (Login.__proto__ || Object.getPrototypeOf(Login)).call(this, props));
 
+    _this._onLogin = function (accesstoken) {
+      if (!accesstoken) return;
+      _this.props.login({ accesstoken: accesstoken });
+    };
+
     _this.state = { text: '49564492-25c9-4650-a49e-078ac4c7c383' };
     return _this;
   }
@@ -105241,35 +105510,28 @@ var Login = function (_PureComponent) {
           navigation = _props2.navigation;
 
 
-      var _onLogin = function _onLogin() {
-        var token = _this2.state.text;
-        if (!token) return;
-        var params = { accesstoken: token };
-        _this2.props.login(params);
-      };
-
       return _react2.default.createElement(
         _reactNative.View,
         { style: styles.container, __source: {
             fileName: _jsxFileName,
-            lineNumber: 36
+            lineNumber: 34
           }
         },
         _react2.default.createElement(_reactNative.StatusBar, { barStyle: 'light-content', __source: {
             fileName: _jsxFileName,
-            lineNumber: 37
+            lineNumber: 35
           }
         }),
         _react2.default.createElement(
           _reactNative.View,
           { style: styles.logoView, __source: {
               fileName: _jsxFileName,
-              lineNumber: 38
+              lineNumber: 36
             }
           },
           _react2.default.createElement(_reactNative.Image, { style: styles.logo, source: require(736                              ), resizeMode: 'contain', __source: { // 736 = ../../../assets/images/logo.png
               fileName: _jsxFileName,
-              lineNumber: 39
+              lineNumber: 37
             }
           })
         ),
@@ -105277,7 +105539,7 @@ var Login = function (_PureComponent) {
           _reactNative.View,
           { style: styles.inputView, __source: {
               fileName: _jsxFileName,
-              lineNumber: 41
+              lineNumber: 39
             }
           },
           _react2.default.createElement(_reactNative.TextInput, { style: styles.input,
@@ -105289,24 +105551,24 @@ var Login = function (_PureComponent) {
             },
             __source: {
               fileName: _jsxFileName,
-              lineNumber: 42
+              lineNumber: 40
             }
           })
         ),
         _react2.default.createElement(
           _reactNative.TouchableOpacity,
           { style: styles.loginBtn, onPress: function onPress() {
-              _onLogin();
+              _this2._onLogin(_this2.state.text);
             }, __source: {
               fileName: _jsxFileName,
-              lineNumber: 49
+              lineNumber: 47
             }
           },
           _react2.default.createElement(
             _reactNative.Text,
             { style: styles.login, __source: {
                 fileName: _jsxFileName,
-                lineNumber: 50
+                lineNumber: 48
               }
             },
             '\u767B\u5F55'
@@ -105935,26 +106197,43 @@ var Credits = function (_PureComponent) {
           },
           _react2.default.createElement(
             _reactNative.Text,
-            { style: styles.scoreText, __source: {
+            { style: styles.scoreSub, __source: {
                 fileName: _jsxFileName,
                 lineNumber: 38
               }
             },
-            data.score
+            '\u5F53\u524D\u79EF\u5206'
+          ),
+          _react2.default.createElement(
+            _reactNative.View,
+            { style: styles.TextView, __source: {
+                fileName: _jsxFileName,
+                lineNumber: 39
+              }
+            },
+            _react2.default.createElement(
+              _reactNative.Text,
+              { style: styles.scoreText, __source: {
+                  fileName: _jsxFileName,
+                  lineNumber: 40
+                }
+              },
+              data.score
+            )
           )
         ),
         _react2.default.createElement(
           _reactNative.View,
           { style: styles.subTitle, __source: {
               fileName: _jsxFileName,
-              lineNumber: 40
+              lineNumber: 43
             }
           },
           _react2.default.createElement(
             _reactNative.Text,
             { style: styles.subText, __source: {
                 fileName: _jsxFileName,
-                lineNumber: 41
+                lineNumber: 44
               }
             },
             '\u5982\u4F55\u83B7\u53D6\u79EF\u5206'
@@ -105964,42 +106243,67 @@ var Credits = function (_PureComponent) {
           _reactNative.View,
           { style: styles.rowList, __source: {
               fileName: _jsxFileName,
-              lineNumber: 43
+              lineNumber: 46
             }
           },
           _react2.default.createElement(
             _reactNative.View,
             { style: styles.row, __source: {
                 fileName: _jsxFileName,
-                lineNumber: 44
+                lineNumber: 47
               }
             },
             _react2.default.createElement(_reactNative.Image, { style: styles.rowImg, source: require(783                                ), resizeMode: 'contain', __source: { // 783 = ../../../assets/images/header.png
                 fileName: _jsxFileName,
-                lineNumber: 45
+                lineNumber: 48
               }
             }),
             _react2.default.createElement(
               _reactNative.View,
               { style: styles.rowInner, __source: {
                   fileName: _jsxFileName,
-                  lineNumber: 46
+                  lineNumber: 49
                 }
               },
               _react2.default.createElement(
-                _reactNative.Text,
-                { style: styles.rowText, __source: {
+                _reactNative.View,
+                { style: styles.left, __source: {
                     fileName: _jsxFileName,
-                    lineNumber: 47
+                    lineNumber: 50
                   }
                 },
-                '\u767B\u5F55\u8BBA\u575B'
+                _react2.default.createElement(
+                  _reactNative.Text,
+                  { style: styles.rowText, __source: {
+                      fileName: _jsxFileName,
+                      lineNumber: 51
+                    }
+                  },
+                  '\u767B\u5F55\u8BBA\u575B'
+                ),
+                _react2.default.createElement(
+                  _reactNative.View,
+                  { style: styles.subView, __source: {
+                      fileName: _jsxFileName,
+                      lineNumber: 52
+                    }
+                  },
+                  _react2.default.createElement(
+                    _reactNative.Text,
+                    { style: styles.sub, __source: {
+                        fileName: _jsxFileName,
+                        lineNumber: 53
+                      }
+                    },
+                    '\u6BCF\u5929\u4E00\u6B21'
+                  )
+                )
               ),
               _react2.default.createElement(
                 _reactNative.Text,
                 { style: styles.span, __source: {
                     fileName: _jsxFileName,
-                    lineNumber: 48
+                    lineNumber: 56
                   }
                 },
                 '+1'
@@ -106010,35 +106314,60 @@ var Credits = function (_PureComponent) {
             _reactNative.View,
             { style: styles.row, __source: {
                 fileName: _jsxFileName,
-                lineNumber: 51
+                lineNumber: 59
               }
             },
             _react2.default.createElement(_reactNative.Image, { style: styles.rowImg, source: require(786                              ), resizeMode: 'contain', __source: { // 786 = ../../../assets/images/post.png
                 fileName: _jsxFileName,
-                lineNumber: 52
+                lineNumber: 60
               }
             }),
             _react2.default.createElement(
               _reactNative.View,
               { style: styles.rowInner, __source: {
                   fileName: _jsxFileName,
-                  lineNumber: 53
+                  lineNumber: 61
                 }
               },
               _react2.default.createElement(
-                _reactNative.Text,
-                { style: styles.rowText, __source: {
+                _reactNative.View,
+                { style: styles.left, __source: {
                     fileName: _jsxFileName,
-                    lineNumber: 54
+                    lineNumber: 62
                   }
                 },
-                '\u53D1\u5E03\u8BDD\u9898'
+                _react2.default.createElement(
+                  _reactNative.Text,
+                  { style: styles.rowText, __source: {
+                      fileName: _jsxFileName,
+                      lineNumber: 63
+                    }
+                  },
+                  '\u53D1\u5E03\u8BDD\u9898'
+                ),
+                _react2.default.createElement(
+                  _reactNative.View,
+                  { style: styles.subView, __source: {
+                      fileName: _jsxFileName,
+                      lineNumber: 64
+                    }
+                  },
+                  _react2.default.createElement(
+                    _reactNative.Text,
+                    { style: styles.sub, __source: {
+                        fileName: _jsxFileName,
+                        lineNumber: 65
+                      }
+                    },
+                    '\u6BCF\u5929\u6700\u591A5\u6B21'
+                  )
+                )
               ),
               _react2.default.createElement(
                 _reactNative.Text,
                 { style: styles.span, __source: {
                     fileName: _jsxFileName,
-                    lineNumber: 55
+                    lineNumber: 68
                   }
                 },
                 '+5'
@@ -106049,35 +106378,60 @@ var Credits = function (_PureComponent) {
             _reactNative.View,
             { style: styles.row, __source: {
                 fileName: _jsxFileName,
-                lineNumber: 58
+                lineNumber: 71
               }
             },
             _react2.default.createElement(_reactNative.Image, { style: styles.rowImg, source: require(775                                 ), resizeMode: 'contain', __source: { // 775 = ../../../assets/images/comment.png
                 fileName: _jsxFileName,
-                lineNumber: 59
+                lineNumber: 72
               }
             }),
             _react2.default.createElement(
               _reactNative.View,
               { style: styles.rowInner, __source: {
                   fileName: _jsxFileName,
-                  lineNumber: 60
+                  lineNumber: 73
                 }
               },
               _react2.default.createElement(
-                _reactNative.Text,
-                { style: styles.rowText, __source: {
+                _reactNative.View,
+                { style: styles.left, __source: {
                     fileName: _jsxFileName,
-                    lineNumber: 61
+                    lineNumber: 74
                   }
                 },
-                '\u53D1\u8868\u8BC4\u8BBA'
+                _react2.default.createElement(
+                  _reactNative.Text,
+                  { style: styles.rowText, __source: {
+                      fileName: _jsxFileName,
+                      lineNumber: 75
+                    }
+                  },
+                  '\u53D1\u8868\u8BC4\u8BBA'
+                ),
+                _react2.default.createElement(
+                  _reactNative.View,
+                  { style: styles.subView, __source: {
+                      fileName: _jsxFileName,
+                      lineNumber: 76
+                    }
+                  },
+                  _react2.default.createElement(
+                    _reactNative.Text,
+                    { style: styles.sub, __source: {
+                        fileName: _jsxFileName,
+                        lineNumber: 77
+                      }
+                    },
+                    '\u6BCF\u5929\u6700\u591A10\u6B21'
+                  )
+                )
               ),
               _react2.default.createElement(
                 _reactNative.Text,
                 { style: styles.span, __source: {
                     fileName: _jsxFileName,
-                    lineNumber: 62
+                    lineNumber: 80
                   }
                 },
                 '+3'
@@ -106129,14 +106483,28 @@ var styles = _reactNative.StyleSheet.create({
 
   scoreView: {
     padding: 30,
-    backgroundColor: '#FFF',
-    justifyContent: 'center',
-    alignItems: 'center'
+    backgroundColor: '#7A86A2',
+    justifyContent: 'center'
+  },
+
+  scoreImg: {
+    marginTop: 15,
+    width: 30,
+    height: 30
+  },
+
+  scoreSub: {
+    color: '#eee',
+    fontSize: 14
+  },
+
+  TextView: {
+    marginTop: 15
   },
 
   scoreText: {
-    fontSize: 30,
-    fontWeight: 'bold'
+    color: '#FFF',
+    fontSize: 50
   },
 
   subTitle: {
@@ -106151,6 +106519,19 @@ var styles = _reactNative.StyleSheet.create({
 
   rowList: {
     marginTop: 15
+  },
+
+  subView: {
+    marginTop: 8
+  },
+
+  sub: {
+    color: '#999',
+    fontSize: 12
+  },
+
+  left: {
+    flex: 1
   },
 
   row: {
@@ -106172,6 +106553,7 @@ var styles = _reactNative.StyleSheet.create({
     paddingTop: 20,
     paddingBottom: 20,
     flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'space-between',
     borderBottomWidth: 0.5,
     borderColor: '#F0F0F0'
@@ -106226,6 +106608,13 @@ var Notice = function (_PureComponent) {
 
     var _this = _possibleConstructorReturn(this, (Notice.__proto__ || Object.getPrototypeOf(Notice)).call(this, props));
 
+    _this._onLogout = function () {
+      var navigation = _this.props.navigation;
+
+      _this.props.clean();
+      navigation.goBack();
+    };
+
     _this.state = {
       draft: true,
       notic: true
@@ -106264,56 +106653,51 @@ var Notice = function (_PureComponent) {
       var navigate = this.props.navigation.navigate;
 
 
-      var _onLogout = function _onLogout() {
-        _this2.props.clean();
-        navigation.goBack();
-      };
-
       return _react2.default.createElement(
         _reactNative.View,
         { style: styles.container, __source: {
             fileName: _jsxFileName,
-            lineNumber: 43
+            lineNumber: 44
           }
         },
         _react2.default.createElement(_reactNative.StatusBar, { barStyle: 'light-content', __source: {
             fileName: _jsxFileName,
-            lineNumber: 44
+            lineNumber: 45
           }
         }),
         _react2.default.createElement(
           _reactNative.View,
           { style: styles.rowList, __source: {
               fileName: _jsxFileName,
-              lineNumber: 45
+              lineNumber: 46
             }
           },
           _react2.default.createElement(
             _reactNative.View,
             { style: styles.row, __source: {
                 fileName: _jsxFileName,
-                lineNumber: 46
+                lineNumber: 47
               }
             },
             _react2.default.createElement(
               _reactNative.View,
               { style: styles.rowInner, __source: {
                   fileName: _jsxFileName,
-                  lineNumber: 47
+                  lineNumber: 48
                 }
               },
               _react2.default.createElement(
                 _reactNative.View,
                 { style: styles.left, __source: {
                     fileName: _jsxFileName,
-                    lineNumber: 48
+                    lineNumber: 49
                   }
                 },
                 _react2.default.createElement(
                   _reactNative.Text,
                   { style: styles.rowText, __source: {
                       fileName: _jsxFileName,
-                      lineNumber: 49
+                      lineNumber: 50
                     }
                   },
                   '\u65B0\u6D88\u606F\u901A\u77E5'
@@ -106322,14 +106706,14 @@ var Notice = function (_PureComponent) {
                   _reactNative.View,
                   { style: styles.subView, __source: {
                       fileName: _jsxFileName,
-                      lineNumber: 50
+                      lineNumber: 51
                     }
                   },
                   _react2.default.createElement(
                     _reactNative.Text,
                     { style: styles.sub, __source: {
                         fileName: _jsxFileName,
-                        lineNumber: 51
+                        lineNumber: 52
                       }
                     },
                     '\u63A5\u6536\u8BC4\u8BBA\u6D88\u606F\u53CA\u7CFB\u7EDF\u6D88\u606F\u901A\u77E5'
@@ -106340,7 +106724,7 @@ var Notice = function (_PureComponent) {
                   _this2.setState({ notic: value });
                 }, __source: {
                   fileName: _jsxFileName,
-                  lineNumber: 54
+                  lineNumber: 55
                 }
               })
             )
@@ -106349,28 +106733,28 @@ var Notice = function (_PureComponent) {
             _reactNative.View,
             { style: styles.row, __source: {
                 fileName: _jsxFileName,
-                lineNumber: 57
+                lineNumber: 58
               }
             },
             _react2.default.createElement(
               _reactNative.View,
               { style: styles.rowInner, __source: {
                   fileName: _jsxFileName,
-                  lineNumber: 58
+                  lineNumber: 59
                 }
               },
               _react2.default.createElement(
                 _reactNative.View,
                 { style: styles.left, __source: {
                     fileName: _jsxFileName,
-                    lineNumber: 59
+                    lineNumber: 60
                   }
                 },
                 _react2.default.createElement(
                   _reactNative.Text,
                   { style: styles.rowText, __source: {
                       fileName: _jsxFileName,
-                      lineNumber: 60
+                      lineNumber: 61
                     }
                   },
                   '\u4FDD\u5B58\u8349\u7A3F'
@@ -106379,14 +106763,14 @@ var Notice = function (_PureComponent) {
                   _reactNative.View,
                   { style: styles.subView, __source: {
                       fileName: _jsxFileName,
-                      lineNumber: 61
+                      lineNumber: 62
                     }
                   },
                   _react2.default.createElement(
                     _reactNative.Text,
                     { style: styles.sub, __source: {
                         fileName: _jsxFileName,
-                        lineNumber: 62
+                        lineNumber: 63
                       }
                     },
                     '\u672A\u53D1\u5E03\u7684\u8BDD\u9898\u5185\u5BB9\u81EA\u52A8\u4FDD\u5B58'
@@ -106397,7 +106781,7 @@ var Notice = function (_PureComponent) {
                   _this2.setState({ draft: value });
                 }, __source: {
                   fileName: _jsxFileName,
-                  lineNumber: 65
+                  lineNumber: 66
                 }
               })
             )
@@ -106407,7 +106791,7 @@ var Notice = function (_PureComponent) {
           _reactNative.View,
           { style: styles.rowList, __source: {
               fileName: _jsxFileName,
-              lineNumber: 69
+              lineNumber: 70
             }
           },
           _react2.default.createElement(
@@ -106416,28 +106800,28 @@ var Notice = function (_PureComponent) {
                 navigate('Cache');
               }, __source: {
                 fileName: _jsxFileName,
-                lineNumber: 70
+                lineNumber: 71
               }
             },
             _react2.default.createElement(
               _reactNative.View,
               { style: styles.row, __source: {
                   fileName: _jsxFileName,
-                  lineNumber: 71
+                  lineNumber: 72
                 }
               },
               _react2.default.createElement(
                 _reactNative.View,
                 { style: styles.rowInner, __source: {
                     fileName: _jsxFileName,
-                    lineNumber: 72
+                    lineNumber: 73
                   }
                 },
                 _react2.default.createElement(
                   _reactNative.Text,
                   { style: styles.rowText, __source: {
                       fileName: _jsxFileName,
-                      lineNumber: 73
+                      lineNumber: 74
                     }
                   },
                   '\u6E05\u9664\u7F13\u5B58'
@@ -106451,35 +106835,35 @@ var Notice = function (_PureComponent) {
                 navigate('Cache');
               }, __source: {
                 fileName: _jsxFileName,
-                lineNumber: 77
+                lineNumber: 78
               }
             },
             _react2.default.createElement(
               _reactNative.View,
               { style: styles.row, __source: {
                   fileName: _jsxFileName,
-                  lineNumber: 78
+                  lineNumber: 79
                 }
               },
               _react2.default.createElement(
                 _reactNative.View,
                 { style: styles.rowInner, __source: {
                     fileName: _jsxFileName,
-                    lineNumber: 79
+                    lineNumber: 80
                   }
                 },
                 _react2.default.createElement(
                   _reactNative.View,
                   { style: styles.left, __source: {
                       fileName: _jsxFileName,
-                      lineNumber: 80
+                      lineNumber: 81
                     }
                   },
                   _react2.default.createElement(
                     _reactNative.Text,
                     { style: styles.rowText, __source: {
                         fileName: _jsxFileName,
-                        lineNumber: 81
+                        lineNumber: 82
                       }
                     },
                     '\u68C0\u67E5\u66F4\u65B0'
@@ -106488,14 +106872,14 @@ var Notice = function (_PureComponent) {
                     _reactNative.View,
                     { style: styles.subView, __source: {
                         fileName: _jsxFileName,
-                        lineNumber: 82
+                        lineNumber: 83
                       }
                     },
                     _react2.default.createElement(
                       _reactNative.Text,
                       { style: styles.sub, __source: {
                           fileName: _jsxFileName,
-                          lineNumber: 83
+                          lineNumber: 84
                         }
                       },
                       '\u5F53\u524D\u7248\u672C 0.1.2'
@@ -106510,37 +106894,37 @@ var Notice = function (_PureComponent) {
           _reactNative.View,
           { style: styles.rowList, __source: {
               fileName: _jsxFileName,
-              lineNumber: 92
+              lineNumber: 93
             }
           },
           _react2.default.createElement(
             _reactNative.TouchableOpacity,
             { onPress: function onPress() {
-                _onLogout();
+                _this2._onLogout();
               }, __source: {
                 fileName: _jsxFileName,
-                lineNumber: 93
+                lineNumber: 94
               }
             },
             _react2.default.createElement(
               _reactNative.View,
               { style: styles.row, __source: {
                   fileName: _jsxFileName,
-                  lineNumber: 94
+                  lineNumber: 95
                 }
               },
               _react2.default.createElement(
                 _reactNative.View,
                 { style: styles.rowInner, __source: {
                     fileName: _jsxFileName,
-                    lineNumber: 95
+                    lineNumber: 96
                   }
                 },
                 _react2.default.createElement(
                   _reactNative.Text,
                   { style: styles.rowText, __source: {
                       fileName: _jsxFileName,
-                      lineNumber: 96
+                      lineNumber: 97
                     }
                   },
                   '\u9000\u51FA\u767B\u5F55'
@@ -106688,9 +107072,9 @@ var Personal = function (_PureComponent) {
   _createClass(Personal, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
-      var user = this.props.user;
+      var params = this.props.navigation.state.params;
 
-      this.props.information({ user: user });
+      this.props.information(params);
     }
   }, {
     key: 'componentWillReceiveProps',
@@ -106704,6 +107088,7 @@ var Personal = function (_PureComponent) {
     value: function render() {
       var _props = this.props,
           info = _props.info,
+          user = _props.user,
           loading = _props.loading;
       var navigate = this.props.navigation.navigate;
 
@@ -106855,7 +107240,7 @@ var Personal = function (_PureComponent) {
                     lineNumber: 59
                   }
                 },
-                info.url ? info.url : '未填写'
+                info.home ? info.home : '未填写'
               )
             )
           ),
@@ -106928,11 +107313,11 @@ var Personal = function (_PureComponent) {
             )
           )
         ),
-        _react2.default.createElement(
+        user.loginname == info.name ? _react2.default.createElement(
           _reactNative.View,
           { style: styles.rowList, __source: {
               fileName: _jsxFileName,
-              lineNumber: 75
+              lineNumber: 77
             }
           },
           _react2.default.createElement(
@@ -106941,28 +107326,28 @@ var Personal = function (_PureComponent) {
                 navigate('Password');
               }, __source: {
                 fileName: _jsxFileName,
-                lineNumber: 76
+                lineNumber: 78
               }
             },
             _react2.default.createElement(
               _reactNative.View,
               { style: styles.row, __source: {
                   fileName: _jsxFileName,
-                  lineNumber: 77
+                  lineNumber: 79
                 }
               },
               _react2.default.createElement(
                 _reactNative.View,
                 { style: styles.rowInner, __source: {
                     fileName: _jsxFileName,
-                    lineNumber: 78
+                    lineNumber: 80
                   }
                 },
                 _react2.default.createElement(
                   _reactNative.Text,
                   { style: styles.rowText, __source: {
                       fileName: _jsxFileName,
-                      lineNumber: 79
+                      lineNumber: 81
                     }
                   },
                   '\u4FEE\u6539\u5BC6\u7801'
@@ -106970,7 +107355,7 @@ var Personal = function (_PureComponent) {
               )
             )
           )
-        )
+        ) : null
       );
     }
   }]);
@@ -107117,8 +107502,6 @@ var Password = function (_PureComponent) {
           loading = _props.loading;
       var navigate = this.props.navigation.navigate;
 
-      var _Dimensions$get = _reactNative.Dimensions.get('window'),
-          width = _Dimensions$get.width;
 
       return _react2.default.createElement(
         _reactNative.View,

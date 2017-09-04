@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva/mobile';
 import Message from './components/Message';
-import { StyleSheet, View, ScrollView, Text, Button, Image, StatusBar, FlatList, Dimensions, TouchableOpacity } from 'react-native'
+import { StyleSheet, View, ScrollView, RefreshControl, Text, Button, Image, StatusBar, FlatList, Dimensions, TouchableOpacity } from 'react-native'
 
 const { width } = Dimensions.get('window');
 
@@ -30,11 +30,11 @@ class Notice extends PureComponent {
   }
 
   render() {
-    const { data, has_read_messages, hasnot_read_messages, loading } = this.props
+    const { data, has_read_messages, hasnot_read_messages, accesstoken, loading } = this.props
     const { navigate } = this.props.navigation;
 
     return (
-      <ScrollView style={styles.container}>
+      <ScrollView style={styles.container} refreshControl={<RefreshControl onRefresh={() => { this.props.query({ accesstoken }) }} refreshing={loading} />}>
         <StatusBar barStyle="light-content" />
         <View style={styles.rowList}>
           <TouchableOpacity onPress={() => { navigate('System') }}>

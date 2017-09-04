@@ -8,22 +8,19 @@ class Collect extends Component {
     this.state = { is_collect: false }
   }
 
-  componentDidMount() {
-
+  _onCollect = (collect) => {
+    const { data, accesstoken } = this.props
+    const params = { collect, topic_id: data.id, accesstoken }
+    this.props.collect(params)
+    if (!collect) this.props.delete(data.id)
   }
 
   render() {
-    const { data, is_collect, accesstoken } = this.props
-
-    const _onCollect = (collect) => {
-      const params = { collect, topic_id: data.id, accesstoken }
-      this.props.collect(params)
-      if (!collect) this.props.delete(data.id)
-    }
+    const { is_collect } = this.props
 
     return (
       <View style={styles.headerRight}>
-        <TouchableOpacity style={styles.headerTouch} onPress={() => { _onCollect(!is_collect) }}>
+        <TouchableOpacity style={styles.headerTouch} onPress={() => { this._onCollect(!is_collect) }}>
           <Image style={styles.headerBtn} source={is_collect ? require('../../../assets/images/collected.png') : require('../../../assets/images/collect.png')} resizeMode='contain' />
         </TouchableOpacity>
       </View>

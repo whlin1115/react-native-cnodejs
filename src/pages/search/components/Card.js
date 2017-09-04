@@ -7,9 +7,7 @@ function Card({ item, navigate }) {
   return (
     <TouchableOpacity onPress={() => { navigate('Detail', { id: item.id }) }}>
       <View style={styles.list}>
-        <View style={styles.header}>
-          <Text numberOfLines={1} style={styles.h3}>{item.title}</Text>
-        </View >
+        <Text numberOfLines={1} style={styles.h3}>{item.title}</Text>
         <View style={styles.content}>
           <Text numberOfLines={2} style={styles.b}>{item.content}</Text>
         </View>
@@ -20,37 +18,24 @@ function Card({ item, navigate }) {
 
 const styles = StyleSheet.create({
   list: {
-    paddingTop: 10,
-    paddingLeft: 15,
-    paddingRight: 15,
-    paddingBottom: 10,
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderColor: '#F0F0F0'
-  },
-
-  header: {
-    flex: 1,
-    alignItems: 'center',
-    flexWrap: 'wrap',
-    flexDirection: 'row'
+    margin: 10,
+    marginBottom: 0,
+    padding: 15,
+    backgroundColor: '#FFF',
   },
 
   h3: {
-    flex: 1,
     fontSize: 16,
-    fontWeight: 'bold',
   },
 
   content: {
-    paddingTop: 10,
+    marginTop: 10,
   },
 
   b: {
     fontSize: 14,
     lineHeight: 24,
     color: '#999',
-    fontWeight: 'bold',
   },
 });
 

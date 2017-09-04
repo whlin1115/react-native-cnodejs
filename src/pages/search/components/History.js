@@ -13,20 +13,20 @@ class History extends Component {
     this.props.init();
   }
 
+  _onSearch = (text) => {
+    const params = { content: text }
+    this.props.query(params)
+  }
+
+  _onDelet = (text) => {
+    const { records } = this.props
+    const datas = records.filter(history => history !== text);
+    this.props.delet(datas);
+  }
+
   render() {
     const hosts = ['NodeJs', 'Web', 'ReactJs', 'Vuejs', 'Mysql', 'JavaScript', 'Express', 'ES6']
     const { records, visible, loading } = this.props
-
-    const _onSearch = (text) => {
-      const params = { content: text }
-      this.props.query(params)
-    }
-
-    const _onDelet = (text) => {
-      const datas = records.filter(history => history !== text);
-      AsyncStorage.setItem('records', JSON.stringify(datas));
-      this.props.history(datas);
-    }
 
     return (
       <View style={styles.container}>
@@ -37,7 +37,7 @@ class History extends Component {
           <View style={styles.hotsRow}>
             {
               hosts.map((host, index) => (
-                <TouchableOpacity key={index} style={styles.hotsBtn} onPress={() => { _onSearch(host) }}>
+                <TouchableOpacity key={index} style={styles.hotsBtn} onPress={() => { this._onSearch(host) }}>
                   <Text style={styles.hotsText}>{host}</Text>
                 </TouchableOpacity>
               ))
@@ -52,12 +52,12 @@ class History extends Component {
               </View>
               {
                 records.map((record, index) => (
-                  <TouchableOpacity key={index} style={styles.recordRow} onPress={() => { _onSearch(record) }}>
+                  <TouchableOpacity key={index} style={styles.recordRow} onPress={() => { this._onSearch(record) }}>
                     <View style={styles.left}>
                       <Image style={styles.icon} source={require('../../../assets/images/history.png')} resizeMode='contain' />
                       <Text style={styles.recordText}>{record}</Text>
                     </View>
-                    <TouchableOpacity key={index} style={styles.delet} onPress={() => { _onDelet(record) }}>
+                    <TouchableOpacity key={index} style={styles.delet} onPress={() => { this._onDelet(record) }}>
                       <Image style={styles.icon} source={require('../../../assets/images/close.png')} resizeMode='contain' />
                     </TouchableOpacity>
                   </TouchableOpacity>
@@ -85,6 +85,12 @@ function mapDispatchToProps(dispatch) {
     query(params) {
       dispatch({
         type: 'search/query',
+        payload: params,
+      });
+    },
+    delet(params) {
+      dispatch({
+        type: 'search/records',
         payload: params,
       });
     },

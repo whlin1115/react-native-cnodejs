@@ -30,14 +30,15 @@ class Notice extends PureComponent {
     this.props.config(setting)
   }
 
+  _onLogout = () => {
+    const { navigation } = this.props
+    this.props.clean()
+    navigation.goBack()
+  }
+
   render() {
     const { data, loading, navigation } = this.props
     const { navigate } = this.props.navigation
-
-    const _onLogout = () => {
-      this.props.clean()
-      navigation.goBack()
-    }
 
     return (
       <View style={styles.container}>
@@ -90,7 +91,7 @@ class Notice extends PureComponent {
         {
           Object.keys(data).length > 0 ?
             <View style={styles.rowList}>
-              <TouchableOpacity onPress={() => { _onLogout() }}>
+              <TouchableOpacity onPress={() => { this._onLogout() }}>
                 <View style={styles.row}>
                   <View style={styles.rowInner}>
                     <Text style={styles.rowText}>退出登录</Text>

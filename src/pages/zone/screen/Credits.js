@@ -35,7 +35,10 @@ class Credits extends PureComponent {
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
         <View style={styles.scoreView}>
-          <Text style={styles.scoreText}>{data.score}</Text>
+          <Text style={styles.scoreSub}>当前积分</Text>
+          <View style={styles.TextView}>
+            <Text style={styles.scoreText}>{data.score}</Text>
+          </View>
         </View>
         <View style={styles.subTitle}>
           <Text style={styles.subText}>如何获取积分</Text>
@@ -44,21 +47,36 @@ class Credits extends PureComponent {
           <View style={styles.row}>
             <Image style={styles.rowImg} source={require('../../../assets/images/header.png')} resizeMode='contain' />
             <View style={styles.rowInner}>
-              <Text style={styles.rowText}>登录论坛</Text>
+              <View style={styles.left}>
+                <Text style={styles.rowText}>登录论坛</Text>
+                <View style={styles.subView}>
+                  <Text style={styles.sub}>每天一次</Text>
+                </View>
+              </View>
               <Text style={styles.span}>+1</Text>
             </View>
           </View>
           <View style={styles.row}>
             <Image style={styles.rowImg} source={require('../../../assets/images/post.png')} resizeMode='contain' />
             <View style={styles.rowInner}>
-              <Text style={styles.rowText}>发布话题</Text>
+              <View style={styles.left}>
+                <Text style={styles.rowText}>发布话题</Text>
+                <View style={styles.subView}>
+                  <Text style={styles.sub}>每天最多5次</Text>
+                </View>
+              </View>
               <Text style={styles.span}>+5</Text>
             </View>
           </View>
           <View style={styles.row}>
             <Image style={styles.rowImg} source={require('../../../assets/images/comment.png')} resizeMode='contain' />
             <View style={styles.rowInner}>
-              <Text style={styles.rowText}>发表评论</Text>
+              <View style={styles.left}>
+                <Text style={styles.rowText}>发表评论</Text>
+                <View style={styles.subView}>
+                  <Text style={styles.sub}>每天最多10次</Text>
+                </View>
+              </View>
               <Text style={styles.span}>+3</Text>
             </View>
           </View>
@@ -92,14 +110,28 @@ const styles = StyleSheet.create({
 
   scoreView: {
     padding: 30,
-    backgroundColor: '#FFF',
+    backgroundColor: '#7A86A2',
     justifyContent: 'center',
-    alignItems: 'center',
+  },
+
+  scoreImg: {
+    marginTop: 15,
+    width: 30,
+    height: 30,
+  },
+
+  scoreSub: {
+    color: '#eee',
+    fontSize: 14,
+  },
+
+  TextView: {
+    marginTop: 15,
   },
 
   scoreText: {
-    fontSize: 30,
-    fontWeight: 'bold',
+    color: '#FFF',
+    fontSize: 50,
   },
 
   subTitle: {
@@ -114,6 +146,19 @@ const styles = StyleSheet.create({
 
   rowList: {
     marginTop: 15,
+  },
+
+  subView: {
+    marginTop: 8,
+  },
+
+  sub: {
+    color: '#999',
+    fontSize: 12,
+  },
+
+  left: {
+    flex: 1
   },
 
   row: {
@@ -135,6 +180,7 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     paddingBottom: 20,
     flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'space-between',
     borderBottomWidth: 0.5,
     borderColor: '#F0F0F0',

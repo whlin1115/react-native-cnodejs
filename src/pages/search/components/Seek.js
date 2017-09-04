@@ -19,21 +19,18 @@ class Seek extends Component {
     }
   }
 
+  _onSearch = (content) => {
+    if (!content) return
+    this.props.query({ content })
+  }
+
+  _onClean = () => {
+    this.setState({ text: '' })
+    this.props.clean()
+  }
+
   render() {
     const { records, visible, loading } = this.props
-
-    const _onSearch = () => {
-      const text = this.state.text
-      if (!text) return
-      const params = { content: text }
-      this.props.query(params)
-    }
-
-    const _onClean = () => {
-      const text = ''
-      this.setState({ text })
-      this.props.clean()
-    }
 
     return (
       <View style={styles.headerRight}>
@@ -45,11 +42,11 @@ class Seek extends Component {
             underlineColorAndroid="transparent"
             onChangeText={(text) => { this.setState({ text }) }}
           />
-          <TouchableOpacity style={styles.closeBtn} onPress={() => { _onClean() }}>
+          <TouchableOpacity style={styles.closeBtn} onPress={() => { this._onClean() }}>
             {!visible ? <Image style={styles.closeImg} source={require('../../../assets/images/clean.png')} resizeMode='contain' /> : null}
           </TouchableOpacity>
         </View>
-        <TouchableOpacity style={styles.headerTouch} onPress={() => { _onSearch() }}>
+        <TouchableOpacity style={styles.headerTouch} onPress={() => { this._onSearch(this.state.text) }}>
           <Text style={styles.text}>搜索</Text>
         </TouchableOpacity>
       </View>

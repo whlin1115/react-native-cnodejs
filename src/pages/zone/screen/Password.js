@@ -30,7 +30,7 @@ class Password extends PureComponent {
   render() {
     const { data, loading } = this.props
     const { navigate } = this.props.navigation;
-    const { width } = Dimensions.get('window');
+    
     return (
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />

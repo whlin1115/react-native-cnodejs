@@ -18,25 +18,21 @@ class Search extends PureComponent {
     };
   };
 
-  componentDidMount() {
-
-  }
-
-  componentWillReceiveProps(next) {
-    const { params } = this.props;
-    if (next.params !== params) {
-
-    }
-  }
-
   componentWillUnmount() {
     this.props.clean()
   }
 
+  _onEndReached = (pageSize) => {
+    const page = pageSize + 1
+    const { content } = this.props
+    this.props.query({ page, content })
+  }
+
   render() {
-    const { data, visible, loading } = this.props
+    const { data, page, content, visible, loading } = this.props
     const { navigate } = this.props.navigation;
     const { width } = Dimensions.get('window');
+
     return (
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
@@ -51,6 +47,10 @@ class Search extends PureComponent {
               extraData={this.state}
               keyExtractor={(item, index) => index}
               renderItem={({ item }) => <Card navigate={navigate} item={item} />}
+              onRefresh={() => { this.props.query({ content }) }}
+              onEndReached={() => { this._onEndReached(page) }} // 如果直接 this.props.query() 会请求两次
+              onEndReachedThreshold={0.5}
+              refreshing={loading}
             />
         }
       </View>
@@ -59,12 +59,18 @@ class Search extends PureComponent {
 }
 
 function mapStateToProps(state) {
-  const { data, visible, loading } = state.search;
-  return { data, visible, loading };
+  const { data, page, content, visible, loading } = state.search;
+  return { data, page, content, visible, loading };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
+    query(params) {
+      dispatch({
+        type: 'search/query',
+        payload: params,
+      });
+    },
     clean() {
       dispatch({
         type: 'search/clean',

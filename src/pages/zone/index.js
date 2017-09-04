@@ -3,7 +3,7 @@ import { connect } from 'dva/mobile';
 import Card from './components/Card';
 import Header from './components/Header';
 import { RowItem } from '../../components';
-import { StyleSheet, View, ScrollView, Text, Button, Image, StatusBar, FlatList, Dimensions, TouchableOpacity } from 'react-native'
+import { StyleSheet, View, ScrollView, RefreshControl, Text, Button, Image, StatusBar, FlatList, Dimensions, TouchableOpacity } from 'react-native'
 
 const { width } = Dimensions.get('window');
 
@@ -37,7 +37,7 @@ class Zone extends PureComponent {
     const headerProps = { data, navigate }
 
     return (
-      <ScrollView style={styles.container}>
+      <ScrollView style={styles.container} refreshControl={<RefreshControl onRefresh={() => { this.props.query(user) }} refreshing={loading} />}>
         <StatusBar barStyle="light-content" />
         <Header {...headerProps} />
         <View style={styles.rowList}>

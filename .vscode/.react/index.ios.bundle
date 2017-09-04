@@ -82432,7 +82432,9 @@ function parseTopics(data) {
     var avatar_url = topic.author.avatar_url;
     if (!avatar_url.startsWith('https')) topic.author.avatar_url = 'https:' + avatar_url;
     var title = topic.title.replace(/[\r\n]/g, '');
-    var sort = title.match(/[\u4E00-\u9FA5]{2}/)[0];
+    var location = title.match(/[\u4E00-\u9FA5]{2}/);
+    var sort = '暂无';
+    if (location) sort = location[0];
     var tab = 'default';
     for (var l in _tool.city) {
       var line = String(_tool.city[l]);

@@ -13,7 +13,9 @@ export function parseTopics(data) {
     const avatar_url = topic.author.avatar_url
     if (!avatar_url.startsWith('https')) topic.author.avatar_url = 'https:' + avatar_url
     const title = topic.title.replace(/[\r\n]/g, '')
-    const sort = title.match(/[\u4E00-\u9FA5]{2}/)[0]
+    const location = title.match(/[\u4E00-\u9FA5]{2}/)
+    let sort = '暂无'
+    if (location) sort = location[0]
     var tab = 'default'
     for (var l in city) {
       var line = String(city[l])

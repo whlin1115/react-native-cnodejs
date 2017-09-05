@@ -18,9 +18,9 @@ class Publish extends PureComponent {
   }
 
   componentWillReceiveProps(next) {
-    const { topic_id, navigation } = this.props;
+    const { topic_id, navigation, accesstoken } = this.props;
     if (next.topic_id && next.topic_id !== topic_id) {
-      this.props.setTopic(next.topic_id)
+      this.props.query({ topic_id: next.topic_id, accesstoken })
       navigation.goBack()
     }
   }
@@ -45,7 +45,8 @@ class Publish extends PureComponent {
 
 function mapStateToProps(state) {
   const { topic_id, loading } = state.publish
-  return { topic_id, loading }
+  const { accesstoken } = state.zone
+  return { topic_id, loading, accesstoken }
 }
 
 function mapDispatchToProps(dispatch) {
@@ -56,11 +57,11 @@ function mapDispatchToProps(dispatch) {
         payload: params,
       })
     },
-    setTopic(params) {
+    query(params) {
       dispatch({
-        type: 'detail/topic',
+        type: 'detail/query',
         payload: params,
-      })
+      });
     },
     clean() {
       dispatch({

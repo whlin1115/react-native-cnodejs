@@ -25,15 +25,9 @@ class Detail extends PureComponent {
   };
 
   componentDidMount() {
-    const { topic_id } = this.props.navigation.state.params;
-    this.props.setTopic(topic_id)
-  }
-
-  componentWillReceiveProps(next) {
-    const { topic_id, accesstoken } = this.props;
-    if (next.topic_id && next.topic_id !== topic_id) {
-      this.props.query({ topic_id: next.topic_id, accesstoken })
-    }
+    const { params } = this.props.navigation.state;
+    const { accesstoken } = this.props
+    this.props.query({ ...params, accesstoken })
   }
 
   componentWillUnmount() {
@@ -41,13 +35,13 @@ class Detail extends PureComponent {
   }
 
   render() {
-    const { data, loading, topic_id, accesstoken } = this.props;
-    const { navigate } = this.props.navigation;
+    const { data, replies, loading, accesstoken } = this.props;
+    const { navigate, state } = this.props.navigation;
     const infoProps = { data, navigate }
     const htmlProps = { html: data.content, styles: htmlStyles }
 
     return (
-      <ScrollView style={styles.container} refreshControl={<RefreshControl onRefresh={() => { this.props.query({ topic_id, accesstoken }) }} refreshing={loading} />}>
+      <ScrollView style={styles.container} refreshControl={<RefreshControl onRefresh={() => { this.props.query({ ...state.params, accesstoken }) }} refreshing={loading} />}>
         <Info {...infoProps} />
         {
           data.content ?
@@ -56,13 +50,13 @@ class Detail extends PureComponent {
             </View> : null
         }
         {
-          data.replies ? <View style={styles.reply}>
-            <Text style={styles.total}>{data.replies.length}</Text><Text> 回复</Text>
+          replies ? <View style={styles.reply}>
+            <Text style={styles.total}>{replies.length}</Text><Text> 回复</Text>
           </View> : null
         }
         <FlatList
           style={{ width: width }}
-          data={data.replies}
+          data={replies}
           extraData={this.state}
           keyExtractor={(item, index) => index}
           renderItem={({ item }) => <Floor navigate={navigate} item={item} />}
@@ -73,9 +67,9 @@ class Detail extends PureComponent {
 }
 
 function mapStateToProps(state) {
-  const { data, topic_id, loading } = state.detail;
+  const { data, replies, loading } = state.detail;
   const { accesstoken } = state.zone
-  return { data, topic_id, accesstoken, loading };
+  return { data, accesstoken, loading, replies };
 }
 
 function mapDispatchToProps(dispatch) {
@@ -85,12 +79,6 @@ function mapDispatchToProps(dispatch) {
         type: 'detail/query',
         payload: params,
       });
-    },
-    setTopic(params) {
-      dispatch({
-        type: 'detail/topic',
-        payload: params,
-      })
     },
     clean() {
       dispatch({
@@ -103,7 +91,7 @@ function mapDispatchToProps(dispatch) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8F8F8',
+    backgroundColor: '#FFFFFF',
   },
 
   headerLeft: {

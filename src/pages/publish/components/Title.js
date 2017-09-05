@@ -45,7 +45,6 @@ class Title extends Component {
           animationType={"fade"}
           transparent={true}
           visible={this.state.visible}
-          onRequestClose={() => { console.log('modal is closed') }}
         >
           <TouchableWithoutFeedback onPress={() => { this.setState({ visible: false }) }}>
             <View style={styles.modalContainer}>

@@ -26,7 +26,7 @@ class Option extends Component {
         {
           edit.length > 0 ?
             <TouchableOpacity style={styles.headerTouch} onPress={() => { navigation.navigate('Publish', { edit: true }) }}>
-              <Image style={styles.headerBtn} source={require('../../../assets/images/back.png')} resizeMode='contain' />
+              <Image style={styles.headerBtn} source={require('../../../assets/images/edit.png')} resizeMode='contain' />
             </TouchableOpacity>
             : null
         }

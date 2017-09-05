@@ -1,84 +1,71 @@
-import React, { PureComponent } from 'react';
-import { connect } from 'dva/mobile';
-import Wrap from './components/Wrap';
-import { StyleSheet, View, ScrollView, Text, TextInput, Image, StatusBar, Dimensions, TouchableOpacity } from 'react-native'
+import React, { PureComponent } from 'react'
+import { connect } from 'dva/mobile'
+import { Title, Option, Content } from './components'
+import { StyleSheet, View, ScrollView, Text, TextInput, Image, Modal, StatusBar, Dimensions, TouchableOpacity } from 'react-native'
 
 class Publish extends PureComponent {
   constructor(props) {
     super(props)
-    this.state = {
-      text: '',
-      content: '',
-    }
   }
 
   static navigationOptions = ({ navigation }) => {
-    const { state, setParams, navigate } = navigation;
+    const { state, setParams, navigate } = navigation
+    const { edit } = state.params ? state.params : {}
     return {
-      headerTitle: '发布',
-      headerRight: (
-        <View style={styles.headerRight}>
-          <TouchableOpacity style={styles.headerTouch} onPress={() => { navigate('Zone', { user: 'alsotang' }) }}>
-            <Image style={[styles.headerBtn, styles.headerImg]} source={require('../../assets/images/public.png')} resizeMode='contain' />
-          </TouchableOpacity>
-        </View>
-      ),
-    };
-  };
-
-  componentDidMount() {
-    // this.props.query()
-  }
-
-  componentWillReceiveProps(next) {
-    const { params } = this.props;
-    if (next.params !== params) {
-
+      headerTitle: edit ? '编辑话题' : '新建话题',
+      headerRight: (<Option edit={edit} />),
     }
   }
 
+  componentWillReceiveProps(next) {
+    const { topic_id, navigation } = this.props;
+    if (next.topic_id && next.topic_id !== topic_id) {
+      this.props.setTopic(next.topic_id)
+      navigation.goBack()
+    }
+  }
+
+  componentWillUnmount() {
+    this.props.clean()
+  }
+
   render() {
-    const { data, loading } = this.props
-    const { navigate } = this.props.navigation;
-    const { height } = Dimensions.get('window');
-    const textareaHeight = height - 64 - 74 - 35
+    const { loading } = this.props
+    const { params } = this.props.navigation.state
 
     return (
       <ScrollView style={styles.container}>
         <StatusBar barStyle="light-content" />
-        <View style={styles.title}>
-          <TextInput style={styles.input}
-            placeholder='输入标题'
-            underlineColorAndroid="transparent"
-            onChangeText={(text) => { this.setState({ text }) }}
-          />
-        </View>
-        <View style={styles.content}>
-          <TextInput style={styles.textarea}
-            multiline={true}
-            minHeight={textareaHeight}
-            placeholder='输入正文（至少12个字符）'
-            underlineColorAndroid="transparent"
-            onChangeText={(content) => { this.setState({ content }) }}
-          />
-        </View>
-      </ScrollView>
-    );
+        <Title />
+        <Content />
+      </ScrollView >
+    )
   }
 }
 
 function mapStateToProps(state) {
-  const { data, loading } = state.publish;
-  return { data, loading };
+  const { topic_id, loading } = state.publish
+  return { topic_id, loading }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    query(params) {
+    setContent(params) {
       dispatch({
-        type: 'publish/query',
+        type: 'publish/content',
         payload: params,
-      });
+      })
+    },
+    setTopic(params) {
+      dispatch({
+        type: 'detail/topic',
+        payload: params,
+      })
+    },
+    clean() {
+      dispatch({
+        type: 'publish/clean',
+      })
     },
   }
 }
@@ -88,62 +75,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FFFFFF',
   },
+})
 
-  headerRight: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center'
-  },
-
-  headerTouch: {
-    height: 30
-  },
-
-  headerBtn: {
-    flex: 1,
-    width: 30,
-    height: 30,
-    marginRight: 15
-  },
-
-  headerImg: {
-    borderRadius: 15,
-  },
-
-  title: {
-    height: 44,
-    borderRadius: 5,
-    borderWidth: 1,
-    margin: 15,
-    marginBottom: 0,
-    borderColor: '#FFFFFF',
-    justifyContent: 'center',
-    backgroundColor: '#F8F8F8',
-  },
-
-  input: {
-    fontSize: 16,
-    paddingLeft: 15,
-    paddingRight: 15,
-  },
-
-  content: {
-    borderRadius: 5,
-    borderWidth: 1,
-    margin: 15,
-    marginBottom: 0,
-    borderColor: '#FFFFFF',
-    justifyContent: 'center',
-    backgroundColor: '#F8F8F8',
-  },
-
-  textarea: {
-    fontSize: 16,
-    marginTop: 10,
-    marginBottom: 10,
-    marginLeft: 15,
-    marginRight: 15,
-  }
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Publish);
+export default connect(mapStateToProps, mapDispatchToProps)(Publish)

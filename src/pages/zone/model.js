@@ -7,6 +7,8 @@ export default {
     user: {},
     data: {},
     info: {},
+    recent_replies: [],
+    recent_topics: [],
     collects: [],
     accesstoken: '',
     setting: { draft: true, notic: true },
@@ -24,7 +26,7 @@ export default {
     *login({ payload = {} }, { call, put }) {
       const { accesstoken } = payload
       yield put({ type: 'loading', payload: true });
-      const { data } = yield call(service.postToken, payload);
+      const { data, err } = yield call(service.postToken, payload);
       yield put({ type: 'login/success', payload: data });
       AsyncStorage.setItem('accesstoken', accesstoken);
       yield put({ type: 'token', payload: accesstoken });
@@ -62,7 +64,8 @@ export default {
     'query/success'(state, { payload }) {
       const [, result] = payload
       const data = service.parseUser(result.data)
-      return { ...state, data };
+      const { recent_replies, recent_topics } = data
+      return { ...state, data, recent_replies, recent_topics };
     },
     'information/success'(state, { payload }) {
       const [, data] = payload

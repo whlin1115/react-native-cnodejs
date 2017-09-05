@@ -5,7 +5,7 @@ import { StyleSheet, View, Image, Text, TouchableOpacity } from 'react-native'
 function Wrap({ item, navigate }) {
 
   return (
-    <TouchableOpacity onPress={() => { navigate('Detail', { id: item.id }) }}>
+    <TouchableOpacity onPress={() => { navigate('Detail', { topic_id: item.id }) }}>
       <View style={styles.list}>
         <View style={styles.header}>
           <View style={[styles[item.tab], styles.tab]} >

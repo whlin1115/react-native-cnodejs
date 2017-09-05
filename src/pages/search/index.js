@@ -18,6 +18,10 @@ class Search extends PureComponent {
     };
   };
 
+  componentDidMount() {
+    this.props.init();
+  }
+
   componentWillUnmount() {
     this.props.clean()
   }
@@ -65,6 +69,11 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
+    init() {
+      dispatch({
+        type: 'search/init',
+      });
+    },
     query(params) {
       dispatch({
         type: 'search/query',

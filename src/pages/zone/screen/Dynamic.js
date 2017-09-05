@@ -20,24 +20,25 @@ class Dynamic extends PureComponent {
   };
 
   render() {
-    const { data } = this.props
+    const { recent_replies, recent_topics, } = this.props
     const { navigate, state } = this.props.navigation;
     const { type } = state.params
-    const recent = { 'reply': 'recent_replies', 'topic': 'recent_topics' }
-    const list = data[recent[type]]
+    const recent = { 'reply': recent_replies, 'topic': recent_topics }
+    const data = recent[type]
 
     return (
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
         {
-          list.length > 0 ? <FlatList
-            style={{ width: width }}
-            data={list}
-            extraData={this.state}
-            keyExtractor={(item, index) => index}
-            renderItem={({ item }) => <Card navigate={navigate} item={item} />}
-          /> :
-            <View style={styles.msgViw}>
+          data.length > 0 ?
+            <FlatList
+              style={{ width: width }}
+              data={data}
+              extraData={this.state}
+              keyExtractor={(item, index) => index}
+              renderItem={({ item }) => <Card navigate={navigate} item={item} />}
+            />
+            : <View style={styles.msgViw}>
               <Text style={styles.msg}>暂无消息</Text>
             </View>
         }
@@ -47,8 +48,8 @@ class Dynamic extends PureComponent {
 }
 
 function mapStateToProps(state) {
-  const { data, collects, loading } = state.zone;
-  return { data, collects, loading };
+  const { data, recent_replies, recent_topics, loading } = state.zone;
+  return { data, recent_replies, recent_topics, loading };
 }
 
 function mapDispatchToProps(dispatch) {

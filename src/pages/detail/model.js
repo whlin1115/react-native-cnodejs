@@ -3,6 +3,7 @@ import * as service from './service';
 export default {
   namespace: 'detail',
   state: {
+    topic_id: '',
     data: {},
     is_collect: false,
     loading: false,
@@ -18,7 +19,9 @@ export default {
       const { collect } = payload
       let query = 'de_collect'
       if (collect) query = 'collect'
+      yield put({ type: 'loading', payload: true });
       const { data, err } = yield call(service[query], payload);
+      yield put({ type: 'loading', payload: false });
       if (err) return
       yield put({ type: 'collect/success', payload: collect });
     },
@@ -31,6 +34,9 @@ export default {
     },
     'collect/success'(state, { payload }) {
       return { ...state, is_collect: payload };
+    },
+    'topic'(state, { payload: data }) {
+      return { ...state, topic_id: data };
     },
     'loading'(state, { payload: data }) {
       return { ...state, loading: data };

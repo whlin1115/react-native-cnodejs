@@ -2,9 +2,9 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva/mobile';
 import Info from './components/Info';
 import Floor from './components/Floor';
-import Collect from './components/Collect';
+import Option from './components/Option';
 import { Html, HtmlView } from '../../components';
-import { StyleSheet, View, Text, Button, Image, StatusBar, FlatList, Dimensions, ScrollView, WebView, TouchableOpacity } from 'react-native'
+import { StyleSheet, View, Text, RefreshControl, Button, Image, StatusBar, FlatList, Dimensions, ScrollView, WebView, TouchableOpacity } from 'react-native'
 
 const { width } = Dimensions.get('window')
 const defaultMaxImageWidth = width - 30 - 20
@@ -17,16 +17,23 @@ class Detail extends PureComponent {
 
   static navigationOptions = ({ navigation }) => {
     const { state, setParams } = navigation;
+    const { params } = navigation.state;
     return {
       headerTitle: '话题',
-      headerRight: (<Collect />)
+      headerRight: (<Option params={params} navigation={navigation} />)
     };
   };
 
   componentDidMount() {
-    const { params } = this.props.navigation.state;
-    const { accesstoken } = this.props
-    this.props.query({ ...params, accesstoken })
+    const { topic_id } = this.props.navigation.state.params;
+    this.props.setTopic(topic_id)
+  }
+
+  componentWillReceiveProps(next) {
+    const { topic_id, accesstoken } = this.props;
+    if (next.topic_id && next.topic_id !== topic_id) {
+      this.props.query({ topic_id: next.topic_id, accesstoken })
+    }
   }
 
   componentWillUnmount() {
@@ -34,14 +41,13 @@ class Detail extends PureComponent {
   }
 
   render() {
-    const { data, loading } = this.props;
+    const { data, loading, topic_id, accesstoken } = this.props;
     const { navigate } = this.props.navigation;
     const infoProps = { data, navigate }
     const htmlProps = { html: data.content, styles: htmlStyles }
-    const { replies } = data
 
     return (
-      <ScrollView style={styles.container}>
+      <ScrollView style={styles.container} refreshControl={<RefreshControl onRefresh={() => { this.props.query({ topic_id, accesstoken }) }} refreshing={loading} />}>
         <Info {...infoProps} />
         {
           data.content ?
@@ -50,13 +56,13 @@ class Detail extends PureComponent {
             </View> : null
         }
         {
-          replies ? <View style={styles.reply}>
-            <Text style={styles.total}>{replies.length}</Text><Text> 回复</Text>
+          data.replies ? <View style={styles.reply}>
+            <Text style={styles.total}>{data.replies.length}</Text><Text> 回复</Text>
           </View> : null
         }
         <FlatList
           style={{ width: width }}
-          data={replies}
+          data={data.replies}
           extraData={this.state}
           keyExtractor={(item, index) => index}
           renderItem={({ item }) => <Floor navigate={navigate} item={item} />}
@@ -67,9 +73,9 @@ class Detail extends PureComponent {
 }
 
 function mapStateToProps(state) {
-  const { data, loading } = state.detail;
+  const { data, topic_id, loading } = state.detail;
   const { accesstoken } = state.zone
-  return { data, accesstoken, loading };
+  return { data, topic_id, accesstoken, loading };
 }
 
 function mapDispatchToProps(dispatch) {
@@ -79,6 +85,12 @@ function mapDispatchToProps(dispatch) {
         type: 'detail/query',
         payload: params,
       });
+    },
+    setTopic(params) {
+      dispatch({
+        type: 'detail/topic',
+        payload: params,
+      })
     },
     clean() {
       dispatch({

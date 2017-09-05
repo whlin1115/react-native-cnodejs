@@ -9,10 +9,6 @@ class History extends Component {
     super(props);
   }
 
-  componentDidMount() {
-    this.props.init();
-  }
-
   _onSearch = (text) => {
     const params = { content: text }
     this.props.query(params)
@@ -77,11 +73,6 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    init() {
-      dispatch({
-        type: 'search/init',
-      });
-    },
     query(params) {
       dispatch({
         type: 'search/query',

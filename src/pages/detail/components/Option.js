@@ -2,24 +2,34 @@ import React, { Component } from 'react';
 import { connect } from 'dva/mobile';
 import { StyleSheet, Text, View, Image, TextInput, Dimensions, TouchableOpacity } from 'react-native';
 
-class Collect extends Component {
+class Option extends Component {
   constructor(props) {
     super(props);
     this.state = { is_collect: false }
   }
 
   _onCollect = (collect) => {
-    const { data, accesstoken } = this.props
-    const params = { collect, topic_id: data.id, accesstoken }
+    const { accesstoken } = this.props
+    const { id } = this.props.params
+    const params = { collect, topic_id: id, accesstoken }
     this.props.collect(params)
-    if (!collect) this.props.delete(data.id)
+    if (!collect) this.props.delete(id)
   }
 
   render() {
-    const { is_collect } = this.props
+    const { is_collect, recent_topics, navigation } = this.props
+    const { topic_id } = this.props.params;
+    const edit = recent_topics.filter(topic => topic.id === topic_id)
 
     return (
       <View style={styles.headerRight}>
+        {
+          edit.length > 0 ?
+            <TouchableOpacity style={styles.headerTouch} onPress={() => { navigation.navigate('Publish', { edit: true }) }}>
+              <Image style={styles.headerBtn} source={require('../../../assets/images/back.png')} resizeMode='contain' />
+            </TouchableOpacity>
+            : null
+        }
         <TouchableOpacity style={styles.headerTouch} onPress={() => { this._onCollect(!is_collect) }}>
           <Image style={styles.headerBtn} source={is_collect ? require('../../../assets/images/collected.png') : require('../../../assets/images/collect.png')} resizeMode='contain' />
         </TouchableOpacity>
@@ -29,9 +39,9 @@ class Collect extends Component {
 }
 
 function mapStateToProps(state) {
-  const { data, is_collect } = state.detail;
-  const { accesstoken } = state.zone
-  return { data, is_collect, accesstoken };
+  const { is_collect } = state.detail;
+  const { accesstoken, recent_topics } = state.zone
+  return { is_collect, accesstoken, recent_topics };
 }
 
 function mapDispatchToProps(dispatch) {
@@ -59,7 +69,7 @@ const styles = StyleSheet.create({
   },
 
   headerTouch: {
-    height: 30
+    height: 30,
   },
 
   headerBtn: {
@@ -70,4 +80,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Collect);
+export default connect(mapStateToProps, mapDispatchToProps)(Option);

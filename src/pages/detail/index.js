@@ -1,9 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva/mobile';
-import Info from './components/Info';
-import Floor from './components/Floor';
-import Option from './components/Option';
-import { Html, HtmlView } from '../../components';
+import { Floor, Info, Input, Option } from './components';
+import { HtmlView } from '../../components';
 import { StyleSheet, View, Text, RefreshControl, Button, Image, StatusBar, FlatList, Dimensions, ScrollView, WebView, TouchableOpacity } from 'react-native'
 
 const { width } = Dimensions.get('window')
@@ -12,7 +10,9 @@ const defaultMaxImageWidth = width - 30 - 20
 class Detail extends PureComponent {
   constructor(props) {
     super(props)
-    this.state = {}
+    this.state = {
+      
+    }
   }
 
   static navigationOptions = ({ navigation }) => {
@@ -41,27 +41,32 @@ class Detail extends PureComponent {
     const htmlProps = { html: data.content, styles: htmlStyles }
 
     return (
-      <ScrollView style={styles.container} refreshControl={<RefreshControl onRefresh={() => { this.props.query({ ...state.params, accesstoken }) }} refreshing={loading} />}>
-        <Info {...infoProps} />
-        {
-          data.content ?
-            <View style={styles.connect}>
-              <HtmlView {...htmlProps} />
+      <View style={styles.container}>
+        <ScrollView style={styles.scrollView} refreshControl={<RefreshControl onRefresh={() => { this.props.query({ ...state.params, accesstoken }) }} refreshing={loading} />}>
+          <Info {...infoProps} />
+          {
+            data.content ?
+              <View style={styles.connect}>
+                <HtmlView {...htmlProps} />
+              </View> : null
+          }
+          {
+            replies ? <View style={styles.reply}>
+              <Text style={styles.total}>{replies.length}</Text><Text> 回复</Text>
             </View> : null
-        }
-        {
-          replies ? <View style={styles.reply}>
-            <Text style={styles.total}>{replies.length}</Text><Text> 回复</Text>
-          </View> : null
-        }
-        <FlatList
-          style={{ width: width }}
-          data={replies}
-          extraData={this.state}
-          keyExtractor={(item, index) => index}
-          renderItem={({ item }) => <Floor navigate={navigate} item={item} />}
-        />
-      </ScrollView>
+          }
+          <FlatList
+            style={{ width: width }}
+            data={replies}
+            extraData={this.state}
+            keyExtractor={(item, index) => index}
+            renderItem={({ item }) => <Floor navigate={navigate} item={item} />}
+          />
+        </ScrollView>
+        <View style={styles.inputView}>
+          <Input />
+        </View>
+      </View>
     );
   }
 }
@@ -91,6 +96,12 @@ function mapDispatchToProps(dispatch) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingBottom: 44,
+    backgroundColor: '#FFFFFF',
+  },
+
+  scrollView: {
+    flex: 1,
     backgroundColor: '#FFFFFF',
   },
 
@@ -115,7 +126,12 @@ const styles = StyleSheet.create({
   total: {
     color: '#42b983',
     fontWeight: 'bold',
-  }
+  },
+
+  inputView: {
+    position: 'absolute',
+    bottom: 0,
+  },
 });
 
 const htmlStyles = StyleSheet.create({

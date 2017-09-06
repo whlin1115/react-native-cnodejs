@@ -3,11 +3,13 @@ import * as service from './service';
 export default {
   namespace: 'detail',
   state: {
-    topic_id: '',
     data: {},
+    content: '',
+    reply_id: '',
     replies: [],
     is_collect: false,
     loading: false,
+    defaultReply: { create_at: '刚刚', ups: [], reply_id: null, is_uped: false },
   },
   effects: {
     *query({ payload = {} }, { call, put }) {
@@ -20,19 +22,29 @@ export default {
       const { collect } = payload
       let query = 'de_collect'
       if (collect) query = 'collect'
-      yield put({ type: 'loading', payload: true });
       const { data, err } = yield call(service[query], payload);
-      yield put({ type: 'loading', payload: false });
       if (err) return
       yield put({ type: 'collect/success', payload: collect });
     },
     *ups({ payload = {} }, { call, put }) {
       const { reply_id } = payload
-      yield put({ type: 'loading', payload: true });
       const { data, err } = yield call(service.ups, payload);
-      yield put({ type: 'loading', payload: false });
       if (err) return
       yield put({ type: 'ups/success', payload: { reply_id, data } });
+    },
+    *comment({ payload = {} }, { call, put }) {
+      const { user } = payload
+      const { data, err } = yield call(service.postComment, payload);
+      if (err) return
+      yield put({ type: 'comment/success', payload: { data, user } });
+    },
+    *reply({ payload = {} }, { call, put }) {
+      const { reply_id } = payload
+      yield put({ type: 'loading', payload: true });
+      const { data, err } = yield call(service.postComment, payload);
+      yield put({ type: 'loading', payload: false });
+      if (err) return
+      yield put({ type: 'comment/success', payload: { reply_id, data } });
     },
   },
   reducers: {
@@ -50,18 +62,24 @@ export default {
       const [, result] = data
       const is_uped = result.action == "up" ? true : false
       const replies = state.replies.map((reply) => {
-        if (reply.id == reply_id) {
-          is_uped ? reply.is_uped = true : reply.is_uped = false
-        }
+        if (reply.id == reply_id) reply.is_uped = is_uped
         return reply
       })
       return { ...state, replies };
     },
-    'topic'(state, { payload: data }) {
-      return { ...state, topic_id: data };
+    'comment/success'(state, { payload }) {
+      const { data, user } = payload
+      const [, result] = data
+      const { id, loginname, avatar_url } = user
+      const reply = { id, content: state.content, author: { loginname, avatar_url }, ...state.defaultReply }
+      const replies = state.replies.push(reply)
+      return { ...state, replies };
     },
     'loading'(state, { payload: data }) {
       return { ...state, loading: data };
+    },
+    'content'(state, { payload: data }) {
+      return { ...state, content: data };
     },
     'clean'(state, { payload: data }) {
       return { ...state, data: {}, is_collect: false, replies: [] };

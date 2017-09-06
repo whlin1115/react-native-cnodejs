@@ -7,21 +7,33 @@ export async function queryTopic(params) {
 }
 
 export async function collect(params) {
-  const { topic_id, accesstoken = null } = params
+  const { topic_id, accesstoken } = params
   const body = { accesstoken, topic_id }
   return post('/topic_collect/collect', body);
 }
 
 export async function de_collect(params) {
-  const { topic_id, accesstoken = null } = params
+  const { topic_id, accesstoken } = params
   const body = { accesstoken, topic_id }
   return post('/topic_collect/de_collect', body);
 }
 
 export async function ups(params) {
-  const { reply_id, accesstoken = null } = params
+  const { reply_id, accesstoken } = params
   const body = { accesstoken }
   return post(`/reply/${reply_id}/ups`, body);
+}
+
+export async function postComment(params) {
+  const { topic_id, accesstoken, content } = params
+  const body = { accesstoken, content }
+  return post(`/topic/${topic_id}/replies`, body);
+}
+
+export async function postReply(params) {
+  const { topic_id, accesstoken, content, reply_id } = params
+  const body = { accesstoken, content, reply_id }
+  return post(`/topic/${topic_id}/replies`, body);
 }
 
 export function parseTopic(data) {

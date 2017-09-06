@@ -68357,11 +68357,13 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 exports.default = {
   namespace: 'detail',
   state: {
-    topic_id: '',
     data: {},
+    content: '',
+    reply_id: '',
     replies: [],
     is_collect: false,
-    loading: false
+    loading: false,
+    defaultReply: { create_at: '刚刚', ups: [], reply_id: null, is_uped: false }
   },
   effects: {
     query: regeneratorRuntime.mark(function query(_ref, _ref2) {
@@ -68417,32 +68419,25 @@ exports.default = {
 
               if (collect) query = 'collect';
               _context2.next = 5;
-              return put({ type: 'loading', payload: true });
-
-            case 5:
-              _context2.next = 7;
               return call(service[query], payload);
 
-            case 7:
+            case 5:
               _ref6 = _context2.sent;
               data = _ref6.data;
               err = _ref6.err;
-              _context2.next = 12;
-              return put({ type: 'loading', payload: false });
 
-            case 12:
               if (!err) {
-                _context2.next = 14;
+                _context2.next = 10;
                 break;
               }
 
               return _context2.abrupt('return');
 
-            case 14:
-              _context2.next = 16;
+            case 10:
+              _context2.next = 12;
               return put({ type: 'collect/success', payload: collect });
 
-            case 16:
+            case 12:
             case 'end':
               return _context2.stop();
           }
@@ -68463,42 +68458,120 @@ exports.default = {
             case 0:
               reply_id = payload.reply_id;
               _context3.next = 3;
-              return put({ type: 'loading', payload: true });
-
-            case 3:
-              _context3.next = 5;
               return call(service.ups, payload);
 
-            case 5:
+            case 3:
               _ref9 = _context3.sent;
               data = _ref9.data;
               err = _ref9.err;
-              _context3.next = 10;
-              return put({ type: 'loading', payload: false });
 
-            case 10:
               if (!err) {
-                _context3.next = 12;
+                _context3.next = 8;
                 break;
               }
 
               return _context3.abrupt('return');
 
-            case 12:
-              _context3.next = 14;
+            case 8:
+              _context3.next = 10;
               return put({ type: 'ups/success', payload: { reply_id: reply_id, data: data } });
 
-            case 14:
+            case 10:
             case 'end':
               return _context3.stop();
           }
         }
       }, ups, this);
+    }),
+    comment: regeneratorRuntime.mark(function comment(_ref10, _ref11) {
+      var _ref10$payload = _ref10.payload,
+          payload = _ref10$payload === undefined ? {} : _ref10$payload;
+      var call = _ref11.call,
+          put = _ref11.put;
+
+      var user, _ref12, data, err;
+
+      return regeneratorRuntime.wrap(function comment$(_context4) {
+        while (1) {
+          switch (_context4.prev = _context4.next) {
+            case 0:
+              user = payload.user;
+              _context4.next = 3;
+              return call(service.postComment, payload);
+
+            case 3:
+              _ref12 = _context4.sent;
+              data = _ref12.data;
+              err = _ref12.err;
+
+              if (!err) {
+                _context4.next = 8;
+                break;
+              }
+
+              return _context4.abrupt('return');
+
+            case 8:
+              _context4.next = 10;
+              return put({ type: 'comment/success', payload: { data: data, user: user } });
+
+            case 10:
+            case 'end':
+              return _context4.stop();
+          }
+        }
+      }, comment, this);
+    }),
+    reply: regeneratorRuntime.mark(function reply(_ref13, _ref14) {
+      var _ref13$payload = _ref13.payload,
+          payload = _ref13$payload === undefined ? {} : _ref13$payload;
+      var call = _ref14.call,
+          put = _ref14.put;
+
+      var reply_id, _ref15, data, err;
+
+      return regeneratorRuntime.wrap(function reply$(_context5) {
+        while (1) {
+          switch (_context5.prev = _context5.next) {
+            case 0:
+              reply_id = payload.reply_id;
+              _context5.next = 3;
+              return put({ type: 'loading', payload: true });
+
+            case 3:
+              _context5.next = 5;
+              return call(service.postComment, payload);
+
+            case 5:
+              _ref15 = _context5.sent;
+              data = _ref15.data;
+              err = _ref15.err;
+              _context5.next = 10;
+              return put({ type: 'loading', payload: false });
+
+            case 10:
+              if (!err) {
+                _context5.next = 12;
+                break;
+              }
+
+              return _context5.abrupt('return');
+
+            case 12:
+              _context5.next = 14;
+              return put({ type: 'comment/success', payload: { reply_id: reply_id, data: data } });
+
+            case 14:
+            case 'end':
+              return _context5.stop();
+          }
+        }
+      }, reply, this);
     })
   },
   reducers: {
-    'query/success': function querySuccess(state, _ref10) {
-      var payload = _ref10.payload;
+    'query/success': function querySuccess(state, _ref16) {
+      var payload = _ref16.payload;
 
       var _payload = _slicedToArray(payload, 2),
           data = _payload[1];
@@ -68508,13 +68581,13 @@ exports.default = {
 
       return _extends({}, state, { data: topics, is_collect: topics.is_collect, replies: replies });
     },
-    'collect/success': function collectSuccess(state, _ref11) {
-      var payload = _ref11.payload;
+    'collect/success': function collectSuccess(state, _ref17) {
+      var payload = _ref17.payload;
 
       return _extends({}, state, { is_collect: payload });
     },
-    'ups/success': function upsSuccess(state, _ref12) {
-      var payload = _ref12.payload;
+    'ups/success': function upsSuccess(state, _ref18) {
+      var payload = _ref18.payload;
       var reply_id = payload.reply_id,
           data = payload.data;
 
@@ -68530,18 +68603,34 @@ exports.default = {
       });
       return _extends({}, state, { replies: replies });
     },
-    'topic': function topic(state, _ref13) {
-      var data = _ref13.payload;
+    'comment/success': function commentSuccess(state, _ref19) {
+      var payload = _ref19.payload;
+      var data = payload.data,
+          user = payload.user;
 
-      return _extends({}, state, { topic_id: data });
+      var _data2 = _slicedToArray(data, 2),
+          result = _data2[1];
+
+      var id = user.id,
+          loginname = user.loginname,
+          avatar_url = user.avatar_url;
+
+      var reply = _extends({ id: id, content: state.content, author: { loginname: loginname, avatar_url: avatar_url } }, state.defaultReply);
+      var replies = state.replies.push(reply);
+      return _extends({}, state, { replies: replies });
     },
-    'loading': function loading(state, _ref14) {
-      var data = _ref14.payload;
+    'loading': function loading(state, _ref20) {
+      var data = _ref20.payload;
 
       return _extends({}, state, { loading: data });
     },
-    'clean': function clean(state, _ref15) {
-      var data = _ref15.payload;
+    'content': function content(state, _ref21) {
+      var data = _ref21.payload;
+
+      return _extends({}, state, { content: data });
+    },
+    'clean': function clean(state, _ref22) {
+      var data = _ref22.payload;
 
       return _extends({}, state, { data: {}, is_collect: false, replies: [] });
     }
@@ -68561,6 +68650,8 @@ exports.queryTopic = queryTopic;
 exports.collect = collect;
 exports.de_collect = de_collect;
 exports.ups = ups;
+exports.postComment = postComment;
+exports.postReply = postReply;
 exports.parseTopic = parseTopic;
 exports.cacheControl = cacheControl;
 
@@ -68587,13 +68678,12 @@ function queryTopic(params) {
 }
 
 function collect(params) {
-  var topic_id, _params$accesstoken2, accesstoken, body;
-
+  var topic_id, accesstoken, body;
   return regeneratorRuntime.async(function collect$(_context2) {
     while (1) {
       switch (_context2.prev = _context2.next) {
         case 0:
-          topic_id = params.topic_id, _params$accesstoken2 = params.accesstoken, accesstoken = _params$accesstoken2 === undefined ? null : _params$accesstoken2;
+          topic_id = params.topic_id, accesstoken = params.accesstoken;
           body = { accesstoken: accesstoken, topic_id: topic_id };
           return _context2.abrupt('return', (0, _request.post)('/topic_collect/collect', body));
 
@@ -68606,13 +68696,12 @@ function collect(params) {
 }
 
 function de_collect(params) {
-  var topic_id, _params$accesstoken3, accesstoken, body;
-
+  var topic_id, accesstoken, body;
   return regeneratorRuntime.async(function de_collect$(_context3) {
     while (1) {
       switch (_context3.prev = _context3.next) {
         case 0:
-          topic_id = params.topic_id, _params$accesstoken3 = params.accesstoken, accesstoken = _params$accesstoken3 === undefined ? null : _params$accesstoken3;
+          topic_id = params.topic_id, accesstoken = params.accesstoken;
           body = { accesstoken: accesstoken, topic_id: topic_id };
           return _context3.abrupt('return', (0, _request.post)('/topic_collect/de_collect', body));
 
@@ -68625,19 +68714,54 @@ function de_collect(params) {
 }
 
 function ups(params) {
-  var reply_id, _params$accesstoken4, accesstoken, body;
-
+  var reply_id, accesstoken, body;
   return regeneratorRuntime.async(function ups$(_context4) {
     while (1) {
       switch (_context4.prev = _context4.next) {
         case 0:
-          reply_id = params.reply_id, _params$accesstoken4 = params.accesstoken, accesstoken = _params$accesstoken4 === undefined ? null : _params$accesstoken4;
+          reply_id = params.reply_id, accesstoken = params.accesstoken;
           body = { accesstoken: accesstoken };
           return _context4.abrupt('return', (0, _request.post)('/reply/' + reply_id + '/ups', body));
 
         case 3:
         case 'end':
           return _context4.stop();
+      }
+    }
+  }, null, this);
+}
+
+function postComment(params) {
+  var topic_id, accesstoken, content, body;
+  return regeneratorRuntime.async(function postComment$(_context5) {
+    while (1) {
+      switch (_context5.prev = _context5.next) {
+        case 0:
+          topic_id = params.topic_id, accesstoken = params.accesstoken, content = params.content;
+          body = { accesstoken: accesstoken, content: content };
+          return _context5.abrupt('return', (0, _request.post)('/topic/' + topic_id + '/replies', body));
+
+        case 3:
+        case 'end':
+          return _context5.stop();
+      }
+    }
+  }, null, this);
+}
+
+function postReply(params) {
+  var topic_id, accesstoken, content, reply_id, body;
+  return regeneratorRuntime.async(function postReply$(_context6) {
+    while (1) {
+      switch (_context6.prev = _context6.next) {
+        case 0:
+          topic_id = params.topic_id, accesstoken = params.accesstoken, content = params.content, reply_id = params.reply_id;
+          body = { accesstoken: accesstoken, content: content, reply_id: reply_id };
+          return _context6.abrupt('return', (0, _request.post)('/topic/' + topic_id + '/replies', body));
+
+        case 3:
+        case 'end':
+          return _context6.stop();
       }
     }
   }, null, this);
@@ -91025,19 +91149,9 @@ var _react2 = _interopRequireDefault(_react);
 
 var _mobile = require(306         ); // 306 = dva/mobile
 
-var _Info = require(596                ); // 596 = ./components/Info
+var _components2 = require(807           ); // 807 = ./components
 
-var _Info2 = _interopRequireDefault(_Info);
-
-var _Floor = require(597                 ); // 597 = ./components/Floor
-
-var _Floor2 = _interopRequireDefault(_Floor);
-
-var _Option = require(611                  ); // 611 = ./components/Option
-
-var _Option2 = _interopRequireDefault(_Option);
-
-var _components2 = require(598               ); // 598 = ../../components
+var _components3 = require(598               ); // 598 = ../../components
 
 var _reactNative = require(26            ); // 26 = react-native
 
@@ -91097,85 +91211,107 @@ var Detail = function (_PureComponent) {
       var htmlProps = { html: data.content, styles: htmlStyles };
 
       return _react2.default.createElement(
-        _reactNative.ScrollView,
-        { style: styles.container, refreshControl: _react2.default.createElement(_reactNative.RefreshControl, { onRefresh: function onRefresh() {
-              _this2.props.query(_extends({}, state.params, { accesstoken: accesstoken }));
-            }, refreshing: loading, __source: {
-              fileName: _jsxFileName,
-              lineNumber: 44
-            }
-          }), __source: {
+        _reactNative.View,
+        { style: styles.container, __source: {
             fileName: _jsxFileName,
             lineNumber: 44
           }
         },
-        _react2.default.createElement(_Info2.default, _extends({}, infoProps, {
-          __source: {
-            fileName: _jsxFileName,
-            lineNumber: 45
-          }
-        })),
-        data.content ? _react2.default.createElement(
-          _reactNative.View,
-          { style: styles.connect, __source: {
+        _react2.default.createElement(
+          _reactNative.ScrollView,
+          { style: styles.scrollView, refreshControl: _react2.default.createElement(_reactNative.RefreshControl, { onRefresh: function onRefresh() {
+                _this2.props.query(_extends({}, state.params, { accesstoken: accesstoken }));
+              }, refreshing: loading, __source: {
+                fileName: _jsxFileName,
+                lineNumber: 45
+              }
+            }), __source: {
               fileName: _jsxFileName,
-              lineNumber: 48
+              lineNumber: 45
             }
           },
-          _react2.default.createElement(_components2.HtmlView, _extends({}, htmlProps, {
+          _react2.default.createElement(_components2.Info, _extends({}, infoProps, {
             __source: {
               fileName: _jsxFileName,
-              lineNumber: 49
+              lineNumber: 46
             }
-          }))
-        ) : null,
-        replies ? _react2.default.createElement(
-          _reactNative.View,
-          { style: styles.reply, __source: {
-              fileName: _jsxFileName,
-              lineNumber: 53
-            }
-          },
-          _react2.default.createElement(
-            _reactNative.Text,
-            { style: styles.total, __source: {
+          })),
+          data.content ? _react2.default.createElement(
+            _reactNative.View,
+            { style: styles.connect, __source: {
                 fileName: _jsxFileName,
-                lineNumber: 54
+                lineNumber: 49
               }
             },
-            replies.length
-          ),
-          _react2.default.createElement(
-            _reactNative.Text,
-            {
+            _react2.default.createElement(_components3.HtmlView, _extends({}, htmlProps, {
               __source: {
                 fileName: _jsxFileName,
+                lineNumber: 50
+              }
+            }))
+          ) : null,
+          replies ? _react2.default.createElement(
+            _reactNative.View,
+            { style: styles.reply, __source: {
+                fileName: _jsxFileName,
                 lineNumber: 54
               }
             },
-            ' \u56DE\u590D'
-          )
-        ) : null,
-        _react2.default.createElement(_reactNative.FlatList, {
-          style: { width: width },
-          data: replies,
-          extraData: this.props,
-          keyExtractor: function keyExtractor(item, index) {
-            return index;
+            _react2.default.createElement(
+              _reactNative.Text,
+              { style: styles.total, __source: {
+                  fileName: _jsxFileName,
+                  lineNumber: 55
+                }
+              },
+              replies.length
+            ),
+            _react2.default.createElement(
+              _reactNative.Text,
+              {
+                __source: {
+                  fileName: _jsxFileName,
+                  lineNumber: 55
+                }
+              },
+              ' \u56DE\u590D'
+            )
+          ) : null,
+          _react2.default.createElement(_reactNative.FlatList, {
+            style: { width: width },
+            data: replies,
+            extraData: this.state,
+            keyExtractor: function keyExtractor(item, index) {
+              return index;
+            },
+            renderItem: function renderItem(_ref) {
+              var item = _ref.item;
+              return _react2.default.createElement(_components2.Floor, { navigate: navigate, item: item, __source: {
+                  fileName: _jsxFileName,
+                  lineNumber: 63
+                }
+              });
+            },
+            __source: {
+              fileName: _jsxFileName,
+              lineNumber: 58
+            }
+          })
+        ),
+        _react2.default.createElement(
+          _reactNative.View,
+          { style: styles.inputView, __source: {
+              fileName: _jsxFileName,
+              lineNumber: 66
+            }
           },
-          renderItem: function renderItem(_ref) {
-            var item = _ref.item;
-            return _react2.default.createElement(_Floor2.default, { navigate: navigate, item: item, __source: {
-                fileName: _jsxFileName,
-                lineNumber: 62
-              }
-            });
-          },
-          __source: {
-            fileName: _jsxFileName,
-            lineNumber: 57
-          }
-        })
+          _react2.default.createElement(_components2.Input, {
+            __source: {
+              fileName: _jsxFileName,
+              lineNumber: 67
+            }
+          })
+        )
       );
     }
   }]);
@@ -91191,7 +91327,7 @@ Detail.navigationOptions = function (_ref2) {
 
   return {
     headerTitle: '话题',
-    headerRight: _react2.default.createElement(_Option2.default, { params: params, navigation: navigation, __source: {
+    headerRight: _react2.default.createElement(_components2.Option, { params: params, navigation: navigation, __source: {
         fileName: _jsxFileName,
         lineNumber: 23
       }
@@ -91228,6 +91364,12 @@ function mapDispatchToProps(dispatch) {
 var styles = _reactNative.StyleSheet.create({
   container: {
     flex: 1,
+    paddingBottom: 44,
+    backgroundColor: '#FFFFFF'
+  },
+
+  scrollView: {
+    flex: 1,
     backgroundColor: '#FFFFFF'
   },
 
@@ -91252,6 +91394,11 @@ var styles = _reactNative.StyleSheet.create({
   total: {
     color: '#42b983',
     fontWeight: 'bold'
+  },
+
+  inputView: {
+    position: 'absolute',
+    bottom: 0
   }
 });
 
@@ -91280,222 +91427,34 @@ var htmlStyles = _reactNative.StyleSheet.create({
 
 exports.default = (0, _mobile.connect)(mapStateToProps, mapDispatchToProps)(Detail);
 }, 595, null, "cnodejs/src/pages/detail/index.js");
-__d(/* cnodejs/src/pages/detail/components/Info.js */function(global, require, module, exports) {Object.defineProperty(exports, "__esModule", {
+__d(/* cnodejs/src/pages/detail/components/index.js */function(global, require, module, exports) {Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var _jsxFileName = '/Users/wenhuan/Documents/Web/react-native/cnodejs/src/pages/detail/components/Info.js';
+exports.Option = exports.Input = exports.Info = exports.Floor = undefined;
 
-var _react = require(12     ); // 12 = react
+var _Floor = require(597      ); // 597 = ./Floor
 
-var _react2 = _interopRequireDefault(_react);
+var _Floor2 = _interopRequireDefault(_Floor);
 
-var _reactNative = require(26            ); // 26 = react-native
+var _Info = require(596     ); // 596 = ./Info
+
+var _Info2 = _interopRequireDefault(_Info);
+
+var _Input = require(808      ); // 808 = ./Input
+
+var _Input2 = _interopRequireDefault(_Input);
+
+var _Option = require(611       ); // 611 = ./Option
+
+var _Option2 = _interopRequireDefault(_Option);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function Info(_ref) {
-  var data = _ref.data,
-      navigate = _ref.navigate;
-
-
-  return Object.keys(data).length > 0 ? _react2.default.createElement(
-    _reactNative.View,
-    {
-      __source: {
-        fileName: _jsxFileName,
-        lineNumber: 9
-      }
-    },
-    _react2.default.createElement(
-      _reactNative.View,
-      { style: styles.title, __source: {
-          fileName: _jsxFileName,
-          lineNumber: 10
-        }
-      },
-      _react2.default.createElement(
-        _reactNative.Text,
-        { style: styles.h2, __source: {
-            fileName: _jsxFileName,
-            lineNumber: 11
-          }
-        },
-        data.title
-      )
-    ),
-    _react2.default.createElement(
-      _reactNative.View,
-      { style: styles.info, __source: {
-          fileName: _jsxFileName,
-          lineNumber: 13
-        }
-      },
-      _react2.default.createElement(_reactNative.Image, { source: { uri: data.author.avatar_url }, style: styles.avatar, __source: {
-          fileName: _jsxFileName,
-          lineNumber: 14
-        }
-      }),
-      _react2.default.createElement(
-        _reactNative.View,
-        { style: styles.col, __source: {
-            fileName: _jsxFileName,
-            lineNumber: 15
-          }
-        },
-        _react2.default.createElement(
-          _reactNative.Text,
-          { style: styles.span, __source: {
-              fileName: _jsxFileName,
-              lineNumber: 16
-            }
-          },
-          data.author.loginname
-        ),
-        _react2.default.createElement(
-          _reactNative.Text,
-          { style: styles.span, __source: {
-              fileName: _jsxFileName,
-              lineNumber: 17
-            }
-          },
-          '\u53D1\u5E03\u4E8E: ',
-          data.create_at
-        )
-      ),
-      _react2.default.createElement(
-        _reactNative.View,
-        { style: styles.right, __source: {
-            fileName: _jsxFileName,
-            lineNumber: 19
-          }
-        },
-        _react2.default.createElement(
-          _reactNative.View,
-          { style: [styles[data.tab], styles.tab], __source: {
-              fileName: _jsxFileName,
-              lineNumber: 20
-            }
-          },
-          _react2.default.createElement(
-            _reactNative.Text,
-            { style: styles.tag, __source: {
-                fileName: _jsxFileName,
-                lineNumber: 21
-              }
-            },
-            data.sort
-          )
-        ),
-        _react2.default.createElement(
-          _reactNative.Text,
-          { style: styles.span, __source: {
-              fileName: _jsxFileName,
-              lineNumber: 23
-            }
-          },
-          data.visit_count,
-          '\u6B21\u6D4F\u89C8'
-        )
-      )
-    )
-  ) : null;
-}
-
-var styles = _reactNative.StyleSheet.create({
-  title: {
-    padding: 5,
-    margin: 15,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 5
-  },
-
-  h2: {
-    color: '#2c3e50',
-    fontSize: 18,
-    lineHeight: 1.5 * 18,
-    fontWeight: 'bold'
-  },
-
-  info: {
-    alignItems: 'center',
-    flexWrap: 'wrap',
-    flexDirection: 'row',
-    paddingLeft: 15,
-    paddingRight: 15
-  },
-
-  avatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    marginRight: 15
-  },
-
-  col: {
-    flex: 1
-  },
-
-  h3: {
-    flex: 1,
-    overflow: 'hidden',
-    fontSize: 16,
-    fontWeight: 'bold'
-  },
-
-  tab: {
-    paddingTop: 5,
-    paddingLeft: 15,
-    paddingBottom: 5,
-    paddingRight: 15,
-    borderRadius: 3
-  },
-
-  tag: {
-    textAlign: 'center',
-    fontSize: 12,
-    color: '#FFFFFF',
-    fontWeight: 'bold'
-  },
-
-  span: {
-    paddingTop: 5,
-    paddingBottom: 5,
-    color: '#34495e',
-    fontSize: 12
-  },
-
-  right: {
-    alignItems: 'flex-end'
-  },
-
-  top: {
-    backgroundColor: '#e74c3c'
-  },
-
-  ask: {
-    backgroundColor: '#3498db'
-  },
-
-  good: {
-    backgroundColor: '#e67e22'
-  },
-
-  share: {
-    backgroundColor: '#1abc9c'
-  },
-
-  job: {
-    backgroundColor: '#6A8FFF'
-  },
-
-  default: {
-    backgroundColor: '#e7e7e7'
-  }
-
-});
-
-exports.default = Info;
-}, 596, null, "cnodejs/src/pages/detail/components/Info.js");
+exports.Floor = _Floor2.default;
+exports.Info = _Info2.default;
+exports.Input = _Input2.default;
+exports.Option = _Option2.default;
+}, 807, null, "cnodejs/src/pages/detail/components/index.js");
 __d(/* cnodejs/src/pages/detail/components/Floor.js */function(global, require, module, exports) {Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -101962,6 +101921,410 @@ __d(/* cnodejs/src/assets/images/liked.png */function(global, require, module, e
 }, 609, null, "cnodejs/src/assets/images/liked.png");
 __d(/* cnodejs/src/assets/images/like.png */function(global, require, module, exports) {module.exports=require(161                                         ).registerAsset({"__packager_asset":true,"httpServerLocation":"/assets/src/assets/images","width":200,"height":200,"scales":[1],"hash":"7f470298e570aef897bb94b673609ae7","name":"like","type":"png"}); // 161 = react-native/Libraries/Image/AssetRegistry
 }, 610, null, "cnodejs/src/assets/images/like.png");
+__d(/* cnodejs/src/pages/detail/components/Info.js */function(global, require, module, exports) {Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var _jsxFileName = '/Users/wenhuan/Documents/Web/react-native/cnodejs/src/pages/detail/components/Info.js';
+
+var _react = require(12     ); // 12 = react
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactNative = require(26            ); // 26 = react-native
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function Info(_ref) {
+  var data = _ref.data,
+      navigate = _ref.navigate;
+
+
+  return Object.keys(data).length > 0 ? _react2.default.createElement(
+    _reactNative.View,
+    {
+      __source: {
+        fileName: _jsxFileName,
+        lineNumber: 9
+      }
+    },
+    _react2.default.createElement(
+      _reactNative.View,
+      { style: styles.title, __source: {
+          fileName: _jsxFileName,
+          lineNumber: 10
+        }
+      },
+      _react2.default.createElement(
+        _reactNative.Text,
+        { style: styles.h2, __source: {
+            fileName: _jsxFileName,
+            lineNumber: 11
+          }
+        },
+        data.title
+      )
+    ),
+    _react2.default.createElement(
+      _reactNative.View,
+      { style: styles.info, __source: {
+          fileName: _jsxFileName,
+          lineNumber: 13
+        }
+      },
+      _react2.default.createElement(_reactNative.Image, { source: { uri: data.author.avatar_url }, style: styles.avatar, __source: {
+          fileName: _jsxFileName,
+          lineNumber: 14
+        }
+      }),
+      _react2.default.createElement(
+        _reactNative.View,
+        { style: styles.col, __source: {
+            fileName: _jsxFileName,
+            lineNumber: 15
+          }
+        },
+        _react2.default.createElement(
+          _reactNative.Text,
+          { style: styles.span, __source: {
+              fileName: _jsxFileName,
+              lineNumber: 16
+            }
+          },
+          data.author.loginname
+        ),
+        _react2.default.createElement(
+          _reactNative.Text,
+          { style: styles.span, __source: {
+              fileName: _jsxFileName,
+              lineNumber: 17
+            }
+          },
+          '\u53D1\u5E03\u4E8E: ',
+          data.create_at
+        )
+      ),
+      _react2.default.createElement(
+        _reactNative.View,
+        { style: styles.right, __source: {
+            fileName: _jsxFileName,
+            lineNumber: 19
+          }
+        },
+        _react2.default.createElement(
+          _reactNative.View,
+          { style: [styles[data.tab], styles.tab], __source: {
+              fileName: _jsxFileName,
+              lineNumber: 20
+            }
+          },
+          _react2.default.createElement(
+            _reactNative.Text,
+            { style: styles.tag, __source: {
+                fileName: _jsxFileName,
+                lineNumber: 21
+              }
+            },
+            data.sort
+          )
+        ),
+        _react2.default.createElement(
+          _reactNative.Text,
+          { style: styles.span, __source: {
+              fileName: _jsxFileName,
+              lineNumber: 23
+            }
+          },
+          data.visit_count,
+          '\u6B21\u6D4F\u89C8'
+        )
+      )
+    )
+  ) : null;
+}
+
+var styles = _reactNative.StyleSheet.create({
+  title: {
+    padding: 5,
+    margin: 15,
+    backgroundColor: '#f0f0f0',
+    borderRadius: 5
+  },
+
+  h2: {
+    color: '#2c3e50',
+    fontSize: 18,
+    lineHeight: 1.5 * 18,
+    fontWeight: 'bold'
+  },
+
+  info: {
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    flexDirection: 'row',
+    paddingLeft: 15,
+    paddingRight: 15
+  },
+
+  avatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    marginRight: 15
+  },
+
+  col: {
+    flex: 1
+  },
+
+  h3: {
+    flex: 1,
+    overflow: 'hidden',
+    fontSize: 16,
+    fontWeight: 'bold'
+  },
+
+  tab: {
+    paddingTop: 5,
+    paddingLeft: 15,
+    paddingBottom: 5,
+    paddingRight: 15,
+    borderRadius: 3
+  },
+
+  tag: {
+    textAlign: 'center',
+    fontSize: 12,
+    color: '#FFFFFF',
+    fontWeight: 'bold'
+  },
+
+  span: {
+    paddingTop: 5,
+    paddingBottom: 5,
+    color: '#34495e',
+    fontSize: 12
+  },
+
+  right: {
+    alignItems: 'flex-end'
+  },
+
+  top: {
+    backgroundColor: '#e74c3c'
+  },
+
+  ask: {
+    backgroundColor: '#3498db'
+  },
+
+  good: {
+    backgroundColor: '#e67e22'
+  },
+
+  share: {
+    backgroundColor: '#1abc9c'
+  },
+
+  job: {
+    backgroundColor: '#6A8FFF'
+  },
+
+  default: {
+    backgroundColor: '#e7e7e7'
+  }
+
+});
+
+exports.default = Info;
+}, 596, null, "cnodejs/src/pages/detail/components/Info.js");
+__d(/* cnodejs/src/pages/detail/components/Input.js */function(global, require, module, exports) {Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react2 = require(12     ); // 12 = react
+
+var _react3 = _interopRequireDefault(_react2);
+
+var _index = require(662                                                          ); // 662 = ./../../../../node_modules/react-transform-hmr/lib/index.js
+
+var _index2 = _interopRequireDefault(_index);
+
+var _jsxFileName = '/Users/wenhuan/Documents/Web/react-native/cnodejs/src/pages/detail/components/Input.js';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _mobile = require(306         ); // 306 = dva/mobile
+
+var _reactNative = require(26            ); // 26 = react-native
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var _components = {
+  Input: {
+    displayName: 'Input'
+  }
+};
+
+var _node_modulesReactTransformHmrLibIndexJs2 = (0, _index2.default)({
+  filename: '/Users/wenhuan/Documents/Web/react-native/cnodejs/src/pages/detail/components/Input.js',
+  components: _components,
+  locals: [module],
+  imports: [_react3.default]
+});
+
+function _wrapComponent(id) {
+  return function (Component) {
+    return _node_modulesReactTransformHmrLibIndexJs2(Component, id);
+  };
+}
+
+var _Dimensions$get = _reactNative.Dimensions.get('window'),
+    width = _Dimensions$get.width;
+
+var defaultInputWidth = width - 40;
+var defaultWidth = width - 90 * 2;
+
+var Input = _wrapComponent('Input')(function (_Component) {
+  _inherits(Input, _Component);
+
+  function Input(props) {
+    _classCallCheck(this, Input);
+
+    var _this = _possibleConstructorReturn(this, (Input.__proto__ || Object.getPrototypeOf(Input)).call(this, props));
+
+    _this._onSend = function () {
+      var _this$props = _this.props,
+          accesstoken = _this$props.accesstoken,
+          user = _this$props.user,
+          content = _this$props.content,
+          data = _this$props.data;
+
+      var params = { content: content, user: user, accesstoken: accesstoken, topic_id: data.id };
+      _this.props.comment(params);
+    };
+
+    return _this;
+  }
+
+  _createClass(Input, [{
+    key: 'render',
+    value: function render() {
+      var _this2 = this;
+
+      var content = this.props.content;
+
+
+      return _react3.default.createElement(
+        _reactNative.View,
+        { style: styles.contentView, __source: {
+            fileName: _jsxFileName,
+            lineNumber: 24
+          }
+        },
+        _react3.default.createElement(_reactNative.TextInput, { style: styles.input,
+          value: content,
+          placeholder: '\u53D1\u8868\u8BC4\u8BBA',
+          underlineColorAndroid: 'transparent',
+          onChangeText: function onChangeText(content) {
+            _this2.props.setContent(content);
+          },
+          __source: {
+            fileName: _jsxFileName,
+            lineNumber: 25
+          }
+        }),
+        _react3.default.createElement(
+          _reactNative.TouchableOpacity,
+          { style: styles.contentTouch, onPress: function onPress() {
+              _this2._onSend();
+            }, __source: {
+              fileName: _jsxFileName,
+              lineNumber: 31
+            }
+          },
+          _react3.default.createElement(_reactNative.Image, { style: styles.contentImg, source: require(648                                ), resizeMode: 'contain', __source: { // 648 = ../../../assets/images/github.png
+              fileName: _jsxFileName,
+              lineNumber: 32
+            }
+          })
+        )
+      );
+    }
+  }]);
+
+  return Input;
+}(_react2.Component));
+
+function mapStateToProps(state) {
+  var _state$detail = state.detail,
+      data = _state$detail.data,
+      loading = _state$detail.loading,
+      content = _state$detail.content;
+  var _state$zone = state.zone,
+      accesstoken = _state$zone.accesstoken,
+      user = _state$zone.user;
+
+  return { data: data, loading: loading, content: content, accesstoken: accesstoken, user: user };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    setContent: function setContent(params) {
+      dispatch({
+        type: 'detail/content',
+        payload: params
+      });
+    },
+    comment: function comment(params) {
+      dispatch({
+        type: 'detail/comment',
+        payload: params
+      });
+    }
+  };
+}
+
+var styles = _reactNative.StyleSheet.create({
+  contentTouch: {
+    padding: 10,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+
+  contentImg: {
+    width: 24,
+    height: 24
+  },
+
+  contentView: {
+    height: 44,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    backgroundColor: '#F8F8F8'
+  },
+
+  input: {
+    width: defaultInputWidth,
+    fontSize: 16,
+    paddingLeft: 15,
+    paddingRight: 15
+  },
+
+  commentTouch: {
+    height: 30
+  }
+});
+
+exports.default = (0, _mobile.connect)(mapStateToProps, mapDispatchToProps)(Input);
+}, 808, null, "cnodejs/src/pages/detail/components/Input.js");
+__d(/* cnodejs/src/assets/images/github.png */function(global, require, module, exports) {module.exports=require(161                                         ).registerAsset({"__packager_asset":true,"httpServerLocation":"/assets/src/assets/images","width":200,"height":200,"scales":[1],"hash":"dd78eac97cb1cfa6ffb996f41da974aa","name":"github","type":"png"}); // 161 = react-native/Libraries/Image/AssetRegistry
+}, 648, null, "cnodejs/src/assets/images/github.png");
 __d(/* cnodejs/src/pages/detail/components/Option.js */function(global, require, module, exports) {Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -106177,8 +106540,6 @@ __d(/* cnodejs/src/assets/images/header.png */function(global, require, module, 
 }, 646, null, "cnodejs/src/assets/images/header.png");
 __d(/* cnodejs/src/assets/images/integral.png */function(global, require, module, exports) {module.exports=require(161                                         ).registerAsset({"__packager_asset":true,"httpServerLocation":"/assets/src/assets/images","width":200,"height":200,"scales":[1],"hash":"709d0e2435b51f7e807e14fd93e44f98","name":"integral","type":"png"}); // 161 = react-native/Libraries/Image/AssetRegistry
 }, 647, null, "cnodejs/src/assets/images/integral.png");
-__d(/* cnodejs/src/assets/images/github.png */function(global, require, module, exports) {module.exports=require(161                                         ).registerAsset({"__packager_asset":true,"httpServerLocation":"/assets/src/assets/images","width":200,"height":200,"scales":[1],"hash":"dd78eac97cb1cfa6ffb996f41da974aa","name":"github","type":"png"}); // 161 = react-native/Libraries/Image/AssetRegistry
-}, 648, null, "cnodejs/src/assets/images/github.png");
 __d(/* cnodejs/src/assets/images/post.png */function(global, require, module, exports) {module.exports=require(161                                         ).registerAsset({"__packager_asset":true,"httpServerLocation":"/assets/src/assets/images","width":235,"height":200,"scales":[1],"hash":"ab005a7f69e5c0fcbc0a03dda17ca5d8","name":"post","type":"png"}); // 161 = react-native/Libraries/Image/AssetRegistry
 }, 649, null, "cnodejs/src/assets/images/post.png");
 __d(/* cnodejs/src/assets/images/collection.png */function(global, require, module, exports) {module.exports=require(161                                         ).registerAsset({"__packager_asset":true,"httpServerLocation":"/assets/src/assets/images","width":200,"height":200,"scales":[1],"hash":"b59b4aeb530b3538ad3c32a7237a92ed","name":"collection","type":"png"}); // 161 = react-native/Libraries/Image/AssetRegistry

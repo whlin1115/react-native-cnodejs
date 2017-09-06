@@ -10,10 +10,10 @@ class Option extends Component {
 
   _onCollect = (collect) => {
     const { accesstoken } = this.props
-    const { id } = this.props.params
-    const params = { collect, topic_id: id, accesstoken }
+    const { topic_id } = this.props.params
+    const params = { collect, topic_id, accesstoken }
     this.props.collect(params)
-    if (!collect) this.props.delete(id)
+    if (!collect) this.props.delete(topic_id)
   }
 
   render() {

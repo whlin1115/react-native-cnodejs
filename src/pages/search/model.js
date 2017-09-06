@@ -21,8 +21,9 @@ export default {
       const { page = 1, content } = payload
       yield put({ type: 'loading', payload: true });
       yield put({ type: 'search', payload: { visible: false, content } });
-      const { data } = yield call(service.querySearch, payload);
+      const { data, err } = yield call(service.querySearch, payload);
       yield put({ type: 'loading', payload: false });
+      if (err) return console.log(err)
       yield put({ type: 'page', payload: page });
       if (page == 1) yield put({ type: 'query/success', payload: { data, content } });
       else yield put({ type: 'more/success', payload: data });

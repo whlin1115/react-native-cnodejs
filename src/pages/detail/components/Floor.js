@@ -11,7 +11,9 @@ const defaultWidth = width - 50 * 2
 class Floor extends Component {
   constructor(props) {
     super(props);
-    this.state = { visible: false }
+    this.state = {
+      visible: false,
+    }
   }
 
   _onSelect = () => {
@@ -82,7 +84,8 @@ class Floor extends Component {
 
 function mapStateToProps(state) {
   const { accesstoken } = state.zone
-  return { accesstoken };
+  const { replies } = state.detail;
+  return { accesstoken, replies };
 }
 
 function mapDispatchToProps(dispatch) {

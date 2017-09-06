@@ -16,7 +16,7 @@ export default {
       yield put({ type: 'loading', payload: true });
       const { data, err } = yield call(service.createTopic, payload);
       yield put({ type: 'loading', payload: false });
-      if (err) return
+      if (err) return console.log(err)
       yield put({ type: 'create/success', payload: data });
     },
     *update({ payload = {} }, { call, put }) {
@@ -24,7 +24,7 @@ export default {
       yield put({ type: 'loading', payload: true });
       const { data, err } = yield call(service.updateTopic, payload);
       yield put({ type: 'loading', payload: false });
-      if (err) return
+      if (err) return console.log(err)
       yield put({ type: 'update/success', payload: data });
     },
   },

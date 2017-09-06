@@ -27,31 +27,35 @@ export default {
       const { accesstoken } = payload
       yield put({ type: 'loading', payload: true });
       const { data, err } = yield call(service.postToken, payload);
+      yield put({ type: 'loading', payload: false });
+      if (err) return console.log(err)
       yield put({ type: 'login/success', payload: data });
       AsyncStorage.setItem('accesstoken', accesstoken);
       yield put({ type: 'token', payload: accesstoken });
       const [, user] = data
       yield put({ type: 'query', payload: user });
-      yield put({ type: 'loading', payload: false });
     },
     *query({ payload = {} }, { call, put }) {
       const { loginname } = payload
       yield put({ type: 'loading', payload: true });
       yield put({ type: 'user', payload: payload });
-      const { data } = yield call(service.queryUser, { user: loginname });
-      yield put({ type: 'query/success', payload: data });
+      const { data, err } = yield call(service.queryUser, { user: loginname });
       yield put({ type: 'loading', payload: false });
+      if (err) return console.log(err)
+      yield put({ type: 'query/success', payload: data });
     },
     *information({ payload = {} }, { call, put }) {
       yield put({ type: 'loading', payload: true });
       const { data, err } = yield call(service.queryInfo, payload);
-      yield put({ type: 'information/success', payload: data });
       yield put({ type: 'loading', payload: false });
+      if (err) return console.log(err)
+      yield put({ type: 'information/success', payload: data });
     },
     *collects({ payload = {} }, { call, put }) {
       yield put({ type: 'loading', payload: true });
-      const { data } = yield call(service.queryCollects, payload);
+      const { data, err } = yield call(service.queryCollects, payload);
       yield put({ type: 'loading', payload: false });
+      if (err) return console.log(err)
       yield put({ type: 'collects/success', payload: data });
     },
   },

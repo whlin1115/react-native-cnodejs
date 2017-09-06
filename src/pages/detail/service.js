@@ -58,6 +58,29 @@ export function parseTopic(data) {
   return topic;
 }
 
+export function parseUps(payload) {
+  const { result, state, reply_id } = payload
+  const is_uped = result.action == "up" ? true : false
+  const replies = state.replies.map((reply) => {
+    if (reply.id == reply_id) {
+      reply.is_uped = is_uped
+      if (is_uped) reply.ups.push(reply_id)
+      else reply.ups.pop()
+    }
+    return reply
+  })
+  return replies
+}
+
+export function parseComment(payload) {
+  const { user, state } = payload
+  const { loginname, avatar_url } = user
+  const { content, replies } = state
+  const reply = { id, content, author: { loginname, avatar_url }, create_at: '刚刚', ups: [], reply_id: null, is_uped: false }
+  replies.push(reply)
+  return replies
+}
+
 export function cacheControl(payload) {
   const { plate } = payload;
   const posts = JSON.parse(localStorage.getItem('posts')) || [];

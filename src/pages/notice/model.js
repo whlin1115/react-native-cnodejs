@@ -21,7 +21,7 @@ export default {
       yield put({ type: 'loading', payload: true });
       const { data, err } = yield call(service.queryMessages, payload);
       yield put({ type: 'loading', payload: false });
-      if (err) return
+      if (err) return console.log(err)
       yield put({ type: 'query/success', payload: data });
     },
   },

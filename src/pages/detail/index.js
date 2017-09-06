@@ -11,7 +11,7 @@ class Detail extends PureComponent {
   constructor(props) {
     super(props)
     this.state = {
-      
+
     }
   }
 
@@ -51,14 +51,14 @@ class Detail extends PureComponent {
               </View> : null
           }
           {
-            replies ? <View style={styles.reply}>
+            replies.length > 0 ? <View style={styles.reply}>
               <Text style={styles.total}>{replies.length}</Text><Text> 回复</Text>
             </View> : null
           }
           <FlatList
             style={{ width: width }}
             data={replies}
-            extraData={this.state}
+            extraData={this.props}
             keyExtractor={(item, index) => index}
             renderItem={({ item }) => <Floor navigate={navigate} item={item} />}
           />

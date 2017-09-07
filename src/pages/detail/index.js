@@ -58,7 +58,7 @@ class Detail extends PureComponent {
           <FlatList
             style={{ width: width }}
             data={replies}
-            extraData={this.props}
+            extraData={this.state}
             keyExtractor={(item, index) => index}
             renderItem={({ item }) => <Floor navigate={navigate} item={item} />}
           />

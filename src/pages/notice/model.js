@@ -24,12 +24,24 @@ export default {
       if (err) return console.log(err)
       yield put({ type: 'query/success', payload: data });
     },
+    *mark_one({ payload = {} }, { call, put }) {
+      yield put({ type: 'loading', payload: true });
+      const { data, err } = yield call(service.mark_oneMessages, payload);
+      yield put({ type: 'loading', payload: false });
+      if (err) return console.log(err)
+      yield put({ type: 'mark_one/success', payload: data });
+    },
   },
   reducers: {
     'query/success'(state, { payload }) {
       const [, data] = payload
       const messages = service.parseMessages(data.data)
       return { ...state, data: messages, ...messages };
+    },
+    'mark_one/success'(state, { payload }) {
+      const [, data] = payload
+      const { hasnot_read_messages, has_read_messages } = service.parseRead(data, state)
+      return { ...state, hasnot_read_messages, has_read_messages };
     },
     'token'(state, { payload: data }) {
       return { ...state, accesstoken: data };

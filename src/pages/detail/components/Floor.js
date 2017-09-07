@@ -1,5 +1,5 @@
 
-import React, { Component } from 'react'
+import React, { Component, PureComponent } from 'react'
 import { connect } from 'dva/mobile';
 import { StyleSheet, View, Image, Text, Modal, Dimensions, TouchableOpacity, TouchableWithoutFeedback } from 'react-native'
 import { HtmlView } from '../../../components';
@@ -8,7 +8,7 @@ const { width } = Dimensions.get('window')
 const defaultMaxImageWidth = width - 30 - 20
 const defaultWidth = width - 50 * 2
 
-class Floor extends Component {
+class Floor extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -80,7 +80,6 @@ class Floor extends Component {
     )
   }
 }
-
 
 function mapStateToProps(state) {
   const { accesstoken } = state.zone

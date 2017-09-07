@@ -5,7 +5,7 @@ import { StyleSheet, View, Image, Text, TouchableOpacity } from 'react-native'
 function Card({ item, navigate }) {
 
   return (
-    <TouchableOpacity onPress={() => { navigate('Detail', { id: item.id }) }}>
+    <TouchableOpacity onPress={() => { navigate('Detail', { topic_id: item.id }) }}>
       <View style={styles.list}>
         <Text numberOfLines={1} style={styles.h3}>{item.title}</Text>
         <View style={styles.content}>

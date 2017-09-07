@@ -37,9 +37,9 @@ class Input extends Component {
 }
 
 function mapStateToProps(state) {
-  const { data, loading, content } = state.detail;
+  const { data, loading, replies, content } = state.detail;
   const { accesstoken, user } = state.zone
-  return { data, loading, content, accesstoken, user };
+  return { data, loading, content, accesstoken, replies, user };
 }
 
 function mapDispatchToProps(dispatch) {

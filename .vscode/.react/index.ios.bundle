@@ -68812,12 +68812,12 @@ function parseComment(payload) {
   var user = payload.user,
       state = payload.state;
   var loginname = user.loginname,
-      avatar_url = user.avatar_url;
-  var content = state.content,
-      replies = state.replies;
+      avatar_url = user.avatar_url,
+      id = user.id;
+  var content = state.content;
 
   var reply = { id: id, content: content, author: { loginname: loginname, avatar_url: avatar_url }, create_at: '刚刚', ups: [], reply_id: null, is_uped: false };
-  replies.push(reply);
+  var replies = state.replies.concat(reply);
   return replies;
 }
 
@@ -82598,11 +82598,56 @@ exports.default = {
           }
         }
       }, query, this);
+    }),
+    mark_one: regeneratorRuntime.mark(function mark_one(_ref6, _ref7) {
+      var _ref6$payload = _ref6.payload,
+          payload = _ref6$payload === undefined ? {} : _ref6$payload;
+      var call = _ref7.call,
+          put = _ref7.put;
+
+      var _ref8, data, err;
+
+      return regeneratorRuntime.wrap(function mark_one$(_context3) {
+        while (1) {
+          switch (_context3.prev = _context3.next) {
+            case 0:
+              _context3.next = 2;
+              return put({ type: 'loading', payload: true });
+
+            case 2:
+              _context3.next = 4;
+              return call(service.mark_oneMessages, payload);
+
+            case 4:
+              _ref8 = _context3.sent;
+              data = _ref8.data;
+              err = _ref8.err;
+              _context3.next = 9;
+              return put({ type: 'loading', payload: false });
+
+            case 9:
+              if (!err) {
+                _context3.next = 11;
+                break;
+              }
+
+              return _context3.abrupt('return', console.log(err));
+
+            case 11:
+              _context3.next = 13;
+              return put({ type: 'mark_one/success', payload: data });
+
+            case 13:
+            case 'end':
+              return _context3.stop();
+          }
+        }
+      }, mark_one, this);
     })
   },
   reducers: {
-    'query/success': function querySuccess(state, _ref6) {
-      var payload = _ref6.payload;
+    'query/success': function querySuccess(state, _ref9) {
+      var payload = _ref9.payload;
 
       var _payload = _slicedToArray(payload, 2),
           data = _payload[1];
@@ -82610,13 +82655,25 @@ exports.default = {
       var messages = service.parseMessages(data.data);
       return _extends({}, state, { data: messages }, messages);
     },
-    'token': function token(state, _ref7) {
-      var data = _ref7.payload;
+    'mark_one/success': function mark_oneSuccess(state, _ref10) {
+      var payload = _ref10.payload;
+
+      var _payload2 = _slicedToArray(payload, 2),
+          data = _payload2[1];
+
+      var _service$parseRead = service.parseRead(data, state),
+          hasnot_read_messages = _service$parseRead.hasnot_read_messages,
+          has_read_messages = _service$parseRead.has_read_messages;
+
+      return _extends({}, state, { hasnot_read_messages: hasnot_read_messages, has_read_messages: has_read_messages });
+    },
+    'token': function token(state, _ref11) {
+      var data = _ref11.payload;
 
       return _extends({}, state, { accesstoken: data });
     },
-    'loading': function loading(state, _ref8) {
-      var data = _ref8.payload;
+    'loading': function loading(state, _ref12) {
+      var data = _ref12.payload;
 
       return _extends({}, state, { loading: data });
     }
@@ -82628,7 +82685,9 @@ __d(/* cnodejs/src/pages/notice/service.js */function(global, require, module, e
   value: true
 });
 exports.queryMessages = queryMessages;
+exports.mark_oneMessages = mark_oneMessages;
 exports.parseMessages = parseMessages;
+exports.parseRead = parseRead;
 
 var _request = require(458                  ); // 458 = ../../utils/request
 
@@ -82652,6 +82711,24 @@ function queryMessages(params) {
   }, null, this);
 }
 
+function mark_oneMessages(params) {
+  var accesstoken, msg_id, body;
+  return regeneratorRuntime.async(function mark_oneMessages$(_context2) {
+    while (1) {
+      switch (_context2.prev = _context2.next) {
+        case 0:
+          accesstoken = params.accesstoken, msg_id = params.msg_id;
+          body = { accesstoken: accesstoken };
+          return _context2.abrupt('return', (0, _request.post)('/message/mark_one/' + msg_id, body));
+
+        case 3:
+        case 'end':
+          return _context2.stop();
+      }
+    }
+  }, null, this);
+}
+
 function parseMessages(data) {
   var has_read_messages = data.has_read_messages.map(function (message) {
     var last_reply_at = message.topic.last_reply_at;
@@ -82667,6 +82744,22 @@ function parseMessages(data) {
     message.reply.create_at = (0, _tool.moment)(create_at).startOf('minute').fromNow();
     return message;
   });
+  return { has_read_messages: has_read_messages, hasnot_read_messages: hasnot_read_messages };
+}
+
+function parseRead(data, state) {
+  var marked_msg_id = data.marked_msg_id;
+
+  var hasnot_read_messages = state.hasnot_read_messages.filter(function (messages) {
+    return messages.id !== marked_msg_id;
+  });
+  var read_messages = state.hasnot_read_messages.map(function (messages) {
+    if (messages.id === marked_msg_id) {
+      messages.has_read = true;
+      return messages;
+    }
+  });
+  var has_read_messages = state.has_read_messages.unshift(read_messages[0]).concat();
   return { has_read_messages: has_read_messages, hasnot_read_messages: hasnot_read_messages };
 }
 }, 525, null, "cnodejs/src/pages/notice/service.js");
@@ -91364,7 +91457,7 @@ var Detail = function (_PureComponent) {
           _react2.default.createElement(_reactNative.FlatList, {
             style: { width: width },
             data: replies,
-            extraData: this.props,
+            extraData: this.state,
             keyExtractor: function keyExtractor(item, index) {
               return index;
             },
@@ -91542,18 +91635,13 @@ exports.Option = _Option2.default;
 __d(/* cnodejs/src/pages/detail/components/Floor.js */function(global, require, module, exports) {Object.defineProperty(exports, "__esModule", {
   value: true
 });
-
-var _react2 = require(12     ); // 12 = react
-
-var _react3 = _interopRequireDefault(_react2);
-
-var _index = require(664                                                          ); // 664 = ./../../../../node_modules/react-transform-hmr/lib/index.js
-
-var _index2 = _interopRequireDefault(_index);
-
 var _jsxFileName = '/Users/wenhuan/Documents/Web/react-native/cnodejs/src/pages/detail/components/Floor.js';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require(12     ); // 12 = react
+
+var _react2 = _interopRequireDefault(_react);
 
 var _mobile = require(306         ); // 306 = dva/mobile
 
@@ -91569,33 +91657,14 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var _components = {
-  Floor: {
-    displayName: 'Floor'
-  }
-};
-
-var _node_modulesReactTransformHmrLibIndexJs2 = (0, _index2.default)({
-  filename: '/Users/wenhuan/Documents/Web/react-native/cnodejs/src/pages/detail/components/Floor.js',
-  components: _components,
-  locals: [module],
-  imports: [_react3.default]
-});
-
-function _wrapComponent(id) {
-  return function (Component) {
-    return _node_modulesReactTransformHmrLibIndexJs2(Component, id);
-  };
-}
-
 var _Dimensions$get = _reactNative.Dimensions.get('window'),
     width = _Dimensions$get.width;
 
 var defaultMaxImageWidth = width - 30 - 20;
 var defaultWidth = width - 50 * 2;
 
-var Floor = _wrapComponent('Floor')(function (_Component) {
-  _inherits(Floor, _Component);
+var Floor = function (_PureComponent) {
+  _inherits(Floor, _PureComponent);
 
   function Floor(props) {
     _classCallCheck(this, Floor);
@@ -91629,14 +91698,14 @@ var Floor = _wrapComponent('Floor')(function (_Component) {
           navigate = _props.navigate;
 
 
-      return _react3.default.createElement(
+      return _react2.default.createElement(
         _reactNative.View,
         { tyle: styles.container, __source: {
             fileName: _jsxFileName,
             lineNumber: 33
           }
         },
-        _react3.default.createElement(
+        _react2.default.createElement(
           _reactNative.TouchableOpacity,
           { onPress: function onPress() {
               _this2.setState({ visible: true });
@@ -91645,40 +91714,40 @@ var Floor = _wrapComponent('Floor')(function (_Component) {
               lineNumber: 34
             }
           },
-          _react3.default.createElement(
+          _react2.default.createElement(
             _reactNative.View,
             { style: styles.list, __source: {
                 fileName: _jsxFileName,
                 lineNumber: 35
               }
             },
-            _react3.default.createElement(
+            _react2.default.createElement(
               _reactNative.View,
               { style: styles.user, __source: {
                   fileName: _jsxFileName,
                   lineNumber: 36
                 }
               },
-              _react3.default.createElement(_reactNative.Image, { source: { uri: item.author.avatar_url }, style: styles.head, __source: {
+              _react2.default.createElement(_reactNative.Image, { source: { uri: item.author.avatar_url }, style: styles.head, __source: {
                   fileName: _jsxFileName,
                   lineNumber: 37
                 }
               }),
-              _react3.default.createElement(
+              _react2.default.createElement(
                 _reactNative.View,
                 { style: styles.info, __source: {
                     fileName: _jsxFileName,
                     lineNumber: 38
                   }
                 },
-                _react3.default.createElement(
+                _react2.default.createElement(
                   _reactNative.View,
                   { style: styles.cl, __source: {
                       fileName: _jsxFileName,
                       lineNumber: 39
                     }
                   },
-                  _react3.default.createElement(
+                  _react2.default.createElement(
                     _reactNative.Text,
                     { style: styles.name, __source: {
                         fileName: _jsxFileName,
@@ -91687,7 +91756,7 @@ var Floor = _wrapComponent('Floor')(function (_Component) {
                     },
                     item.author.loginname
                   ),
-                  _react3.default.createElement(
+                  _react2.default.createElement(
                     _reactNative.Text,
                     { style: styles.name, __source: {
                         fileName: _jsxFileName,
@@ -91697,14 +91766,14 @@ var Floor = _wrapComponent('Floor')(function (_Component) {
                     item.create_at
                   )
                 ),
-                _react3.default.createElement(
+                _react2.default.createElement(
                   _reactNative.View,
                   { style: styles.cr, __source: {
                       fileName: _jsxFileName,
                       lineNumber: 43
                     }
                   },
-                  _react3.default.createElement(
+                  _react2.default.createElement(
                     _reactNative.Text,
                     { style: styles.ups, __source: {
                         fileName: _jsxFileName,
@@ -91713,7 +91782,7 @@ var Floor = _wrapComponent('Floor')(function (_Component) {
                     },
                     item.ups.length
                   ),
-                  _react3.default.createElement(
+                  _react2.default.createElement(
                     _reactNative.TouchableOpacity,
                     { style: styles.iconBtn, onPress: function onPress() {
                         _this2._onUps(item.id);
@@ -91722,7 +91791,7 @@ var Floor = _wrapComponent('Floor')(function (_Component) {
                         lineNumber: 45
                       }
                     },
-                    _react3.default.createElement(_reactNative.Image, { style: styles.icon, source: item.is_uped ? require(609                               ) : require(610                              ), resizeMode: 'contain', __source: { // 610 = ../../../assets/images/like.png // 609 = ../../../assets/images/liked.png
+                    _react2.default.createElement(_reactNative.Image, { style: styles.icon, source: item.is_uped ? require(609                               ) : require(610                              ), resizeMode: 'contain', __source: { // 610 = ../../../assets/images/like.png // 609 = ../../../assets/images/liked.png
                         fileName: _jsxFileName,
                         lineNumber: 46
                       }
@@ -91731,14 +91800,14 @@ var Floor = _wrapComponent('Floor')(function (_Component) {
                 )
               )
             ),
-            _react3.default.createElement(
+            _react2.default.createElement(
               _reactNative.View,
               { style: styles.content, __source: {
                   fileName: _jsxFileName,
                   lineNumber: 51
                 }
               },
-              _react3.default.createElement(_components2.HtmlView, { html: item.content, styles: htmlStyles, __source: {
+              _react2.default.createElement(_components2.HtmlView, { html: item.content, styles: htmlStyles, __source: {
                   fileName: _jsxFileName,
                   lineNumber: 52
                 }
@@ -91746,7 +91815,7 @@ var Floor = _wrapComponent('Floor')(function (_Component) {
             )
           )
         ),
-        _react3.default.createElement(
+        _react2.default.createElement(
           _reactNative.Modal,
           {
             animationType: "fade",
@@ -91757,7 +91826,7 @@ var Floor = _wrapComponent('Floor')(function (_Component) {
               lineNumber: 56
             }
           },
-          _react3.default.createElement(
+          _react2.default.createElement(
             _reactNative.TouchableWithoutFeedback,
             { onPress: function onPress() {
                 _this2.setState({ visible: false });
@@ -91766,21 +91835,21 @@ var Floor = _wrapComponent('Floor')(function (_Component) {
                 lineNumber: 61
               }
             },
-            _react3.default.createElement(
+            _react2.default.createElement(
               _reactNative.View,
               { style: styles.modalContainer, __source: {
                   fileName: _jsxFileName,
                   lineNumber: 62
                 }
               },
-              _react3.default.createElement(
+              _react2.default.createElement(
                 _reactNative.View,
                 { style: styles.modal, __source: {
                     fileName: _jsxFileName,
                     lineNumber: 63
                   }
                 },
-                _react3.default.createElement(
+                _react2.default.createElement(
                   _reactNative.TouchableOpacity,
                   { onPress: function onPress() {
                       _this2._onSelect();
@@ -91789,14 +91858,14 @@ var Floor = _wrapComponent('Floor')(function (_Component) {
                       lineNumber: 64
                     }
                   },
-                  _react3.default.createElement(
+                  _react2.default.createElement(
                     _reactNative.View,
                     { style: styles.rowView, __source: {
                         fileName: _jsxFileName,
                         lineNumber: 65
                       }
                     },
-                    _react3.default.createElement(
+                    _react2.default.createElement(
                       _reactNative.Text,
                       { style: styles.rowText, __source: {
                           fileName: _jsxFileName,
@@ -91806,13 +91875,13 @@ var Floor = _wrapComponent('Floor')(function (_Component) {
                       '\u8BC4\u8BBA'
                     )
                   ),
-                  _react3.default.createElement(_reactNative.View, { style: styles.rowLine, __source: {
+                  _react2.default.createElement(_reactNative.View, { style: styles.rowLine, __source: {
                       fileName: _jsxFileName,
                       lineNumber: 68
                     }
                   })
                 ),
-                _react3.default.createElement(
+                _react2.default.createElement(
                   _reactNative.TouchableOpacity,
                   { onPress: function onPress() {
                       _this2._onSelect();
@@ -91821,14 +91890,14 @@ var Floor = _wrapComponent('Floor')(function (_Component) {
                       lineNumber: 70
                     }
                   },
-                  _react3.default.createElement(
+                  _react2.default.createElement(
                     _reactNative.View,
                     { style: styles.rowView, __source: {
                         fileName: _jsxFileName,
                         lineNumber: 71
                       }
                     },
-                    _react3.default.createElement(
+                    _react2.default.createElement(
                       _reactNative.Text,
                       { style: styles.rowText, __source: {
                           fileName: _jsxFileName,
@@ -91848,7 +91917,7 @@ var Floor = _wrapComponent('Floor')(function (_Component) {
   }]);
 
   return Floor;
-}(_react2.Component));
+}(_react.PureComponent);
 
 function mapStateToProps(state) {
   var accesstoken = state.zone.accesstoken;
@@ -102352,12 +102421,13 @@ function mapStateToProps(state) {
   var _state$detail = state.detail,
       data = _state$detail.data,
       loading = _state$detail.loading,
+      replies = _state$detail.replies,
       content = _state$detail.content;
   var _state$zone = state.zone,
       accesstoken = _state$zone.accesstoken,
       user = _state$zone.user;
 
-  return { data: data, loading: loading, content: content, accesstoken: accesstoken, user: user };
+  return { data: data, loading: loading, content: content, accesstoken: accesstoken, replies: replies, user: user };
 }
 
 function mapDispatchToProps(dispatch) {
@@ -102821,7 +102891,7 @@ function Card(_ref) {
   return _react2.default.createElement(
     _reactNative.TouchableOpacity,
     { onPress: function onPress() {
-        navigate('Detail', { id: item.id });
+        navigate('Detail', { topic_id: item.id });
       }, __source: {
         fileName: _jsxFileName,
         lineNumber: 8
@@ -105096,149 +105166,206 @@ __d(/* cnodejs/src/pages/notice/components/Message.js */function(global, require
 });
 var _jsxFileName = '/Users/wenhuan/Documents/Web/react-native/cnodejs/src/pages/notice/components/Message.js';
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 var _react = require(12     ); // 12 = react
 
 var _react2 = _interopRequireDefault(_react);
+
+var _mobile = require(306         ); // 306 = dva/mobile
 
 var _reactNative = require(26            ); // 26 = react-native
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function Message(_ref) {
-  var item = _ref.item,
-      navigate = _ref.navigate;
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Message = function (_PureComponent) {
+  _inherits(Message, _PureComponent);
+
+  function Message(props) {
+    _classCallCheck(this, Message);
+
+    var _this = _possibleConstructorReturn(this, (Message.__proto__ || Object.getPrototypeOf(Message)).call(this, props));
+
+    _this._onRead = function (item) {
+      var _this$props = _this.props,
+          accesstoken = _this$props.accesstoken,
+          navigate = _this$props.navigate;
+      var has_read = item.has_read;
+
+      var params = { msg_id: item.id, accesstoken: accesstoken };
+      if (!has_read) _this.props.mark_one(params);
+      navigate('Detail', { topic_id: item.topic.id });
+    };
+
+    _this.state = {};
+    return _this;
+  }
+
+  _createClass(Message, [{
+    key: 'render',
+    value: function render() {
+      var _this2 = this;
+
+      var item = this.props.item;
 
 
-  return _react2.default.createElement(
-    _reactNative.TouchableOpacity,
-    { onPress: function onPress() {
-        navigate('Detail', { id: item.topic.id });
-      }, __source: {
-        fileName: _jsxFileName,
-        lineNumber: 8
-      }
-    },
-    _react2.default.createElement(
-      _reactNative.View,
-      { style: styles.list, __source: {
-          fileName: _jsxFileName,
-          lineNumber: 9
-        }
-      },
-      _react2.default.createElement(
-        _reactNative.View,
-        { style: styles.header, __source: {
+      return _react2.default.createElement(
+        _reactNative.TouchableOpacity,
+        { onPress: function onPress() {
+            _this2._onRead(item);
+          }, __source: {
             fileName: _jsxFileName,
-            lineNumber: 10
+            lineNumber: 24
           }
         },
-        _react2.default.createElement(_reactNative.Image, { source: { uri: item.author.avatar_url }, style: styles.avatar, __source: {
-            fileName: _jsxFileName,
-            lineNumber: 11
-          }
-        }),
         _react2.default.createElement(
           _reactNative.View,
-          { style: styles.info, __source: {
+          { style: styles.list, __source: {
               fileName: _jsxFileName,
-              lineNumber: 12
+              lineNumber: 25
             }
           },
           _react2.default.createElement(
             _reactNative.View,
-            { style: styles.row, __source: {
+            { style: styles.content, __source: {
                 fileName: _jsxFileName,
-                lineNumber: 13
+                lineNumber: 26
               }
             },
+            _react2.default.createElement(_reactNative.View, { style: styles.tip, __source: {
+                fileName: _jsxFileName,
+                lineNumber: 27
+              }
+            }),
             _react2.default.createElement(
               _reactNative.Text,
-              { style: styles.span, __source: {
+              { numberOfLines: 1, style: styles.h3, __source: {
                   fileName: _jsxFileName,
-                  lineNumber: 14
+                  lineNumber: 28
                 }
               },
-              item.author.loginname
-            ),
-            _react2.default.createElement(
-              _reactNative.Text,
-              { style: styles.time, __source: {
-                  fileName: _jsxFileName,
-                  lineNumber: 15
-                }
-              },
-              '1\u5C0F\u65F6\u524D'
+              item.topic.title
             )
           ),
           _react2.default.createElement(
             _reactNative.View,
-            { style: styles.reply, __source: {
+            { style: styles.header, __source: {
                 fileName: _jsxFileName,
-                lineNumber: 17
+                lineNumber: 30
               }
             },
+            _react2.default.createElement(_reactNative.Image, { source: { uri: item.author.avatar_url }, style: styles.avatar, __source: {
+                fileName: _jsxFileName,
+                lineNumber: 31
+              }
+            }),
             _react2.default.createElement(
-              _reactNative.Text,
-              { numberOfLines: 1, style: styles.span, __source: {
+              _reactNative.View,
+              { style: styles.info, __source: {
                   fileName: _jsxFileName,
-                  lineNumber: 18
+                  lineNumber: 32
                 }
               },
-              item.reply.content
+              _react2.default.createElement(
+                _reactNative.View,
+                { style: styles.row, __source: {
+                    fileName: _jsxFileName,
+                    lineNumber: 33
+                  }
+                },
+                _react2.default.createElement(
+                  _reactNative.Text,
+                  { numberOfLines: 1, style: styles.name, __source: {
+                      fileName: _jsxFileName,
+                      lineNumber: 34
+                    }
+                  },
+                  item.author.loginname
+                ),
+                _react2.default.createElement(
+                  _reactNative.Text,
+                  { style: styles.time, __source: {
+                      fileName: _jsxFileName,
+                      lineNumber: 35
+                    }
+                  },
+                  item.reply.create_at
+                )
+              ),
+              _react2.default.createElement(
+                _reactNative.View,
+                { style: styles.reply, __source: {
+                    fileName: _jsxFileName,
+                    lineNumber: 37
+                  }
+                },
+                _react2.default.createElement(
+                  _reactNative.Text,
+                  { numberOfLines: 1, style: styles.span, __source: {
+                      fileName: _jsxFileName,
+                      lineNumber: 38
+                    }
+                  },
+                  item.reply.content
+                )
+              )
             )
           )
         )
-      ),
-      _react2.default.createElement(
-        _reactNative.View,
-        { style: styles.content, __source: {
-            fileName: _jsxFileName,
-            lineNumber: 22
-          }
-        },
-        _react2.default.createElement(_reactNative.View, { style: styles.tip, __source: {
-            fileName: _jsxFileName,
-            lineNumber: 23
-          }
-        }),
-        _react2.default.createElement(
-          _reactNative.Text,
-          { numberOfLines: 1, style: styles.h3, __source: {
-              fileName: _jsxFileName,
-              lineNumber: 24
-            }
-          },
-          item.topic.title
-        )
-      )
-    )
-  );
+      );
+    }
+  }]);
+
+  return Message;
+}(_react.PureComponent);
+
+function mapStateToProps(state) {
+  var accesstoken = state.zone.accesstoken;
+  var hasnot_read_messages = state.notice.hasnot_read_messages;
+
+  return { accesstoken: accesstoken, hasnot_read_messages: hasnot_read_messages };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    mark_one: function mark_one(params) {
+      dispatch({
+        type: 'notice/mark_one',
+        payload: params
+      });
+    }
+  };
 }
 
 var styles = _reactNative.StyleSheet.create({
   list: {
+    marginBottom: 5,
     padding: 15,
-    paddingLeft: 0,
-    borderBottomWidth: 1,
+    borderBottomWidth: 0.5,
     borderColor: '#F0F0F0',
     backgroundColor: '#FFFFFF'
   },
 
   header: {
-    paddingLeft: 15,
-    paddingBottom: 10,
     flexDirection: 'row'
   },
 
   content: {
     flex: 1,
-    paddingLeft: 10,
+    paddingBottom: 15,
     alignItems: 'center',
     flexWrap: 'wrap',
     flexDirection: 'row'
   },
 
   row: {
+    flex: 1,
     justifyContent: 'space-between',
     flexDirection: 'row'
   },
@@ -105246,7 +105373,7 @@ var styles = _reactNative.StyleSheet.create({
   tip: {
     width: 3,
     height: 20,
-    marginRight: 10,
+    marginRight: 15,
     backgroundColor: '#4B8CE2'
   },
 
@@ -105258,8 +105385,7 @@ var styles = _reactNative.StyleSheet.create({
   h3: {
     flex: 8,
     overflow: 'hidden',
-    fontSize: 12,
-    color: '#999'
+    fontSize: 14
   },
 
   avatar: {
@@ -105273,7 +105399,14 @@ var styles = _reactNative.StyleSheet.create({
     flex: 1
   },
 
+  name: {
+    flex: 1,
+    color: '#999',
+    fontSize: 12
+  },
+
   span: {
+    flex: 1,
     fontSize: 14
   },
 
@@ -105282,7 +105415,7 @@ var styles = _reactNative.StyleSheet.create({
   }
 });
 
-exports.default = Message;
+exports.default = (0, _mobile.connect)(mapStateToProps, mapDispatchToProps)(Message);
 }, 638, null, "cnodejs/src/pages/notice/components/Message.js");
 __d(/* cnodejs/src/assets/images/notice.png */function(global, require, module, exports) {module.exports=require(161                                         ).registerAsset({"__packager_asset":true,"httpServerLocation":"/assets/src/assets/images","width":200,"height":200,"scales":[1],"hash":"3e23052c5259de83286d61235ad42092","name":"notice","type":"png"}); // 161 = react-native/Libraries/Image/AssetRegistry
 }, 639, null, "cnodejs/src/assets/images/notice.png");

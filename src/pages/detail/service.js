@@ -74,10 +74,10 @@ export function parseUps(payload) {
 
 export function parseComment(payload) {
   const { user, state } = payload
-  const { loginname, avatar_url } = user
-  const { content, replies } = state
+  const { loginname, avatar_url, id } = user
+  const { content } = state
   const reply = { id, content, author: { loginname, avatar_url }, create_at: '刚刚', ups: [], reply_id: null, is_uped: false }
-  replies.push(reply)
+  const replies = state.replies.concat(reply)
   return replies
 }
 

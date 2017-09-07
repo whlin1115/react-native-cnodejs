@@ -26,6 +26,7 @@ class Collect extends PureComponent {
   render() {
     const { collects, loading } = this.props
     const { navigate } = this.props.navigation;
+    const { params } = this.props.navigation.state;
 
     return (
       <View style={styles.container}>
@@ -38,7 +39,10 @@ class Collect extends PureComponent {
               extraData={this.state}
               keyExtractor={(item, index) => index}
               renderItem={({ item }) => <Card navigate={navigate} item={item} />}
-            /> : <View style={styles.msgViw}>
+              onRefresh={() => { this.props.query(params) }}
+              refreshing={loading}
+            />
+            : <View style={styles.msgViw}>
               <Text style={styles.msg}>暂无消息</Text>
             </View>
         }

@@ -95,6 +95,7 @@ const styles = StyleSheet.create({
   },
 
   headerLeft: {
+    height: 44,
     width: 80,
     marginLeft: 15
   },

@@ -30,11 +30,13 @@ class Password extends PureComponent {
   render() {
     const { data, loading } = this.props
     const { navigate } = this.props.navigation;
-    
+
     return (
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
-        <Text>密码页面</Text>
+        <View style={styles.msgViw}>
+          <Text style={styles.msg}>暂不支持</Text>
+        </View>
       </View >
     );
   }
@@ -61,6 +63,17 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F8F8F8',
   },
+
+  msgViw: {
+    padding: 30,
+    justifyContent: 'center',
+  },
+
+  msg: {
+    textAlign: 'center',
+    fontSize: 14,
+    color: '#999'
+  }
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Password);

@@ -65,7 +65,7 @@ class Credits extends PureComponent {
                   <Text style={styles.sub}>每天最多5次</Text>
                 </View>
               </View>
-              <Text style={styles.span}>+5</Text>
+              <Text style={styles.span}>+10</Text>
             </View>
           </View>
           <View style={styles.row}>
@@ -77,7 +77,7 @@ class Credits extends PureComponent {
                   <Text style={styles.sub}>每天最多10次</Text>
                 </View>
               </View>
-              <Text style={styles.span}>+3</Text>
+              <Text style={styles.span}>+5</Text>
             </View>
           </View>
         </View>

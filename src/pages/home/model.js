@@ -10,7 +10,8 @@ export default {
   },
   effects: {
     *query({ payload = {} }, { call, put }) {
-      const { page = 1 } = payload
+      const { page = 1, tab } = payload
+      yield put({ type: 'tab', payload: tab });
       yield put({ type: 'loading', payload: true });
       const { data, err } = yield call(service.queryTopics, payload);
       yield put({ type: 'loading', payload: false });
@@ -30,6 +31,9 @@ export default {
       const [, data] = payload
       const topics = service.parseTopics(data.data)
       return { ...state, data: [...state.data, ...topics] };
+    },
+    'tab'(state, { payload: data }) {
+      return { ...state, tab: data };
     },
     'page'(state, { payload: data }) {
       return { ...state, page: data };

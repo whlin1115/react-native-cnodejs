@@ -94,6 +94,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#6A8FFF',
   },
 
+  dev: {
+    backgroundColor: '#7A86A2',
+  },
+
   default: {
     backgroundColor: '#e7e7e7',
   },

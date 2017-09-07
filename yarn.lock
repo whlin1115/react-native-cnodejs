@@ -3732,9 +3732,9 @@ react-native-htmlview@^0.12.0:
     entities "^1.1.1"
     htmlparser2-without-node-native "^3.9.0"
 
-react-native-scrollable-tab-view@^0.6.7:
-  version "0.6.7"
-  resolved "https://registry.yarnpkg.com/react-native-scrollable-tab-view/-/react-native-scrollable-tab-view-0.6.7.tgz#3a5fe8a4bd5bc7eb023f306099323bbd9cc284a2"
+react-native-scrollable-tab-view@0.6.6:
+  version "0.6.6"
+  resolved "https://registry.yarnpkg.com/react-native-scrollable-tab-view/-/react-native-scrollable-tab-view-0.6.6.tgz#d49d21060745845e9c59e3d39a2bacd4056a8b59"
   dependencies:
     react-timer-mixin "^0.13.3"
 

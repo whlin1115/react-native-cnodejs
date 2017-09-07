@@ -1,11 +1,12 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva/mobile';
-import { Floor, Info, Input, Option } from './components';
+import { Floor, Info, Option } from './components';
 import { HtmlView } from '../../components';
-import { StyleSheet, View, Text, RefreshControl, Button, Image, StatusBar, FlatList, Dimensions, ScrollView, WebView, TouchableOpacity } from 'react-native'
+import { StyleSheet, View, Text, TextInput, RefreshControl, Button, Image, StatusBar, FlatList, Dimensions, ScrollView, TouchableOpacity } from 'react-native'
 
 const { width } = Dimensions.get('window')
 const defaultMaxImageWidth = width - 30 - 20
+const defaultInputWidth = width - 40
 
 class Detail extends PureComponent {
   constructor(props) {
@@ -34,15 +35,22 @@ class Detail extends PureComponent {
     this.props.clean()
   }
 
+  _onSend = () => {
+    const { accesstoken, user, content, data } = this.props
+    const params = { content, user, accesstoken, topic_id: data.id }
+    this.refs._scrollView.scrollToEnd()
+    this.props.comment(params)
+  }
+
   render() {
-    const { data, replies, loading, accesstoken } = this.props;
+    const { data, replies, content, loading, accesstoken } = this.props;
     const { navigate, state } = this.props.navigation;
     const infoProps = { data, navigate }
     const htmlProps = { html: data.content, styles: htmlStyles }
 
     return (
       <View style={styles.container}>
-        <ScrollView style={styles.scrollView} refreshControl={<RefreshControl onRefresh={() => { this.props.query({ ...state.params, accesstoken }) }} refreshing={loading} />}>
+        <ScrollView style={styles.scrollView} ref="_scrollView" refreshControl={<RefreshControl onRefresh={() => { this.props.query({ ...state.params, accesstoken }) }} refreshing={loading} />}>
           <Info {...infoProps} />
           {
             data.content ?
@@ -64,7 +72,17 @@ class Detail extends PureComponent {
           />
         </ScrollView>
         <View style={styles.inputView}>
-          <Input />
+          <View style={styles.contentView}>
+            <TextInput style={styles.input}
+              value={content}
+              placeholder='发表评论'
+              underlineColorAndroid="transparent"
+              onChangeText={(content) => { this.props.setContent(content) }}
+            />
+            <TouchableOpacity style={styles.contentTouch} onPress={() => { this._onSend() }}>
+              <Image style={styles.contentImg} source={require('../../assets/images/github.png')} resizeMode='contain' />
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     );
@@ -72,9 +90,9 @@ class Detail extends PureComponent {
 }
 
 function mapStateToProps(state) {
-  const { data, replies, loading } = state.detail;
-  const { accesstoken } = state.zone
-  return { data, accesstoken, loading, replies };
+  const { data, replies, content, loading } = state.detail;
+  const { accesstoken, user } = state.zone
+  return { data, accesstoken, loading, content, replies, user };
 }
 
 function mapDispatchToProps(dispatch) {
@@ -82,6 +100,18 @@ function mapDispatchToProps(dispatch) {
     query(params) {
       dispatch({
         type: 'detail/query',
+        payload: params,
+      });
+    },
+    setContent(params) {
+      dispatch({
+        type: 'detail/content',
+        payload: params,
+      });
+    },
+    comment(params) {
+      dispatch({
+        type: 'detail/comment',
         payload: params,
       });
     },
@@ -131,6 +161,35 @@ const styles = StyleSheet.create({
   inputView: {
     position: 'absolute',
     bottom: 0,
+  },
+
+  contentTouch: {
+    padding: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  contentImg: {
+    width: 24,
+    height: 24,
+  },
+
+  contentView: {
+    height: 44,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    backgroundColor: '#F8F8F8',
+  },
+
+  input: {
+    width: defaultInputWidth,
+    fontSize: 16,
+    paddingLeft: 15,
+    paddingRight: 15,
+  },
+
+  commentTouch: {
+    height: 30,
   },
 });
 

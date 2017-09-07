@@ -43,24 +43,43 @@ class Home extends PureComponent {
   }
 
   _onEndReached = (pageSize) => {
+    const { tab } = this.props
     const page = pageSize + 1
-    this.props.query({ page })
+    this.props.query({ page, tab })
+  }
+
+  _onSwitch = (tab) => {
+    this.refs._flatlist.scrollToOffset({ animated: true, offset: 0 });
+    this.props.query({ tab })
   }
 
   render() {
-    const { data, page, loading } = this.props
+    const { data, page, loading, tab } = this.props
     const { navigate } = this.props.navigation;
+    const tabs = [{ key: 'all', value: '全部' }, { key: 'good', value: '精华' }, { key: 'share', value: '分享' }, { key: 'ask', value: '问答' }, { key: 'dev', value: '测试' }]
 
     return (
       <View style={styles.container}>
+        <View style={styles.tabsView}>
+          {
+            tabs.map((item, index) => (
+              <TouchableOpacity key={index} onPress={() => { this._onSwitch(item.key) }}>
+                <View style={[styles.tabView, item.key == tab ? styles.tabActive : null]}>
+                  <Text style={[styles.tabText, item.key == tab ? styles.textActive : null]}>{item.value}</Text>
+                </View>
+              </TouchableOpacity>
+            ))
+          }
+        </View>
         <StatusBar barStyle="light-content" />
         <FlatList
           style={{ width: width }}
+          ref="_flatlist"
           data={data}
           extraData={this.state}
           keyExtractor={(item, index) => index}
           renderItem={({ item }) => <Wrap navigate={navigate} item={item} />}
-          onRefresh={() => { this.props.query() }}
+          onRefresh={() => { this.props.query({ tab }) }}
           onEndReached={() => { this._onEndReached(page) }} // 如果直接 this.props.query() 会请求两次
           onEndReachedThreshold={0.5}
           refreshing={loading}
@@ -96,6 +115,7 @@ const styles = StyleSheet.create({
   },
 
   headerLeft: {
+    height: 44,
     width: 80,
     marginLeft: 15
   },
@@ -133,6 +153,33 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
   },
+
+  tabsView: {
+    backgroundColor: '#FFFFFF',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    borderBottomWidth: 0.5,
+    borderColor: '#F0F0F0',
+  },
+
+  tabView: {
+    padding: 15,
+  },
+
+  tabText: {
+    fontSize: 14,
+  },
+
+  tabActive: {
+    borderBottomWidth: 1.5,
+    borderColor: '#4181DE',
+  },
+
+  textActive: {
+    fontWeight: 'bold',
+    color: '#4181DE',
+  }
+
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

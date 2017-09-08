@@ -5,7 +5,7 @@ import { StyleSheet, View, Text, TextInput, Button, Image, StatusBar, FlatList, 
 class Login extends PureComponent {
   constructor(props) {
     super(props)
-    this.state = { text: '49564492-25c9-4650-a49e-078ac4c7c383' }
+    this.state = { text: '' }
   }
 
   static navigationOptions = ({ navigation }) => {

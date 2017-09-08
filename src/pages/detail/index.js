@@ -80,7 +80,7 @@ class Detail extends PureComponent {
               onChangeText={(content) => { this.props.setContent(content) }}
             />
             <TouchableOpacity style={styles.contentTouch} onPress={() => { this._onSend() }}>
-              <Image style={styles.contentImg} source={require('../../assets/images/github.png')} resizeMode='contain' />
+              <Image style={styles.contentImg} source={require('../../assets/images/send.png')} resizeMode='contain' />
             </TouchableOpacity>
           </View>
         </View>

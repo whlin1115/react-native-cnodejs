@@ -49,7 +49,7 @@ class Zone extends PureComponent {
               </View>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => { navigate('Dynamic', { title: '最近回复', data: data.recent_replies }) }}>
+          <TouchableOpacity onPress={() => { navigate('Dynamic', { title: '最新发布', data: data.recent_topics }) }}>
             <View style={styles.row}>
               <Image style={styles.rowImg} source={require('../../assets/images/post.png')} resizeMode='contain' />
               <View style={styles.rowInner}>

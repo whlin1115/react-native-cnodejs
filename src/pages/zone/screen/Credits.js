@@ -15,21 +15,8 @@ class Credits extends PureComponent {
     };
   };
 
-  componentDidMount() {
-    const { params } = this.props.navigation.state;
-    // this.props.query(params)
-  }
-
-  componentWillReceiveProps(next) {
-    const { params } = this.props;
-    if (next.params !== params) {
-
-    }
-  }
-
   render() {
-    const { data, loading } = this.props
-    const { navigate } = this.props.navigation;
+    const { data } = this.props.navigation.state.params;
 
     return (
       <View style={styles.container}>
@@ -87,8 +74,8 @@ class Credits extends PureComponent {
 }
 
 function mapStateToProps(state) {
-  const { data, loading } = state.zone;
-  return { data, loading };
+  const { loading } = state.zone;
+  return { loading };
 }
 
 function mapDispatchToProps(dispatch) {

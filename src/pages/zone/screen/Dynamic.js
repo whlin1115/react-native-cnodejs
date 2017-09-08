@@ -12,19 +12,15 @@ class Dynamic extends PureComponent {
   }
 
   static navigationOptions = ({ navigation }) => {
-    const { type } = navigation.state.params;
-    const title = { 'reply': '最近回复', 'topic': '最新发布' }
+    const { title } = navigation.state.params;
     return {
-      headerTitle: title[type],
+      headerTitle: title,
     };
   };
 
   render() {
-    const { recent_replies, recent_topics, } = this.props
     const { navigate, state } = this.props.navigation;
-    const { type } = state.params
-    const recent = { 'reply': recent_replies, 'topic': recent_topics }
-    const data = recent[type]
+    const { data } = state.params
 
     return (
       <View style={styles.container}>
@@ -48,8 +44,8 @@ class Dynamic extends PureComponent {
 }
 
 function mapStateToProps(state) {
-  const { data, recent_replies, recent_topics, loading } = state.zone;
-  return { data, recent_replies, recent_topics, loading };
+  const { loading } = state.zone;
+  return { loading };
 }
 
 function mapDispatchToProps(dispatch) {

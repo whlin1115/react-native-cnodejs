@@ -29,6 +29,8 @@ export async function queryCollects(params) {
 
 export function parseUser(data) {
   const create_at = moment(data.create_at).startOf('minute').fromNow()
+  let avatar_url = data.avatar_url
+  if (avatar_url && !avatar_url.startsWith('https')) avatar_url = 'https:' + avatar_url
   const recent_topics = data.recent_topics.map(topic => {
     const last_reply_at = moment(topic.last_reply_at).startOf('minute').fromNow()
     return { ...topic, last_reply_at }
@@ -37,17 +39,18 @@ export function parseUser(data) {
     const last_reply_at = moment(topic.last_reply_at).startOf('minute').fromNow()
     return { ...topic, last_reply_at }
   })
-  const user = { ...data, create_at, recent_topics, recent_replies }
+  const user = { ...data, avatar_url, create_at, recent_topics, recent_replies }
   return user
 }
 
 export function parseInfo(data) {
   const $ = cheerio.load(data);
-  const avatar_url = $('.user_big_avatar img').attr('src')
+  let avatar_url = $('.user_big_avatar img').attr('src')
+  if (avatar_url && !avatar_url.startsWith('https')) avatar_url = 'https:' + avatar_url
   const name = $('.user_big_avatar img').attr('title')
   const home = $('.unstyled .fa-home').next().text()
   const location = $('.unstyled .fa-map-marker').next().text()
-  const weibo = '@ ' + $('.unstyled .fa-twitter').next().text()
+  const weibo = $('.unstyled .fa-twitter').next().text()
   const signature = $('.user_card .signature').text().replace(/[\r\n\s“”]/g, '')
   return { home, location, weibo, name, avatar_url, signature };
 }
@@ -62,7 +65,8 @@ export function parseInformation(data) {
     const value = valueEle.attr('value') || valueEle.text()
     info[key] = value
   })
-  const avatar_url = $('.user_avatar img').attr('src')
+  let avatar_url = $('.user_avatar img').attr('src')
+  if (avatar_url && !avatar_url.startsWith('https')) avatar_url = 'https:' + avatar_url
   return { ...info, avatar_url };
 }
 

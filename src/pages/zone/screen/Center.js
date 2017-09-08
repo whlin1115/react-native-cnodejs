@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva/mobile';
-import Card from './components/Card';
-import Header from './components/Header';
+import Card from '../components/Card';
+import Header from '../components/Header';
 import { StyleSheet, View, ScrollView, RefreshControl, Text, Button, Image, StatusBar, FlatList, Dimensions, TouchableOpacity } from 'react-native'
 
 const { width } = Dimensions.get('window');
@@ -16,63 +16,48 @@ class Zone extends PureComponent {
     const { state, setParams } = navigation;
     return {
       headerTitle: '空间',
-      tabBarIcon: ({ focused, tintColor }) => (
-        <Image
-          resizeMode="contain"
-          style={styles.iconBtn}
-          source={!focused ? require('../../assets/images/zone_0.png') : require('../../assets/images/zone_1.png')} />
-      ),
-      tabBarLabel: '我的',
     };
   };
 
   componentDidMount() {
-    this.props.init()
+    const { params } = this.props.navigation.state;
+    this.props.query(params)
   }
 
   render() {
-    const { user, collects, data, loading } = this.props
+    const { params } = this.props.navigation.state;
+    const { other_user, other_data, loading } = this.props
     const { navigate } = this.props.navigation;
-    const headerProps = { data, navigate }
+    const headerProps = { data: other_data, navigate }
 
     return (
-      <ScrollView style={styles.container} refreshControl={<RefreshControl onRefresh={() => { this.props.query(user) }} refreshing={loading} />}>
+      <ScrollView style={styles.container} refreshControl={<RefreshControl onRefresh={() => { this.props.query(params) }} refreshing={loading} />}>
         <StatusBar barStyle="light-content" />
         <Header {...headerProps} />
         <View style={styles.rowList}>
-          <TouchableOpacity onPress={() => { navigate('Dynamic', { title: '最近回复', data: data.recent_replies }) }}>
+          <TouchableOpacity onPress={() => { navigate('Dynamic', { title: '最近回复', data: other_data.recent_replies }) }}>
             <View style={styles.row}>
-              <Image style={styles.rowImg} source={require('../../assets/images/comment.png')} resizeMode='contain' />
+              <Image style={styles.rowImg} source={require('../../../assets/images/comment.png')} resizeMode='contain' />
               <View style={styles.rowInner}>
                 <Text style={styles.rowText}>最近回复</Text>
-                <Text style={styles.span}>{data.recent_replies ? data.recent_replies.length : '0'}</Text>
+                <Text style={styles.span}>{other_data.recent_replies ? other_data.recent_replies.length : '0'}</Text>
               </View>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => { navigate('Dynamic', { title: '最近回复', data: data.recent_replies }) }}>
+          <TouchableOpacity onPress={() => { navigate('Dynamic', { title: '最新发布', data: other_data.recent_topics }) }}>
             <View style={styles.row}>
-              <Image style={styles.rowImg} source={require('../../assets/images/post.png')} resizeMode='contain' />
+              <Image style={styles.rowImg} source={require('../../../assets/images/post.png')} resizeMode='contain' />
               <View style={styles.rowInner}>
                 <Text style={styles.rowText}>最新发布</Text>
-                <Text style={styles.span}>{data.recent_topics ? data.recent_topics.length : '0'}</Text>
+                <Text style={styles.span}>{other_data.recent_topics ? other_data.recent_topics.length : '0'}</Text>
               </View>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => { navigate('Collect', { user: data.loginname }) }}>
+          <TouchableOpacity onPress={() => { navigate('Collect', { ...params }) }}>
             <View style={styles.row}>
-              <Image style={styles.rowImg} source={require('../../assets/images/collection.png')} resizeMode='contain' />
+              <Image style={styles.rowImg} source={require('../../../assets/images/collection.png')} resizeMode='contain' />
               <View style={styles.rowInner}>
                 <Text style={styles.rowText}>话题收藏</Text>
-              </View>
-            </View>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.rowList}>
-          <TouchableOpacity onPress={() => { navigate('Setting') }}>
-            <View style={styles.row}>
-              <Image style={styles.rowImg} source={require('../../assets/images/setting.png')} resizeMode='contain' />
-              <View style={styles.rowInner}>
-                <Text style={styles.rowText}>设置</Text>
               </View>
             </View>
           </TouchableOpacity>
@@ -83,26 +68,15 @@ class Zone extends PureComponent {
 }
 
 function mapStateToProps(state) {
-  const { user, data, collects, loading } = state.zone;
-  return { user, data, collects, loading };
+  const { other_data, loading } = state.zone;
+  return { other_data, loading };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    init() {
-      dispatch({
-        type: 'zone/init',
-      });
-    },
-    queryInfo(params) {
-      dispatch({
-        type: 'zone/queryInfo',
-        payload: params,
-      });
-    },
     query(params) {
       dispatch({
-        type: 'zone/query',
+        type: 'zone/otherInfo',
         payload: params,
       });
     },

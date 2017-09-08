@@ -34,7 +34,9 @@ class Floor extends PureComponent {
         <TouchableOpacity onPress={() => { this.setState({ visible: true }) }}>
           <View style={styles.list}>
             <View style={styles.user}>
-              <Image source={{ uri: item.author.avatar_url }} style={styles.head} />
+              <TouchableOpacity onPress={() => { navigate('Center', { user: item.author.loginname }) }}>
+                <Image source={{ uri: item.author.avatar_url }} style={styles.head} />
+              </TouchableOpacity>
               <View style={styles.info}>
                 <View style={styles.cl}>
                   <Text style={styles.name}>{item.author.loginname}</Text>

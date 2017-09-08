@@ -17,9 +17,9 @@ class Option extends Component {
   }
 
   render() {
-    const { is_collect, recent_topics, navigation } = this.props
+    const { is_collect, data, navigation } = this.props
     const { topic_id } = this.props.params;
-    const edit = recent_topics.filter(topic => topic.id === topic_id)
+    const edit = data.recent_topics.filter(topic => topic.id === topic_id)
 
     return (
       <View style={styles.headerRight}>
@@ -40,8 +40,8 @@ class Option extends Component {
 
 function mapStateToProps(state) {
   const { is_collect } = state.detail;
-  const { accesstoken, recent_topics } = state.zone
-  return { is_collect, accesstoken, recent_topics };
+  const { accesstoken, data } = state.zone
+  return { is_collect, accesstoken, data };
 }
 
 function mapDispatchToProps(dispatch) {

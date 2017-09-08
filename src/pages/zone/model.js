@@ -7,9 +7,8 @@ export default {
     user: {},
     data: {},
     info: {},
-    recent_replies: [],
-    recent_topics: [],
     collects: [],
+    other_data: {},
     accesstoken: '',
     setting: { draft: true, notic: true },
     loading: false,
@@ -44,6 +43,13 @@ export default {
       if (err) return console.log(err)
       yield put({ type: 'query/success', payload: data });
     },
+    *otherInfo({ payload = {} }, { call, put }) {
+      yield put({ type: 'loading', payload: true });
+      const { data, err } = yield call(service.queryUser, payload);
+      yield put({ type: 'loading', payload: false });
+      if (err) return console.log(err)
+      yield put({ type: 'otherInfo/success', payload: data });
+    },
     *information({ payload = {} }, { call, put }) {
       yield put({ type: 'loading', payload: true });
       const { data, err } = yield call(service.queryInfo, payload);
@@ -68,8 +74,12 @@ export default {
     'query/success'(state, { payload }) {
       const [, result] = payload
       const data = service.parseUser(result.data)
-      const { recent_replies, recent_topics } = data
-      return { ...state, data, recent_replies, recent_topics };
+      return { ...state, data };
+    },
+    'otherInfo/success'(state, { payload }) {
+      const [, result] = payload
+      const data = service.parseUser(result.data)
+      return { ...state, other_data: data };
     },
     'information/success'(state, { payload }) {
       const [, data] = payload
@@ -97,6 +107,9 @@ export default {
     'config'(state, { payload: data = {} }) {
       AsyncStorage.setItem('setting', JSON.stringify(data));
       return { ...state, setting: data };
+    },
+    'cleanInfo'(state) {
+      return { ...state, info: {} };
     },
     'clean'(state, { payload: data }) {
       AsyncStorage.removeItem('user')

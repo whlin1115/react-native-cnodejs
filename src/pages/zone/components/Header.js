@@ -34,7 +34,7 @@ class Header extends Component {
             </View>
           </TouchableOpacity>
           <View style={styles.rowList}>
-            <TouchableOpacity onPress={() => { navigate('Credits') }}>
+            <TouchableOpacity onPress={() => { navigate('Credits', { data }) }}>
               <View style={styles.row}>
                 <Image style={styles.rowImg} source={require('../../../assets/images/integral.png')} resizeMode='contain' />
                 <View style={styles.rowInner}>

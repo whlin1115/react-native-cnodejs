@@ -20,11 +20,8 @@ class Personal extends PureComponent {
     this.props.information(params)
   }
 
-  componentWillReceiveProps(next) {
-    const { params } = this.props;
-    if (next.params !== params) {
-
-    }
+  componentWillUnmount() {
+    this.props.clean()
   }
 
   render() {
@@ -43,32 +40,52 @@ class Personal extends PureComponent {
           </View>
           <View style={styles.row}>
             <View style={styles.rowInner}>
-              <Text style={styles.rowText}>昵称</Text>
-              <Text style={styles.span}>{info.name}</Text>
+              <View style={styles.textView}>
+                <Text style={styles.rowText}>昵称</Text>
+              </View>
+              <View style={styles.spanView}>
+                <Text numberOfLines={1} style={styles.span}>{info.name}</Text>
+              </View>
             </View>
           </View>
           <View style={styles.row}>
             <View style={styles.rowInner}>
-              <Text style={styles.rowText}>微博</Text>
-              <Text style={styles.span}>{info.weibo ? info.weibo : '未填写'}</Text>
+              <View style={styles.textView}>
+                <Text style={styles.rowText}>微博</Text>
+              </View>
+              <View style={styles.spanView}>
+                <Text numberOfLines={1} style={styles.span}>{info.weibo ? info.weibo : '未填写'}</Text>
+              </View>
             </View>
           </View>
           <View style={styles.row}>
             <View style={styles.rowInner}>
-              <Text style={styles.rowText}>个人网站</Text>
-              <Text style={styles.span}>{info.home ? info.home : '未填写'}</Text>
+              <View style={styles.textView}>
+                <Text style={styles.rowText}>个人网站</Text>
+              </View>
+              <View style={styles.spanView}>
+                <Text numberOfLines={1} style={styles.span}>{info.home ? info.home : '未填写'}</Text>
+              </View>
             </View>
           </View>
           <View style={styles.row}>
             <View style={styles.rowInner}>
-              <Text style={styles.rowText}>所在地点</Text>
-              <Text style={styles.span}>{info.location ? info.location : '未填写'}</Text>
+              <View style={styles.textView}>
+                <Text style={styles.rowText}>所在地点</Text>
+              </View>
+              <View style={styles.spanView}>
+                <Text numberOfLines={1} style={styles.span}>{info.location ? info.location : '未填写'}</Text>
+              </View>
             </View>
           </View>
           <View style={styles.row}>
             <View style={styles.rowInner}>
-              <Text style={styles.rowText}>个性签名</Text>
-              <Text style={styles.span}>{info.signature ? info.signature : '未填写'}</Text>
+              <View style={styles.textView}>
+                <Text style={styles.rowText}>个性签名</Text>
+              </View>
+              <View style={styles.spanView}>
+                <Text numberOfLines={1} style={styles.span}>{info.signature ? info.signature : '未填写'}</Text>
+              </View>
             </View>
           </View>
         </View>
@@ -101,6 +118,11 @@ function mapDispatchToProps(dispatch) {
       dispatch({
         type: 'zone/information',
         payload: params,
+      });
+    },
+    clean() {
+      dispatch({
+        type: 'zone/cleanInfo',
       });
     },
   }
@@ -147,9 +169,19 @@ const styles = StyleSheet.create({
     borderColor: '#F0F0F0',
   },
 
+  textView: {
+    flex: 3,
+  },
+
   rowText: {
     fontSize: 16,
     fontWeight: '400',
+  },
+
+  spanView: {
+    flex: 7,
+    alignItems: 'flex-end',
+    justifyContent: 'flex-end'
   },
 
   span: {

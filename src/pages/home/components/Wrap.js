@@ -14,7 +14,9 @@ function Wrap({ item, navigate }) {
           <Text numberOfLines={1} style={styles.h3}>{item.title}</Text>
         </View >
         <View style={styles.content}>
-          <Image source={{ uri: item.author.avatar_url }} style={styles.avatar} />
+          <TouchableOpacity onPress={() => { navigate('Center', { user: item.author.loginname }) }}>
+            <Image source={{ uri: item.author.avatar_url }} style={styles.avatar} />
+          </TouchableOpacity>
           <View style={styles.info}>
             <View style={styles.p}>
               <Text style={styles.name}>{item.author.loginname}</Text>

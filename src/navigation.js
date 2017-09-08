@@ -14,6 +14,7 @@ import System from './pages/notice/screen/System';
 // Zone Navigator
 import Zone from './pages/zone';
 import Login from './pages/zone/screen/Login';
+import Center from './pages/zone/screen/Center';
 import Github from './pages/zone/screen/Github';
 import Collect from './pages/zone/screen/Collect';
 import Dynamic from './pages/zone/screen/Dynamic';
@@ -47,6 +48,7 @@ const Navigation = StackNavigator({
   System: { screen: System },
   // Zone Navigator
   Login: { screen: Login },
+  Center: { screen: Center },
   Github: { screen: Github },
   Credits: { screen: Credits },
   Dynamic: { screen: Dynamic },

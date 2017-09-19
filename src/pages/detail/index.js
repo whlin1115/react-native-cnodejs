@@ -199,8 +199,12 @@ const htmlStyles = StyleSheet.create({
   },
 
   p: {
-    fontSize: 16,
+    fontSize: 14,
     lineHeight: 24,
+  },
+
+  h1: {
+    fontSize: 20,
   },
 
   h2: {
@@ -208,7 +212,7 @@ const htmlStyles = StyleSheet.create({
   },
 
   h3: {
-    fontSize: 24,
+    fontSize: 16,
   },
 
   img: {

@@ -26,7 +26,6 @@ export default {
       yield put({ type: 'loading', payload: false });
       if (err) return console.log(err)
       yield put({ type: 'login/success', payload: data });
-      AsyncStorage.setItem('accesstoken', accesstoken);
       yield put({ type: 'home/token', payload: accesstoken });
       const [, user] = data
       yield put({ type: 'query', payload: user });
@@ -65,7 +64,6 @@ export default {
   reducers: {
     'login/success'(state, { payload }) {
       const [, data] = payload
-      AsyncStorage.setItem('user', JSON.stringify(data));
       return { ...state, user: data };
     },
     'query/success'(state, { payload }) {
@@ -105,6 +103,8 @@ export default {
     'clean'(state, { payload: data }) {
       AsyncStorage.removeItem('user')
       AsyncStorage.removeItem('accesstoken')
+      AsyncStorage.removeItem('webim_user')
+      AsyncStorage.removeItem('webim_accesstoken')
       return { ...state, data: {} };
     },
   },

@@ -8,7 +8,7 @@ export async function queryMessages(params) {
 }
 
 export async function register(params) {
-  const { username = 'username3', password = 'password3', nickname } = params
+  const { username, password, nickname } = params
   const body = { username, password, nickname: nickname || username }
   return WebIM.api.register(body);
 }
@@ -21,13 +21,20 @@ export async function attemptLogin(params) {
 
 export async function loginWebim(params) {
   const { apiURL, appkey } = WebIM.config
-  const { user = 'username1', pwd = 'password1' } = params
-  var options = { apiUrl: apiURL, user, pwd, appKey: appkey };
+  const { username, password } = params
+  var options = { apiUrl: apiURL, user: username, pwd: password, appKey: appkey };
   WebIM.conn.open(options);
 }
 
-export async function sendMessage(params) {
-  const { msg = 'message content', to = 'username1', chatType = 'singleChat', roomType = false } = params
+export async function tokenLoginWebim(params) {
+  const { apiURL, appkey } = WebIM.config
+  const { user, accessToken } = params
+  var options = { apiUrl: apiURL, user, accessToken, appKey: appkey };
+  WebIM.conn.open(options);
+}
+
+export async function sendTxtMessage(params) {
+  const { msg, to, chatType = 'singleChat', roomType = false } = params
   var id = WebIM.conn.getUniqueId();
   var message = new WebIM.message('txt', id);
   const success = (id, serverMsgId) => console.log('=== send message success ===')

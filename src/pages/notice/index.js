@@ -33,17 +33,17 @@ class Notice extends PureComponent {
         // 如果isAutoLogin设置为false，那么必须手动设置上线，否则无法收消息
         // 手动上线指的是调用conn.setPresence(); 如果conn初始化时已将isAutoLogin设置为true
         // 则无需调用conn.setPresence();  
-        console.log(`=== onOpened: ${message} ===`)
+        console.log(`=== onOpened ===`)
       },
-      onClosed: (message) => { console.log(`=== onClosed: ${message} ===`) },     //连接关闭回调
-      onPresence: (message) => { console.log(`=== onPresence: ${message} ===`) },     //处理“广播”或“发布-订阅”消息，如联系人订阅请求、处理群组、聊天室被踢解散等消息
-      onRoster: (message) => { console.log(`=== onRoster: ${message} ===`) },     //处理好友申请
-      onInviteMessage: (message) => { console.log(`=== onInviteMessage: ${message} ===`) },     //处理群组邀请
-      onOnline: () => { console.log(`=== onOnline...`) },     //本机网络连接成功
-      onOffline: () => { console.log(`=== onOffline...`) },     //本机网络掉线
-      onError: (message) => { console.log(`=== onError: ${message} ===`) },       //失败回调
-      onBlacklistUpdate: (list) => { console.log(`=== onBlacklistUpdate: ${list} ===`); },      // 黑名单变动查询黑名单，将好友拉黑，将好友从黑名单移除都会回调这个函数，list则是黑名单现有的所有好友信息
-      onCreateGroup: (message) => { console.log(`=== onCreateGroup: ${message} ===`) },     //创建群组成功回执（需调用createGroupNew）
+      onClosed: (message) => { console.log(`=== onClosed ===`) },     //连接关闭回调
+      onPresence: (message) => { console.log(`=== onPresence ===`) },     //处理“广播”或“发布-订阅”消息，如联系人订阅请求、处理群组、聊天室被踢解散等消息
+      onRoster: (message) => { console.log(`=== onRoster ===`) },     //处理好友申请
+      onInviteMessage: (message) => { console.log(`=== onInviteMessage ===`) },     //处理群组邀请
+      onOnline: () => { console.log(`=== onOnline... ===`) },     //本机网络连接成功
+      onOffline: () => { console.log(`=== onOffline... ===`) },     //本机网络掉线
+      onError: (message) => { console.log(`=== onError ===`) },       //失败回调
+      onBlacklistUpdate: (list) => { console.log(`=== onBlacklistUpdate ===`); },      // 黑名单变动查询黑名单，将好友拉黑，将好友从黑名单移除都会回调这个函数，list则是黑名单现有的所有好友信息
+      onCreateGroup: (message) => { console.log(`=== onCreateGroup ===`) },     //创建群组成功回执（需调用createGroupNew）
     });
   }
 
@@ -71,7 +71,7 @@ class Notice extends PureComponent {
               </View>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => { navigate('Chat') }}>
+          <TouchableOpacity onPress={() => { navigate('Chat', { user: 'username3' }) }}>
             <View style={styles.row}>
               <Image style={styles.rowImg} source={require('../../assets/images/notice.png')} resizeMode='contain' />
               <View style={styles.rowInner}>

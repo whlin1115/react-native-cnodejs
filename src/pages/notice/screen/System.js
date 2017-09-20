@@ -36,7 +36,7 @@ class System extends PureComponent {
                 renderItem={({ item }) => <Notice item={item} />}
               />
             </View>
-            : <View style={styles.msgViw}>
+            : <View style={styles.msgView}>
               <Text style={styles.msg}>暂无消息</Text>
             </View>
         }
@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F8F8F8',
   },
 
-  msgViw: {
+  msgView: {
     padding: 30,
     justifyContent: 'center',
   },

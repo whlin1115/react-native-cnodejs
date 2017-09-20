@@ -4,22 +4,19 @@ import { AsyncStorage } from 'react-native'
 export default {
   namespace: 'zone',
   state: {
-    user: {},
     data: {},
     info: {},
     collects: [],
     other_data: {},
-    accesstoken: '',
     setting: { draft: true, notic: true },
     loading: false,
   },
   effects: {
-    *init({ payload = {} }, { call, put }) {
-      var user = yield AsyncStorage.getItem('user')
-      var accesstoken = yield AsyncStorage.getItem('accesstoken')
+    *init({ payload = {} }, { select, call, put }) {
+      const user = yield select(state => state.home.user);
+      const accesstoken = yield select(state => state.home.accesstoken);
+      if (user) yield put({ type: 'query', payload: user })
       var setting = yield AsyncStorage.getItem('setting')
-      if (user) yield put({ type: 'query', payload: JSON.parse(user) })
-      if (accesstoken) yield put({ type: 'token', payload: accesstoken })
       if (setting) yield put({ type: 'config', payload: JSON.parse(setting) })
     },
     *login({ payload = {} }, { call, put }) {
@@ -30,14 +27,14 @@ export default {
       if (err) return console.log(err)
       yield put({ type: 'login/success', payload: data });
       AsyncStorage.setItem('accesstoken', accesstoken);
-      yield put({ type: 'token', payload: accesstoken });
+      yield put({ type: 'home/token', payload: accesstoken });
       const [, user] = data
       yield put({ type: 'query', payload: user });
     },
     *query({ payload = {} }, { call, put }) {
       const { loginname } = payload
       yield put({ type: 'loading', payload: true });
-      yield put({ type: 'user', payload: payload });
+      yield put({ type: 'home/user', payload: payload });
       const { data, err } = yield call(service.queryUser, { user: loginname });
       yield put({ type: 'loading', payload: false });
       if (err) return console.log(err)
@@ -97,12 +94,6 @@ export default {
     },
     'loading'(state, { payload: data }) {
       return { ...state, loading: data };
-    },
-    'user'(state, { payload: data = {} }) {
-      return { ...state, user: data };
-    },
-    'token'(state, { payload: data }) {
-      return { ...state, accesstoken: data };
     },
     'config'(state, { payload: data = {} }) {
       AsyncStorage.setItem('setting', JSON.stringify(data));

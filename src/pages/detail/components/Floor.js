@@ -84,7 +84,7 @@ class Floor extends PureComponent {
 }
 
 function mapStateToProps(state) {
-  const { accesstoken } = state.zone
+  const { accesstoken } = state.home
   const { replies } = state.detail;
   return { accesstoken, replies };
 }

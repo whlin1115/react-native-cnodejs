@@ -37,6 +37,7 @@ class Home extends PureComponent {
   };
 
   componentDidMount() {
+    this.props.init()
     const { tab } = this.props
     const params = { tab }
     this.props.query(params)
@@ -99,6 +100,11 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
+    init() {
+      dispatch({
+        type: 'home/init',
+      });
+    },
     query(params) {
       dispatch({
         type: 'home/query',

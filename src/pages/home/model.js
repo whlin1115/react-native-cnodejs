@@ -1,4 +1,5 @@
 import * as service from './service';
+import { AsyncStorage } from 'react-native'
 
 export default {
   namespace: 'home',
@@ -6,9 +7,17 @@ export default {
     page: 1,
     tab: 'all',
     data: [],
+    user: {},
+    accesstoken: '', // 因为home页面最先加载，因此把用户信息都存在home,其他页面从中提取
     loading: false,
   },
   effects: {
+    *init({ payload = {} }, { call, put }) {
+      var user = yield AsyncStorage.getItem('user')
+      var accesstoken = yield AsyncStorage.getItem('accesstoken')
+      if (user) yield put({ type: 'user', payload: JSON.parse(user) })
+      if (accesstoken) yield put({ type: 'token', payload: accesstoken })
+    },
     *query({ payload = {} }, { call, put }) {
       const { page = 1, tab } = payload
       yield put({ type: 'tab', payload: tab });
@@ -37,6 +46,12 @@ export default {
     },
     'page'(state, { payload: data }) {
       return { ...state, page: data };
+    },
+    'user'(state, { payload: data }) {
+      return { ...state, user: data };
+    },
+    'token'(state, { payload: data }) {
+      return { ...state, accesstoken: data };
     },
     'loading'(state, { payload: data }) {
       return { ...state, loading: data };

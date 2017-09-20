@@ -17,14 +17,14 @@ class Option extends Component {
   }
 
   render() {
-    const { is_collect, data, navigation } = this.props
+    const { is_collect, user, data, navigation } = this.props
     const { topic_id } = this.props.params;
-    const edit = data.recent_topics.filter(topic => topic.id === topic_id)
+    const { author = {} } = data
 
     return (
       <View style={styles.headerRight}>
         {
-          edit.length > 0 ?
+          user.loginname === author.loginname ?
             <TouchableOpacity style={styles.headerTouch} onPress={() => { navigation.navigate('Publish', { edit: true }) }}>
               <Image style={styles.headerBtn} source={require('../../../assets/images/edit.png')} resizeMode='contain' />
             </TouchableOpacity>
@@ -39,9 +39,9 @@ class Option extends Component {
 }
 
 function mapStateToProps(state) {
-  const { is_collect } = state.detail;
-  const { accesstoken, data } = state.zone
-  return { is_collect, accesstoken, data };
+  const { is_collect, data } = state.detail;
+  const { accesstoken, user } = state.home
+  return { is_collect, data, user, accesstoken };
 }
 
 function mapDispatchToProps(dispatch) {

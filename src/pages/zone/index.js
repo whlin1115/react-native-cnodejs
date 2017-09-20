@@ -83,7 +83,8 @@ class Zone extends PureComponent {
 }
 
 function mapStateToProps(state) {
-  const { user, data, collects, loading } = state.zone;
+  const { data, collects, loading } = state.zone;
+  const { user } = state.home;
   return { user, data, collects, loading };
 }
 

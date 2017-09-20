@@ -1,9 +1,40 @@
 import { get, post } from '../../utils/request';
+import WebIM from '../../utils/webIM';
 import { moment } from '../../utils/tool';
 
 export async function queryMessages(params) {
   const { accesstoken, mdrender = false } = params
   return get(`/messages?accesstoken=${accesstoken}&mdrender=${mdrender}`);
+}
+
+export async function register(params) {
+  const { username = 'username3', password = 'password3', nickname } = params
+  const body = { username, password, nickname: nickname || username }
+  return WebIM.api.register(body);
+}
+
+export async function attemptLogin(params) {
+  const { username, password } = params
+  const body = { username, password, grant_type: 'password', timestamp: +new Date() }
+  return WebIM.api.login(body);
+}
+
+export async function loginWebim(params) {
+  const { apiURL, appkey } = WebIM.config
+  const { user = 'username1', pwd = 'password1' } = params
+  var options = { apiUrl: apiURL, user, pwd, appKey: appkey };
+  WebIM.conn.open(options);
+}
+
+export async function sendMessage(params) {
+  const { msg = 'message content', to = 'username1', chatType = 'singleChat', roomType = false } = params
+  var id = WebIM.conn.getUniqueId();
+  var message = new WebIM.message('txt', id);
+  const success = (id, serverMsgId) => console.log('=== send message success ===')
+  const fail = (e) => console.log(`=== Send message error: ${e} ===`)
+  message.set({ msg, to, roomType, success, fail });
+  message.body.chatType = chatType;
+  WebIM.conn.send(message.body);
 }
 
 export async function mark_oneMessages(params) {

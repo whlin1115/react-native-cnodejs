@@ -33,7 +33,7 @@ class Option extends Component {
 function mapStateToProps(state) {
   const { tab, content, title } = state.publish;
   const { data } = state.detail;
-  const { accesstoken } = state.zone
+  const { accesstoken } = state.home
   return { tab, data, content, title, accesstoken };
 }
 

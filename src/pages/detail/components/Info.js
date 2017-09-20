@@ -118,7 +118,6 @@ const styles = StyleSheet.create({
   default: {
     backgroundColor: '#e7e7e7',
   },
-
 });
 
 export default Info

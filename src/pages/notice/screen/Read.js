@@ -33,7 +33,8 @@ class Read extends PureComponent {
               extraData={this.state}
               keyExtractor={(item, index) => index}
               renderItem={({ item }) => <Message navigate={navigate} item={item} />}
-            /> : <View style={styles.msgViw}>
+            />
+            : <View style={styles.msgView}>
               <Text style={styles.msg}>暂无消息</Text>
             </View>
         }
@@ -63,8 +64,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F8F8F8',
   },
-  
-  msgViw: {
+
+  msgView: {
     padding: 30,
     justifyContent: 'center',
   },

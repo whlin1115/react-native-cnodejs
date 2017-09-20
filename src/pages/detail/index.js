@@ -91,7 +91,7 @@ class Detail extends PureComponent {
 
 function mapStateToProps(state) {
   const { data, replies, content, loading } = state.detail;
-  const { accesstoken, user } = state.zone
+  const { accesstoken, user } = state.home
   return { data, accesstoken, loading, content, replies, user };
 }
 

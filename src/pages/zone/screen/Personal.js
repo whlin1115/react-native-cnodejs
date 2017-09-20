@@ -108,7 +108,8 @@ class Personal extends PureComponent {
 }
 
 function mapStateToProps(state) {
-  const { user, info, loading } = state.zone;
+  const { info, loading } = state.zone;
+  const { user } = state.home;
   return { user, info, loading };
 }
 

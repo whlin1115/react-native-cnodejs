@@ -9,6 +9,7 @@ import Recruit from './pages/recruit';
 // Notice Navigator
 import Notice from './pages/notice';
 import Read from './pages/notice/screen/Read';
+import Chat from './pages/notice/screen/Chat';
 import System from './pages/notice/screen/System';
 
 // Zone Navigator
@@ -35,6 +36,7 @@ const Tabs = TabNavigator({
         backgroundColor: '#fff',
       },
     },
+    lazy: true,
     swipeEnabled: true,
   });
 
@@ -45,6 +47,7 @@ const Navigation = StackNavigator({
   Publish: { screen: Publish },
   // Notice Navigator
   Read: { screen: Read },
+  Chat: { screen: Chat },
   System: { screen: System },
   // Zone Navigator
   Login: { screen: Login },

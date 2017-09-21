@@ -13,6 +13,7 @@ import Chat from './pages/notice/screen/Chat';
 import System from './pages/notice/screen/System';
 import Contact from './pages/notice/screen/Contact';
 import Information from './pages/notice/screen/Information';
+import ChatMessage from './pages/notice/screen/ChatMessage';
 
 // Zone Navigator
 import Zone from './pages/zone';
@@ -53,6 +54,7 @@ const Navigation = StackNavigator({
   System: { screen: System },
   Contact: { screen: Contact },
   Information: { screen: Information },
+  ChatMessage: { screen: ChatMessage },
   // Zone Navigator
   Login: { screen: Login },
   Center: { screen: Center },

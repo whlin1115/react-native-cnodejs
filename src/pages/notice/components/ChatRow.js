@@ -1,23 +1,58 @@
 
-import React from 'react'
-import { StyleSheet, View, Image, Text, TouchableOpacity } from 'react-native'
+import React, { Component, PureComponent } from 'react'
+import { connect } from 'dva/mobile';
+import { StyleSheet, View, Image, Text, Alert, TouchableOpacity } from 'react-native'
 
-function ChatRow({ item, navigate }) {
+class ChatRow extends PureComponent {
+  constructor(props) {
+    super(props)
+    this.state = {}
+  }
 
-  return (
-    <TouchableOpacity onPress={() => { navigate('Chat', { user: item.name }) }}>
-      <View style={styles.row}>
-        <Image style={styles.avatar} source={{ uri: item.avatar }} />
-        <View style={styles.rowInner}>
-          <View style={styles.info}>
-            <Text style={styles.name}>{item.name}</Text>
-            <Text style={styles.time}>{item.time}</Text>
+  _onLongPress = (item) => {
+    Alert.alert(
+      '删除信息？', null,
+      [
+        { text: '取消', onPress: () => console.log('cancle') },
+        { text: '确定', onPress: () => this.props.delete(item) },
+      ]
+    )
+  }
+  render() {
+    const { item, navigate } = this.props
+
+    return (
+      <TouchableOpacity onPress={() => { navigate('Chat', { user: item }) }} onLongPress={() => { this._onLongPress(item) }}>
+        <View style={styles.row}>
+          <Image style={styles.avatar} source={{ uri: item.avatar }} />
+          <View style={styles.rowInner}>
+            <View style={styles.info}>
+              <Text numberOfLines={1} style={styles.name}>{item.name ? item.name : '未知'}</Text>
+              <Text numberOfLines={1} style={styles.time}>{item.createdAt}</Text>
+            </View>
+            <Text numberOfLines={1} style={styles.content}>{item.text ? item.text : '无'}</Text>
           </View>
-          <Text style={styles.content}>{item.text}</Text>
         </View>
-      </View>
-    </TouchableOpacity >
-  )
+      </TouchableOpacity >
+    )
+  }
+}
+
+
+function mapStateToProps(state) {
+  const { loading } = state.notice;
+  return { loading };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    delete(params) {
+      dispatch({
+        type: 'notice/delete_sigle_chat',
+        payload: params,
+      });
+    },
+  }
 }
 
 const styles = StyleSheet.create({
@@ -67,4 +102,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ChatRow
+export default connect(mapStateToProps, mapDispatchToProps)(ChatRow);

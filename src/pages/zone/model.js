@@ -104,6 +104,9 @@ export default {
       AsyncStorage.removeItem('webim_accesstoken')
       return { ...state, data: {} };
     },
+    'cleanInfo'(state) {
+      return { ...state, info: {} };
+    },
   },
   subscriptions: {},
 };

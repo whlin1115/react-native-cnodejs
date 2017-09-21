@@ -101,6 +101,18 @@ export default {
       const { chat_history } = payload
       return { ...state, chat_history };
     },
+    'delete_sigle_chat'(state, { payload }) {
+      const { messages, total_messages, chat_history } = service.parseSigleChat(state, payload)
+      AsyncStorage.setItem('total_messages', JSON.stringify(total_messages))
+      AsyncStorage.setItem('chat_history', JSON.stringify(chat_history))
+      return { ...state, messages, total_messages, chat_history };
+    },
+    'clean_sigle_history'(state, { payload }) {
+      const { messages, total_messages, chat_history } = service.parseSigleHistory(state, payload)
+      AsyncStorage.setItem('total_messages', JSON.stringify(total_messages))
+      AsyncStorage.setItem('chat_history', JSON.stringify(chat_history))
+      return { ...state, messages, total_messages, chat_history };
+    },
     'save_message'(state, { payload }) {
       const { messages, total_messages, chat_history } = service.parseMessage(state, payload)
       AsyncStorage.setItem('total_messages', JSON.stringify(total_messages))
@@ -108,8 +120,8 @@ export default {
       return { ...state, messages, total_messages, chat_history };
     },
     'fetch_message'(state, { payload }) {
-      const { user } = payload
-      const messages = state.total_messages[user]
+      const { user: { name } } = payload
+      const messages = state.total_messages[name]
       return { ...state, messages };
     },
     'save_contacts'(state, { payload }) {

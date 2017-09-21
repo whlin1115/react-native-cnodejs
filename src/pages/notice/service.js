@@ -82,13 +82,44 @@ export function parseRead(data, state) {
 }
 
 export function parseMessage(state, payload) {
-  const { user, message } = payload
+  const { user: { name }, message } = payload
   const total_messages = state.total_messages;
-  const user_messages = total_messages[user] || []
+  const user_messages = total_messages[name] || []
   const messages = [message, ...user_messages]
-  total_messages[user] = messages
-  const chat_user = { name: user, avatar: 'https://facebook.github.io/react/img/logo_og.png', ...message }
-  const filter_chats = state.chat_history.filter(chat => chat.name !== user)
+  total_messages[name] = messages
+  const chat_user = { name, avatar: 'https://facebook.github.io/react/img/logo_og.png', ...message }
+  chat_user.createdAt = moment(chat_user.createdAt).format('HH:mm');
+  const filter_chats = state.chat_history.filter(chat => chat.name !== name)
   const chat_history = [chat_user, ...filter_chats]
   return { messages, total_messages, chat_history }
+}
+
+export function parseSigleHistory(state, payload) {
+  const { name } = payload
+  const total_messages = state.total_messages;
+  delete total_messages[name]
+  const chat_history = state.chat_history.map(chat => {
+    if (chat.name === name) chat = { ...chat, text: '', createdAt: '' }
+    return chat
+  })
+  return { messages: [], total_messages, chat_history }
+}
+
+export function parseSigleChat(state, payload) {
+  const { name } = payload
+  const total_messages = state.total_messages;
+  delete total_messages[name]
+  const chat_history = state.chat_history.filter(chat => chat.name !== name)
+  return { messages: [], total_messages, chat_history }
+}
+
+export function parseHistory(messages) {
+  const history = messages.map(message => {
+    if (typeof message.createdAt === 'object' || message.createdAt.length > 16) {
+      message.createdAt = moment(message.createdAt).format('HH:mm');
+      // message.createdAt = moment(message.createdAt).startOf('minute').fromNow()
+    }
+    return message
+  })
+  return history
 }

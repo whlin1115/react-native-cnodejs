@@ -71,18 +71,18 @@ class Notice extends PureComponent {
   }
 
   _onReceive = (messages) => {
-    const user = messages.from;
+    const name = messages.from;
     const message = {
       _id: Math.round(Math.random() * 1000000),
       text: messages.data,
       createdAt: new Date(),
       user: {
-        _id: user,
-        name: user,
+        _id: name,
+        name: name,
         avatar: 'https://facebook.github.io/react/img/logo_og.png',
       },
     }
-    this.props.saveMessage({ user, message })
+    this.props.saveMessage({ user: { name }, message })
   }
 
   render() {

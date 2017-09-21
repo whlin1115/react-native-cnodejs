@@ -15,10 +15,17 @@ class Chat extends PureComponent {
   }
 
   static navigationOptions = ({ navigation }) => {
-    const { state, setParams } = navigation;
+    const { state, setParams, navigate } = navigation;
     const { user } = state.params;
     return {
-      headerTitle: `${user}`,
+      headerTitle: `${user.name}`,
+      headerRight: (
+        <View style={styles.headerRight}>
+          <TouchableOpacity style={styles.headerTouch} onPress={() => { navigate('ChatMessage', { user }) }}>
+            <Image style={styles.headerBtn} source={require('../../../assets/images/setting.png')} resizeMode='contain' />
+          </TouchableOpacity>
+        </View>
+      ),
     };
   };
 
@@ -30,7 +37,7 @@ class Chat extends PureComponent {
   _onSend = (messages = []) => {
     const [message] = messages
     const { user } = this.props.navigation.state.params;
-    const params = { to: user, msg: message.text }
+    const params = { to: user.name, msg: message.text }
     this.props.sendMessage(params)
     this.props.saveMessage({ user, message })
   }
@@ -98,6 +105,23 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F8F8F8',
+  },
+
+  headerRight: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+
+  headerTouch: {
+    height: 30
+  },
+
+  headerBtn: {
+    flex: 1,
+    width: 30,
+    height: 30,
+    marginRight: 15
   },
 
   inputView: {

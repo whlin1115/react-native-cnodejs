@@ -2,7 +2,7 @@ import { get, post } from '../../utils/request';
 import WebIM from '../../utils/webIM';
 import { moment } from '../../utils/tool';
 
-export async function queryMessages(params) {
+export async function queryNotics(params) {
   const { accesstoken, mdrender = false } = params
   return get(`/messages?accesstoken=${accesstoken}&mdrender=${mdrender}`);
 }
@@ -50,7 +50,7 @@ export async function mark_oneMessages(params) {
   return post(`/message/mark_one/${msg_id}`, body);
 }
 
-export function parseMessages(data) {
+export function parseNotics(data) {
   const has_read_messages = data.has_read_messages.map(message => {
     const last_reply_at = message.topic.last_reply_at
     const create_at = message.reply.create_at
@@ -79,4 +79,16 @@ export function parseRead(data, state) {
   });
   const has_read_messages = state.has_read_messages.unshift(read_messages[0]).concat()
   return { has_read_messages, hasnot_read_messages }
+}
+
+export function parseMessage(state, payload) {
+  const { user, message } = payload
+  const total_messages = state.total_messages;
+  const user_messages = total_messages[user] || []
+  const messages = [message, ...user_messages]
+  total_messages[user] = messages
+  const chat_user = { name: user, avatar: 'https://facebook.github.io/react/img/logo_og.png', ...message }
+  const filter_chats = state.chat_history.filter(chat => chat.name !== user)
+  const chat_history = [chat_user, ...filter_chats]
+  return { messages, total_messages, chat_history }
 }

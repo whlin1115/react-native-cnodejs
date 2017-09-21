@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva/mobile';
+import { Tip } from '../../../components';
 import Message from '../components/Message';
 import { StyleSheet, View, Text, Button, Image, StatusBar, FlatList, Dimensions, TouchableOpacity } from 'react-native'
 
@@ -19,24 +20,23 @@ class Read extends PureComponent {
   };
 
   render() {
-    const { has_read_messages, loading } = this.props
-    const { navigate, state } = this.props.navigation;
+    const { messages } = this.props.navigation.state.params;
+    const { loading } = this.props
+    const { navigate } = this.props.navigation;
 
     return (
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
         {
-          has_read_messages.length > 0 ?
+          messages.length > 0 ?
             <FlatList
               style={{ width: width }}
-              data={has_read_messages}
+              data={messages}
               extraData={this.state}
               keyExtractor={(item, index) => index}
               renderItem={({ item }) => <Message navigate={navigate} item={item} />}
             />
-            : <View style={styles.msgView}>
-              <Text style={styles.msg}>暂无消息</Text>
-            </View>
+            : <Tip message={{ text: '暂无消息' }} />
         }
       </View>
     );
@@ -44,8 +44,8 @@ class Read extends PureComponent {
 }
 
 function mapStateToProps(state) {
-  const { has_read_messages, loading } = state.notice;
-  return { has_read_messages, loading };
+  const { loading } = state.notice;
+  return { loading };
 }
 
 function mapDispatchToProps(dispatch) {
@@ -64,17 +64,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F8F8F8',
   },
-
-  msgView: {
-    padding: 30,
-    justifyContent: 'center',
-  },
-
-  msg: {
-    textAlign: 'center',
-    fontSize: 14,
-    color: '#999'
-  }
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Read);

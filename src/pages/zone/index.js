@@ -95,15 +95,15 @@ function mapDispatchToProps(dispatch) {
         type: 'zone/init',
       });
     },
-    queryInfo(params) {
-      dispatch({
-        type: 'zone/queryInfo',
-        payload: params,
-      });
-    },
     query(params) {
       dispatch({
         type: 'zone/query',
+        payload: params,
+      });
+    },
+    queryInfo(params) {
+      dispatch({
+        type: 'zone/queryInfo',
         payload: params,
       });
     },

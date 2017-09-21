@@ -15,10 +15,10 @@ export default {
   },
   effects: {
     *init({ payload = {} }, { call, put }) {
-      var user = yield AsyncStorage.getItem('user')
-      var accesstoken = yield AsyncStorage.getItem('accesstoken')
-      var webim_user = yield AsyncStorage.getItem('webim_user')
-      var webim_accesstoken = yield AsyncStorage.getItem('webim_accesstoken')
+      const user = yield AsyncStorage.getItem('user')
+      const accesstoken = yield AsyncStorage.getItem('accesstoken')
+      const webim_user = yield AsyncStorage.getItem('webim_user')
+      const webim_accesstoken = yield AsyncStorage.getItem('webim_accesstoken')
       if (user) yield put({ type: 'user', payload: JSON.parse(user) })
       if (accesstoken) yield put({ type: 'token', payload: accesstoken })
       if (webim_user && webim_accesstoken) yield put({ type: 'webim_user', payload: { user: JSON.parse(webim_user), access_token: webim_accesstoken } })

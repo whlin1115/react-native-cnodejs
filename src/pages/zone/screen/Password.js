@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva/mobile';
+import { Tip } from '../../../components';
 import { StyleSheet, View, Text, Button, Image, StatusBar, FlatList, Dimensions, TouchableOpacity } from 'react-native'
 
 class Password extends PureComponent {
@@ -34,9 +35,7 @@ class Password extends PureComponent {
     return (
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
-        <View style={styles.msgViw}>
-          <Text style={styles.msg}>暂不支持</Text>
-        </View>
+        <Tip message={{ text: '暂不支持' }} />
       </View >
     );
   }
@@ -62,17 +61,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F8F8F8',
-  },
-
-  msgViw: {
-    padding: 30,
-    justifyContent: 'center',
-  },
-
-  msg: {
-    textAlign: 'center',
-    fontSize: 14,
-    color: '#999'
   }
 });
 

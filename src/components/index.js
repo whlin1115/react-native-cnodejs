@@ -1,4 +1,5 @@
+import Tip from './Tip';
 import Html from './Html';
 import HtmlView from './HtmlView';
 
-export { Html, HtmlView }
+export { Tip, Html, HtmlView }

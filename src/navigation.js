@@ -11,6 +11,8 @@ import Notice from './pages/notice';
 import Read from './pages/notice/screen/Read';
 import Chat from './pages/notice/screen/Chat';
 import System from './pages/notice/screen/System';
+import Contact from './pages/notice/screen/Contact';
+import Information from './pages/notice/screen/Information';
 
 // Zone Navigator
 import Zone from './pages/zone';
@@ -49,6 +51,8 @@ const Navigation = StackNavigator({
   Read: { screen: Read },
   Chat: { screen: Chat },
   System: { screen: System },
+  Contact: { screen: Contact },
+  Information: { screen: Information },
   // Zone Navigator
   Login: { screen: Login },
   Center: { screen: Center },

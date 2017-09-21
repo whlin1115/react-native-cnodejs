@@ -1,7 +1,8 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva/mobile';
-import Notice from '../components/Notice';
-import { StyleSheet, View, Text, Button, Image, StatusBar, FlatList, Dimensions, TouchableOpacity } from 'react-native'
+import { Tip } from '../../../components';
+import Message from '../components/Message';
+import { StyleSheet, View, ScrollView, Text, Button, Image, StatusBar, FlatList, Dimensions, TouchableOpacity } from 'react-native'
 
 const { width } = Dimensions.get('window');
 
@@ -19,35 +20,43 @@ class System extends PureComponent {
   };
 
   render() {
-    const { system_messages, loading } = this.props
+    const { hasnot_read_messages, has_read_messages, loading } = this.props
     const { navigate } = this.props.navigation;
 
     return (
-      <View style={styles.container}>
+      <ScrollView style={styles.container}>
         <StatusBar barStyle="light-content" />
+        <View style={styles.rowList}>
+          <TouchableOpacity onPress={() => { navigate('Read', { messages: has_read_messages }) }}>
+            <View style={styles.row}>
+              <Image style={styles.rowImg} source={require('../../../assets/images/comment.png')} resizeMode='contain' />
+              <View style={styles.rowInner}>
+                <Text style={styles.rowText}>已读消息</Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+        </View>
         {
-          system_messages.length > 0 ?
+          hasnot_read_messages.length > 0 ?
             <View style={styles.rowList}>
               <FlatList
                 style={{ width: width }}
-                data={system_messages}
+                data={hasnot_read_messages}
                 extraData={this.state}
                 keyExtractor={(item, index) => index}
-                renderItem={({ item }) => <Notice item={item} />}
+                renderItem={({ item }) => <Message navigate={navigate} item={item} />}
               />
             </View>
-            : <View style={styles.msgView}>
-              <Text style={styles.msg}>暂无消息</Text>
-            </View>
+            : <Tip message={{ text: '暂无消息' }} />
         }
-      </View>
+      </ScrollView>
     );
   }
 }
 
 function mapStateToProps(state) {
-  const { system_messages, loading } = state.notice;
-  return { system_messages, loading };
+  const { hasnot_read_messages, has_read_messages, loading } = state.notice;
+  return { hasnot_read_messages, has_read_messages, loading };
 }
 
 function mapDispatchToProps(dispatch) {
@@ -67,15 +76,35 @@ const styles = StyleSheet.create({
     backgroundColor: '#F8F8F8',
   },
 
-  msgView: {
-    padding: 30,
-    justifyContent: 'center',
+  rowList: {
+    marginTop: 10,
   },
 
-  msg: {
-    textAlign: 'center',
-    fontSize: 14,
-    color: '#999'
+  row: {
+    paddingLeft: 27,
+    paddingRight: 27,
+    alignItems: 'center',
+    flexDirection: 'row',
+    backgroundColor: '#FFFFFF',
+  },
+
+  rowImg: {
+    width: 20,
+    height: 20,
+    marginRight: 20,
+  },
+
+  rowInner: {
+    flex: 1,
+    paddingTop: 20,
+    paddingBottom: 20,
+    borderBottomWidth: 0.5,
+    borderColor: '#F0F0F0',
+  },
+
+  rowText: {
+    fontSize: 16,
+    fontWeight: '400',
   }
 });
 

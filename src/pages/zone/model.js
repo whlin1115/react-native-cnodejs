@@ -97,9 +97,6 @@ export default {
       AsyncStorage.setItem('setting', JSON.stringify(data));
       return { ...state, setting: data };
     },
-    'cleanInfo'(state) {
-      return { ...state, info: {} };
-    },
     'clean'(state, { payload: data }) {
       AsyncStorage.removeItem('user')
       AsyncStorage.removeItem('accesstoken')

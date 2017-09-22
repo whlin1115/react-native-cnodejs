@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva/mobile';
 import { Tip } from '../../../components';
-import { StyleSheet, View, ScrollView, RefreshControl, Text, Button, Image, StatusBar, FlatList, Dimensions, TouchableOpacity } from 'react-native'
+import { StyleSheet, View, ScrollView, RefreshControl, Text, Alert, Image, StatusBar, FlatList, Dimensions, TouchableOpacity } from 'react-native'
 
 class Information extends PureComponent {
   constructor(props) {
@@ -21,6 +21,23 @@ class Information extends PureComponent {
     this.props.information({ user: user.name })
   }
 
+  componentWillReceiveProps(next) {
+    const { contacts, navigation } = this.props;
+    if (next.contacts && next.contacts !== contacts) {
+      navigation.goBack()
+    }
+  }
+
+  _removeFriends = ({ username }) => {
+    Alert.alert(
+      '删除好友？', null,
+      [
+        { text: '取消', onPress: () => console.log('cancle') },
+        { text: '确定', onPress: () => this.props.removeFriends({ username }) },
+      ]
+    )
+  }
+
   render() {
     const { user } = this.props.navigation.state.params;
     const { info, contacts, loading } = this.props;
@@ -30,7 +47,7 @@ class Information extends PureComponent {
     return (
       <ScrollView style={styles.container} refreshControl={<RefreshControl onRefresh={() => { this.props.information({ user: user.name }) }} refreshing={loading} />}>
         <StatusBar barStyle="light-content" />
-        <TouchableOpacity onPress={() => { navigate('Center', { user: info.name }) }}>
+        <TouchableOpacity onPress={() => { navigate('Center', { user }) }}>
           <View style={styles.header}>
             <View style={styles.inner}>
               <Image source={{ uri: info.avatar_url }} style={styles.avatar} />
@@ -85,10 +102,15 @@ class Information extends PureComponent {
         </View>
         {
           friend ?
-            <TouchableOpacity style={styles.sendBtn} onPress={() => { navigate('Chat', { user }) }}>
-              <Text style={styles.send}>发送消息</Text>
-            </TouchableOpacity>
-            : <TouchableOpacity style={styles.addBtn} onPress={() => { this.props.addFriends({ username: info.name }) }}>
+            <View>
+              <TouchableOpacity style={[styles.btn, styles.sendBtn]} onPress={() => { navigate('Chat', { user }) }}>
+                <Text style={styles.send}>发送消息</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.btn, styles.delBtn]} onPress={() => { this._removeFriends({ username: user.name }) }}>
+                <Text style={[styles.send, { color: '#000' }]}>删除好友</Text>
+              </TouchableOpacity>
+            </View>
+            : <TouchableOpacity style={[styles.btn, styles.addBtn]} onPress={() => { this.props.addFriends({ username: user.name }) }}>
               <Text style={styles.send}>添加好友</Text>
             </TouchableOpacity>
         }
@@ -114,6 +136,12 @@ function mapDispatchToProps(dispatch) {
     addFriends(params) {
       dispatch({
         type: 'notice/add_friends',
+        payload: params,
+      });
+    },
+    removeFriends(params) {
+      dispatch({
+        type: 'notice/remove_friends',
         payload: params,
       });
     },
@@ -217,21 +245,26 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
 
-  sendBtn: {
+  btn: {
     padding: 15,
-    margin: 30,
+    margin: 15,
+    marginBottom: 0,
     borderRadius: 5,
     alignItems: 'center',
+    borderWidth: 0.5,
+    borderColor: '#DCDBDC',
     justifyContent: 'center',
+  },
+
+  sendBtn: {
     backgroundColor: '#0079FD',
   },
 
+  delBtn: {
+    backgroundColor: '#FFFFFF',
+  },
+
   addBtn: {
-    padding: 15,
-    margin: 30,
-    borderRadius: 5,
-    alignItems: 'center',
-    justifyContent: 'center',
     backgroundColor: '#19A416',
   },
 

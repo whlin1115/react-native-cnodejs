@@ -12,6 +12,7 @@ export default {
     webim_user: {},
     webim_accesstoken: '',      // 因为home页面最先加载，因此把用户信息都存在home,其他页面从中提取
     loading: false,
+    isLogin: false,
   },
   effects: {
     *init({ payload = {} }, { call, put }) {
@@ -68,6 +69,12 @@ export default {
     },
     'loading'(state, { payload: data }) {
       return { ...state, loading: data };
+    },
+    'isLogin'(state, { payload: data }) {
+      return { ...state, isLogin: data };
+    },
+    'clean'(state, { payload: data }) {
+      return { ...state, user: {}, accesstoken: '', webim_user: {}, webim_accesstoken: '' };
     },
   },
   subscriptions: {},

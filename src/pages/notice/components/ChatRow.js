@@ -18,6 +18,7 @@ class ChatRow extends PureComponent {
       ]
     )
   }
+  
   render() {
     const { item, navigate } = this.props
 

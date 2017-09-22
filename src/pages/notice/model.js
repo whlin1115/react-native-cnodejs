@@ -22,13 +22,18 @@ export default {
       const user = yield select(state => state.home.user);
       const webim_user = yield select(state => state.home.webim_user);
       const webim_accesstoken = yield select(state => state.home.webim_accesstoken);
+
       const chat_history = yield AsyncStorage.getItem('chat_history')
       if (chat_history) yield put({ type: 'chat_history', payload: { chat_history: JSON.parse(chat_history) } });
+
       const total_messages = yield AsyncStorage.getItem('total_messages')
       if (total_messages) yield put({ type: 'total_messages', payload: { total_messages: JSON.parse(total_messages) } });
-      if (!webim_user && !webim_accesstoken) yield put({ type: 'attempt_login', payload: user })
+
+      if (Object.keys(user).length == 0) put({ type: 'home/isLogin', payload: false })
+      else if (Object.keys(webim_user) == 0 && !webim_accesstoken) yield put({ type: 'attempt_login', payload: user })
       else yield put({ type: 'token_login', payload: { user: webim_user, accesstoken: webim_accesstoken } })
-      yield put({ type: 'query', payload: { accesstoken } })
+
+      if (accesstoken) yield put({ type: 'query', payload: { accesstoken } })
     },
     *query({ payload = {} }, { call, put }) {
       yield put({ type: 'loading', payload: true });
@@ -59,7 +64,8 @@ export default {
     },
     *attempt_login({ payload = {} }, { call, put }) {
       const { loginname } = payload
-      const params = { username: loginname, password: `${loginname}_password` }
+      const password = `${loginname.toLowerCase()}_password`
+      const params = { username: loginname, password }
       yield put({ type: 'loading', payload: true });
       const { data, err } = yield call(service.attemptLogin, params);
       yield put({ type: 'loading', payload: false });
@@ -73,6 +79,10 @@ export default {
     *add_friends({ payload = {} }, { call, put }) {
       const { username, message = '你好' } = payload;
       yield call(service.addFriends, { username, message });
+    },
+    *remove_friends({ payload = {} }, { call, put }) {
+      const { username } = payload;
+      yield call(service.removeFriends, { username });
     },
     *mark_one({ payload = {} }, { call, put }) {
       yield put({ type: 'loading', payload: true });
@@ -100,6 +110,14 @@ export default {
       const [, data] = payload
       const { hasnot_read_messages, has_read_messages } = service.parseRead(data, state)
       return { ...state, hasnot_read_messages, has_read_messages };
+    },
+    'change_friends'(state, { payload }) {
+      const { contacts } = service.parseFriends(state, payload)
+      return { ...state, contacts };
+    },
+    'on_presence'(state, { payload }) {
+      const { contacts, strangers } = service.handlePresence(state, payload)
+      // return { ...state, contacts, strangers };
     },
     'total_messages'(state, { payload }) {
       const { total_messages } = payload

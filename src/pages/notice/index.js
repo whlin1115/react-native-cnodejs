@@ -65,8 +65,8 @@ class Notice extends PureComponent {
       onMutedMessage: (message) => { console.log(`=== onMutedMessage ===`) },         //如果用户在A群组被禁言，在A群发消息会走这个回调并且消息不会传递给群其它成员
 
       onClosed: (message) => { console.log(`=== onClosed ===`) },                     //连接关闭回调
-      onPresence: (message) => { console.log(`=== onPresence ===`) },                 //处理“广播”或“发布-订阅”消息，如联系人订阅请求、处理群组、聊天室被踢解散等消息
-      onRoster: (message) => { console.log(`=== onRoster ===`) },                           //处理好友申请
+      onPresence: (message) => { console.log(`=== onPresence ===`); this.props.on_presence(message) },                 //处理“广播”或“发布-订阅”消息，如联系人订阅请求、处理群组、聊天室被踢解散等消息
+      onRoster: (messages) => this._onRoster(messages),                           //处理好友申请
       onInviteMessage: (message) => { console.log(`=== onInviteMessage ===`) },       //处理群组邀请
       onOnline: () => { console.log(`=== onOnline... ===`) },                         //本机网络连接成功
       onOffline: () => { console.log(`=== onOffline... ===`) },                       //本机网络掉线
@@ -89,6 +89,13 @@ class Notice extends PureComponent {
       },
     }
     this.props.saveMessage({ user: { name }, message })
+  }
+
+  _onRoster = (messages) => {
+    const [message] = messages
+    const { subscription } = message
+    this.props.change_friends(message)
+    console.log(`=== onRoster ${subscription} ===`)
   }
 
   render() {
@@ -143,33 +150,25 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     init() {
-      dispatch({
-        type: 'notice/init',
-      });
+      dispatch({ type: 'notice/init' });
     },
     query(params) {
-      dispatch({
-        type: 'notice/query',
-        payload: params,
-      });
+      dispatch({ type: 'notice/query', payload: params });
     },
     saveMessage(params) {
-      dispatch({
-        type: 'notice/save_message',
-        payload: params,
-      });
+      dispatch({ type: 'notice/save_message', payload: params });
     },
     save_contacts(params) {
-      dispatch({
-        type: 'notice/save_contacts',
-        payload: params,
-      });
+      dispatch({ type: 'notice/save_contacts', payload: params });
     },
     add_friends(params) {
-      dispatch({
-        type: 'notice/add_friends',
-        payload: params,
-      });
+      dispatch({ type: 'notice/add_friends', payload: params, });
+    },
+    change_friends(params) {
+      dispatch({ type: 'notice/change_friends', payload: params });
+    },
+    on_presence(params) {
+      dispatch({ type: 'notice/on_presence', payload: params });
     },
   }
 }

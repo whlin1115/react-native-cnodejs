@@ -1,4 +1,5 @@
 import { get, post, requestHtml } from '../../utils/request';
+import WebIM from '../../utils/webIM';
 import { moment } from '../../utils/tool';
 import cheerio from 'cheerio-without-node-native';
 
@@ -25,6 +26,10 @@ export async function postToken(params) {
 export async function queryCollects(params) {
   const { user } = params
   return get(`/topic_collect/${user}`);
+}
+
+export async function logout() {
+  WebIM.conn.close();
 }
 
 export function parseUser(data) {

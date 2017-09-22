@@ -17,6 +17,10 @@ class AddFriend extends PureComponent {
     };
   };
 
+  componentWillUnmount() {
+    this.props.clean()
+  }
+
   render() {
     const { info, loading } = this.props
     const { navigate } = this.props.navigation;
@@ -60,6 +64,11 @@ function mapDispatchToProps(dispatch) {
       dispatch({
         type: 'zone/information',
         payload: params,
+      });
+    },
+    clean() {
+      dispatch({
+        type: 'zone/cleanInfo',
       });
     },
   }

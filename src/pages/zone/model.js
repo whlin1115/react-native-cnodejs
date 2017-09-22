@@ -15,7 +15,7 @@ export default {
     *init({ payload = {} }, { select, call, put }) {
       const user = yield select(state => state.home.user);
       const accesstoken = yield select(state => state.home.accesstoken);
-      if (user) yield put({ type: 'query', payload: user })
+      if (Object.keys(user).length > 0) yield put({ type: 'query', payload: { user } })
       var setting = yield AsyncStorage.getItem('setting')
       if (setting) yield put({ type: 'config', payload: JSON.parse(setting) })
     },
@@ -27,17 +27,17 @@ export default {
       if (err) return console.log(err)
       yield put({ type: 'login/success', payload: data });
       yield put({ type: 'home/token', payload: accesstoken });
-      yield put({ type: 'notice/init', payload: accesstoken });    //重新登录聊天
       const [, user] = data
-      yield put({ type: 'query', payload: user });
+      yield put({ type: 'query', payload: { user, login: true } });
     },
     *query({ payload = {} }, { call, put }) {
-      const { loginname } = payload
+      const { user, login } = payload
       yield put({ type: 'loading', payload: true });
-      yield put({ type: 'home/user', payload: payload });
-      const { data, err } = yield call(service.queryUser, { user: loginname });
+      yield put({ type: 'home/user', payload: user });
+      const { data, err } = yield call(service.queryUser, { user: user.loginname });
       yield put({ type: 'loading', payload: false });
       if (err) return console.log(err)
+      if (login) yield put({ type: 'notice/init', payload: true });    //重新登录聊天
       yield put({ type: 'query/success', payload: data });
     },
     *otherInfo({ payload = {} }, { call, put }) {
@@ -60,6 +60,15 @@ export default {
       yield put({ type: 'loading', payload: false });
       if (err) return console.log(err)
       yield put({ type: 'collects/success', payload: data });
+    },
+    *logout({ payload = {} }, { call, put }) {
+      AsyncStorage.removeItem('user')
+      AsyncStorage.removeItem('accesstoken')
+      AsyncStorage.removeItem('webim_user')
+      AsyncStorage.removeItem('webim_accesstoken')
+      yield put({ type: 'home/clean', payload: true });
+      yield put({ type: 'clean', payload: true });
+      yield call(service.logout);
     },
   },
   reducers: {
@@ -99,10 +108,6 @@ export default {
       return { ...state, setting: data };
     },
     'clean'(state, { payload: data }) {
-      AsyncStorage.removeItem('user')
-      AsyncStorage.removeItem('accesstoken')
-      AsyncStorage.removeItem('webim_user')
-      AsyncStorage.removeItem('webim_accesstoken')
       return { ...state, data: {} };
     },
     'cleanInfo'(state) {

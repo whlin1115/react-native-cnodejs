@@ -32,7 +32,7 @@ class Notice extends PureComponent {
 
   _onLogout = () => {
     const { navigation } = this.props
-    this.props.clean()
+    this.props.logout()
     navigation.goBack()
   }
 
@@ -119,9 +119,9 @@ function mapDispatchToProps(dispatch) {
         payload: params,
       });
     },
-    clean(params) {
+    logout(params) {
       dispatch({
-        type: 'zone/clean',
+        type: 'zone/logout',
         payload: params,
       });
     },

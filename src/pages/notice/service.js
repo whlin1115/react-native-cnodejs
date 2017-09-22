@@ -38,6 +38,13 @@ export async function addFriends(params) {
   WebIM.conn.subscribe({ to: username, message });
 }
 
+export async function removeFriends(params) {
+  const { username } = params
+  const success = () => { WebIM.conn.unsubscribed({ to: username }); console.log('=== remove friend success ===') }
+  const error = () => console.log(`=== remove friend error ===`)
+  WebIM.conn.removeRoster({ to: username, success, error });
+}
+
 export async function sendTxtMessage(params) {
   const { msg, to, chatType = 'singleChat', roomType = false } = params
   var id = WebIM.conn.getUniqueId();
@@ -116,6 +123,42 @@ export function parseSigleChat(state, payload) {
   delete total_messages[name]
   const chat_history = state.chat_history.filter(chat => chat.name !== name)
   return { messages: [], total_messages, chat_history }
+}
+
+export function parseFriends(state, payload) {
+  const { name, subscription } = payload
+  let contacts = state.contacts.filter(contact => contact.name != name)
+  switch (subscription) {
+    case 'remove': break;
+    case 'both': contacts = [payload, ...state.contacts]; break;
+    default: contacts = state.contacts; break;
+  }
+  return { contacts }
+}
+
+export function handlePresence(state, payload) {
+  const { from, type } = payload
+  let contacts = state.contacts.filter(contact => contact.name != from)
+  let strangers = state.strangers.filter(stranger => stranger.name != from)
+  const roster = {
+    groups: [],
+    jid: `magnussen#cnodejs_${from}@easemob.com`,
+    avatar: 'https://facebook.github.io/react/img/logo_og.png',
+    name: from,
+    subscription: "none"
+  }
+  switch (type) {
+    //若e.status中含有[resp:true],则表示为对方同意好友后反向添加自己为好友的消息，demo中发现此类消息，默认同意操作，完成双方互为好友；如果不含有[resp:true]，则表示为正常的对方请求添加自己为好友的申请消息。
+    case 'subscribe': strangers = [roster, ...strangers]; break;
+    //(发送者允许接收者接收他们的出席信息)，即别人同意你加他为好友
+    case 'subscribed': concat.subscription = 'both'; contacts = [roster, ...contacts]; break;
+    //（发送者取消订阅另一个实体的出席信息）,即删除现有好友
+    case 'unsubscribe': break;
+    //（订阅者的请求被拒绝或以前的订阅被取消），即对方单向的删除了好友
+    case 'unsubscribed': contacts = [roster, ...contacts]; break;
+    default: break;
+  }
+  return { contacts, strangers }
 }
 
 export function parseHistory(messages) {

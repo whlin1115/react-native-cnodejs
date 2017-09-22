@@ -36,7 +36,7 @@ class Zone extends PureComponent {
     const headerProps = { data, navigate }
 
     return (
-      <ScrollView style={styles.container} refreshControl={<RefreshControl onRefresh={() => { this.props.query(user) }} refreshing={loading} />}>
+      <ScrollView style={styles.container} refreshControl={<RefreshControl onRefresh={() => { this.props.query({ user }) }} refreshing={loading} />}>
         <StatusBar barStyle="light-content" />
         <Header {...headerProps} />
         <View style={styles.rowList}>

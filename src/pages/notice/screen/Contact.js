@@ -23,7 +23,7 @@ class Contact extends PureComponent {
     const { navigate } = this.props.navigation;
 
     return (
-      <TouchableOpacity onPress={() => { navigate('Information', { user: item.name }) }}>
+      <TouchableOpacity onPress={() => { navigate('Information', { user: item }) }}>
         <View style={styles.row}>
           <Image style={styles.rowImg} source={{ uri: item.avatar }} />
           <View style={styles.rowInner}>

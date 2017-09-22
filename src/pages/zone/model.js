@@ -27,6 +27,7 @@ export default {
       if (err) return console.log(err)
       yield put({ type: 'login/success', payload: data });
       yield put({ type: 'home/token', payload: accesstoken });
+      yield put({ type: 'notice/init', payload: accesstoken });    //重新登录聊天
       const [, user] = data
       yield put({ type: 'query', payload: user });
     },

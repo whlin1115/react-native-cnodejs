@@ -5,12 +5,13 @@ export default {
   namespace: 'notice',
   state: {
     data: [],
-    messages: [],
-    contacts: [],
-    chat_history: [],
-    register_data: {},
-    total_messages: {},
-    system_messages: [],
+    messages: [],               //当前好友聊天内容
+    contacts: [],               //联系人列表
+    strangers: [],              //好友请求列表
+    chat_history: [],           //聊天列表
+    register_data: {},          //注册信息
+    total_messages: {},         //全部聊天记录
+    system_messages: [],        //系统信息
     has_read_messages: [],
     hasnot_read_messages: [],
     loading: false,
@@ -69,6 +70,10 @@ export default {
       const { to, msg } = payload
       yield call(service.sendTxtMessage, { to, msg });
     },
+    *add_friends({ payload = {} }, { call, put }) {
+      const { username, message = '你好' } = payload;
+      yield call(service.addFriends, { username, message });
+    },
     *mark_one({ payload = {} }, { call, put }) {
       yield put({ type: 'loading', payload: true });
       const { data, err } = yield call(service.mark_oneMessages, payload);
@@ -78,6 +83,9 @@ export default {
     },
   },
   reducers: {
+    'effects/fail'(state, { payload }) {
+      return { ...state, ...payload };
+    },
     'query/success'(state, { payload }) {
       const [, data] = payload
       const notics = service.parseNotics(data.data)
@@ -125,14 +133,8 @@ export default {
       return { ...state, messages };
     },
     'save_contacts'(state, { payload }) {
-      const contacts = payload.map(rost => {
-        if (rost.subscription === 'both') {
-          rost.avatar = 'https://facebook.github.io/react/img/logo_og.png'
-          return rost
-        }
-      })
-      // AsyncStorage.setItem('contacts', JSON.stringify(contacts))
-      return { ...state, contacts };
+      const { contacts, strangers } = service.parseRosters(payload)
+      return { ...state, contacts, strangers };
     },
     'loading'(state, { payload: data }) {
       return { ...state, loading: data };

@@ -17,83 +17,80 @@ class Information extends PureComponent {
   };
 
   componentDidMount() {
-    const { params } = this.props.navigation.state;
-    this.props.information(params)
-  }
-
-  componentWillUnmount() {
-    this.props.clean()
+    const { user } = this.props.navigation.state.params;
+    this.props.information({ user: user.name })
   }
 
   render() {
     const { user } = this.props.navigation.state.params;
-    const { info, loading } = this.props;
+    const { info, contacts, loading } = this.props;
     const { navigate } = this.props.navigation;
+    const friend = contacts.filter(contact => contact.name == user.name).length > 0
 
     return (
-      <ScrollView style={styles.container} refreshControl={<RefreshControl onRefresh={() => { this.props.information({ user }) }} refreshing={loading} />}>
+      <ScrollView style={styles.container} refreshControl={<RefreshControl onRefresh={() => { this.props.information({ user: user.name }) }} refreshing={loading} />}>
         <StatusBar barStyle="light-content" />
-        {
-          Object.keys(info).length > 0 ?
-            <View style={styles.infoBox}>
-              <TouchableOpacity onPress={() => { navigate('Center', { user: info.name }) }}>
-                <View style={styles.header}>
-                  <View style={styles.inner}>
-                    <Image source={{ uri: info.avatar_url }} style={styles.avatar} />
-                    <View style={styles.col}>
-                      <Text style={[styles.span, styles.name]}>{info.name}</Text>
-                      <Text style={styles.sub}>昵称: {info.name}</Text>
-                    </View>
-                  </View>
-                </View>
-              </TouchableOpacity>
-              <View style={styles.rowList}>
-                <View style={styles.row}>
-                  <View style={styles.rowInner}>
-                    <View style={styles.textView}>
-                      <Text style={styles.rowText}>微博</Text>
-                    </View>
-                    <View style={styles.spanView}>
-                      <Text numberOfLines={1} style={styles.span}>{info.weibo ? info.weibo : '未填写'}</Text>
-                    </View>
-                  </View>
-                </View>
-                <View style={styles.row}>
-                  <View style={styles.rowInner}>
-                    <View style={styles.textView}>
-                      <Text style={styles.rowText}>个人网站</Text>
-                    </View>
-                    <View style={styles.spanView}>
-                      <Text numberOfLines={1} style={styles.span}>{info.home ? info.home : '未填写'}</Text>
-                    </View>
-                  </View>
-                </View>
-                <View style={styles.row}>
-                  <View style={styles.rowInner}>
-                    <View style={styles.textView}>
-                      <Text style={styles.rowText}>所在地点</Text>
-                    </View>
-                    <View style={styles.spanView}>
-                      <Text numberOfLines={1} style={styles.span}>{info.location ? info.location : '未填写'}</Text>
-                    </View>
-                  </View>
-                </View>
-                <View style={styles.row}>
-                  <View style={styles.rowInner}>
-                    <View style={styles.textView}>
-                      <Text style={styles.rowText}>个性签名</Text>
-                    </View>
-                    <View style={styles.spanView}>
-                      <Text numberOfLines={1} style={styles.span}>{info.signature ? info.signature : '未填写'}</Text>
-                    </View>
-                  </View>
-                </View>
+        <TouchableOpacity onPress={() => { navigate('Center', { user: info.name }) }}>
+          <View style={styles.header}>
+            <View style={styles.inner}>
+              <Image source={{ uri: info.avatar_url }} style={styles.avatar} />
+              <View style={styles.col}>
+                <Text style={[styles.span, styles.name]}>{info.name}</Text>
+                <Text style={styles.sub}>昵称: {info.name}</Text>
               </View>
-              <TouchableOpacity style={styles.sendBtn} onPress={() => { navigate('Chat', { user }) }}>
-                <Text style={styles.send}>发送消息</Text>
-              </TouchableOpacity>
             </View>
-            : <Tip message={{ text: '暂未开通' }} />
+          </View>
+        </TouchableOpacity>
+        <View style={styles.rowList}>
+          <View style={styles.row}>
+            <View style={styles.rowInner}>
+              <View style={styles.textView}>
+                <Text style={styles.rowText}>微博</Text>
+              </View>
+              <View style={styles.spanView}>
+                <Text numberOfLines={1} style={styles.span}>{info.weibo ? info.weibo : '未填写'}</Text>
+              </View>
+            </View>
+          </View>
+          <View style={styles.row}>
+            <View style={styles.rowInner}>
+              <View style={styles.textView}>
+                <Text style={styles.rowText}>个人网站</Text>
+              </View>
+              <View style={styles.spanView}>
+                <Text numberOfLines={1} style={styles.span}>{info.home ? info.home : '未填写'}</Text>
+              </View>
+            </View>
+          </View>
+          <View style={styles.row}>
+            <View style={styles.rowInner}>
+              <View style={styles.textView}>
+                <Text style={styles.rowText}>所在地点</Text>
+              </View>
+              <View style={styles.spanView}>
+                <Text numberOfLines={1} style={styles.span}>{info.location ? info.location : '未填写'}</Text>
+              </View>
+            </View>
+          </View>
+          <View style={styles.row}>
+            <View style={styles.rowInner}>
+              <View style={styles.textView}>
+                <Text style={styles.rowText}>个性签名</Text>
+              </View>
+              <View style={styles.spanView}>
+                <Text numberOfLines={1} style={styles.span}>{info.signature ? info.signature : '未填写'}</Text>
+              </View>
+            </View>
+          </View>
+        </View>
+        {
+          friend ?
+            <TouchableOpacity style={styles.sendBtn} onPress={() => { navigate('Chat', { user }) }}>
+              <Text style={styles.send}>发送消息</Text>
+            </TouchableOpacity>
+            : <TouchableOpacity style={styles.addBtn} onPress={() => { this.props.addFriends({ username: info.name }) }}>
+              <Text style={styles.send}>添加好友</Text>
+            </TouchableOpacity>
         }
       </ScrollView >
     );
@@ -101,9 +98,9 @@ class Information extends PureComponent {
 }
 
 function mapStateToProps(state) {
-  const { loading } = state.notice;
-  const { info } = state.zone;
-  return { info, loading };
+  const { info, loading } = state.zone;
+  const { contacts } = state.notice;
+  return { info, contacts, loading };
 }
 
 function mapDispatchToProps(dispatch) {
@@ -114,9 +111,10 @@ function mapDispatchToProps(dispatch) {
         payload: params,
       });
     },
-    clean() {
+    addFriends(params) {
       dispatch({
-        type: 'zone/cleanInfo',
+        type: 'notice/add_friends',
+        payload: params,
       });
     },
   }
@@ -226,6 +224,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#0079FD',
+  },
+
+  addBtn: {
+    padding: 15,
+    margin: 30,
+    borderRadius: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#19A416',
   },
 
   send: {

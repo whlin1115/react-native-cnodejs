@@ -10,8 +10,10 @@ import Recruit from './pages/recruit';
 import Notice from './pages/notice';
 import Read from './pages/notice/screen/Read';
 import Chat from './pages/notice/screen/Chat';
+import Roster from './pages/notice/screen/Roster';
 import System from './pages/notice/screen/System';
 import Contact from './pages/notice/screen/Contact';
+import AddFriend from './pages/notice/screen/AddFriend';
 import Information from './pages/notice/screen/Information';
 import ChatMessage from './pages/notice/screen/ChatMessage';
 
@@ -52,7 +54,9 @@ const Navigation = StackNavigator({
   Read: { screen: Read },
   Chat: { screen: Chat },
   System: { screen: System },
+  Roster: { screen: Roster },
   Contact: { screen: Contact },
+  AddFriend: { screen: AddFriend },
   Information: { screen: Information },
   ChatMessage: { screen: ChatMessage },
   // Zone Navigator

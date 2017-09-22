@@ -33,6 +33,11 @@ export async function tokenLoginWebim(params) {
   WebIM.conn.open(options);
 }
 
+export async function addFriends(params) {
+  const { username, message } = params
+  WebIM.conn.subscribe({ to: username, message });
+}
+
 export async function sendTxtMessage(params) {
   const { msg, to, chatType = 'singleChat', roomType = false } = params
   var id = WebIM.conn.getUniqueId();
@@ -122,4 +127,15 @@ export function parseHistory(messages) {
     return message
   })
   return history
+}
+
+export function parseRosters(rosters) {
+  const contacts = [];
+  const strangers = [];
+  rosters.map(roster => {
+    roster.avatar = 'https://facebook.github.io/react/img/logo_og.png'
+    if (roster.subscription === 'both' || roster.subscription === 'to') contacts.push(roster)
+    else strangers.push(roster)
+  })
+  return { contacts, strangers }
 }

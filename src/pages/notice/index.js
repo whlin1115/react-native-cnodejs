@@ -17,11 +17,16 @@ class Notice extends PureComponent {
   static navigationOptions = ({ navigation }) => {
     const { state, setParams, navigate } = navigation;
     return {
-      headerTitle: '消息',
+      headerLeft: (
+        <Image style={styles.headerLeft} source={require('../../assets/images/logo.png')} resizeMode='contain' />
+      ),
       headerRight: (
         <View style={styles.headerRight}>
           <TouchableOpacity style={styles.headerTouch} onPress={() => { navigate('Contact') }}>
             <Image style={styles.headerBtn} source={require('../../assets/images/recruit.png')} resizeMode='contain' />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.headerTouch} onPress={() => { navigate('AddFriend') }}>
+            <Image style={styles.headerBtn} source={require('../../assets/images/search.png')} resizeMode='contain' />
           </TouchableOpacity>
         </View>
       ),
@@ -37,15 +42,16 @@ class Notice extends PureComponent {
 
   componentDidMount() {
     this.props.init()
-    WebIM.conn.listen({
+    const { conn } = WebIM
+    conn.listen({
       onOpened: (message) => {      //连接成功回调
         // 如果isAutoLogin设置为false，那么必须手动设置上线，否则无法收消息
         // 手动上线指的是调用conn.setPresence(); 如果conn初始化时已将isAutoLogin设置为true
         // 则无需调用conn.setPresence();  
-        WebIM.conn.getRoster({ success: (roster) => this.props.save_contacts(roster) });
+        conn.getRoster({ success: (roster) => this.props.save_contacts(roster) });
         console.log(`=== onOpened ===`)
       },
-      onTextMessage: (message) => this._onReceive(message),                           //收到文本消息
+      onTextMessage: (message) => { console.log(`=== onTextMessage ===`); this._onReceive(message) },                           //收到文本消息
       onEmojiMessage: (message) => { console.log(`=== onEmojiMessage ===`) },         //收到表情消息
       onPictureMessage: (message) => { console.log(`=== onPictureMessage ===`) },     //收到图片消息
       onCmdMessage: (message) => { console.log(`=== onCmdMessage ===`) },             //收到命令消息
@@ -60,7 +66,7 @@ class Notice extends PureComponent {
 
       onClosed: (message) => { console.log(`=== onClosed ===`) },                     //连接关闭回调
       onPresence: (message) => { console.log(`=== onPresence ===`) },                 //处理“广播”或“发布-订阅”消息，如联系人订阅请求、处理群组、聊天室被踢解散等消息
-      onRoster: (message) => { console.log(`=== onRoster ===`) },                     //处理好友申请
+      onRoster: (message) => { console.log(`=== onRoster ===`) },                           //处理好友申请
       onInviteMessage: (message) => { console.log(`=== onInviteMessage ===`) },       //处理群组邀请
       onOnline: () => { console.log(`=== onOnline... ===`) },                         //本机网络连接成功
       onOffline: () => { console.log(`=== onOffline... ===`) },                       //本机网络掉线
@@ -101,11 +107,11 @@ class Notice extends PureComponent {
               </View>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => { navigate('Chat', { user: 'username3' }) }}>
+          <TouchableOpacity onPress={() => { navigate('Roster') }}>
             <View style={styles.row}>
               <Image style={styles.rowImg} source={require('../../assets/images/comment.png')} resizeMode='contain' />
               <View style={styles.rowInner}>
-                <Text style={styles.rowText}>聊天通知</Text>
+                <Text style={styles.rowText}>好友申请</Text>
               </View>
             </View>
           </TouchableOpacity>
@@ -159,6 +165,12 @@ function mapDispatchToProps(dispatch) {
         payload: params,
       });
     },
+    add_friends(params) {
+      dispatch({
+        type: 'notice/add_friends',
+        payload: params,
+      });
+    },
   }
 }
 
@@ -166,6 +178,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F8F8F8',
+  },
+
+  headerLeft: {
+    height: 44,
+    width: 80,
+    marginLeft: 15
   },
 
   headerRight: {

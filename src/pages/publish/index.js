@@ -1,6 +1,8 @@
 import React, { PureComponent } from 'react'
 import { connect } from 'dva/mobile'
-import { Title, Option, Content } from './components'
+import Title from './components/Title'
+import Option from './components/Option'
+import Content from './components/Content'
 import { StyleSheet, View, ScrollView, Text, TextInput, Image, Modal, StatusBar, Dimensions, TouchableOpacity } from 'react-native'
 
 class Publish extends PureComponent {

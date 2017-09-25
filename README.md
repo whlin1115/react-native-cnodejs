@@ -18,25 +18,27 @@ API由 https://cnodejs.org/api 提供
 
 # 部分截图
 
-![alt text](https://github.com/linwh1115/react-native-cnodejs/blob/master/src/screenshot/511504842345_.pic_hd.jpg)
+<img src="https://github.com/linwh1115/react-native-cnodejs/blob/master/src/screenshot/511504842345_.pic_hd.jpg" width="50%" height="50%">
 
-![alt text](https://github.com/linwh1115/react-native-cnodejs/blob/master/src/screenshot/521504842419_.pic_hd.jpg)
+<img src="https://github.com/linwh1115/react-native-cnodejs/blob/master/src/screenshot/521504842419_.pic_hd.jpg" width="50%" height="50%">
 
-![alt text](https://github.com/linwh1115/react-native-cnodejs/blob/master/src/screenshot/531504842468_.pic.jpg)
+<img src="https://github.com/linwh1115/react-native-cnodejs/blob/master/src/screenshot/531504842468_.pic.jpg" width="50%" height="50%">
 
-![alt text](https://github.com/linwh1115/react-native-cnodejs/blob/master/src/screenshot/541504842490_.pic.jpg)
+<img src="https://github.com/linwh1115/react-native-cnodejs/blob/master/src/screenshot/541504842490_.pic.jpg" width="50%" height="50%">
 
-![alt text](https://github.com/linwh1115/react-native-cnodejs/blob/master/src/screenshot/551504842567_.pic.jpg)
+<img src="https://github.com/linwh1115/react-native-cnodejs/blob/master/src/screenshot/551504842567_.pic.jpg" width="50%" height="50%">
 
-![alt text](https://github.com/linwh1115/react-native-cnodejs/blob/master/src/screenshot/561504842591_.pic_hd.jpg)
+<img src="https://github.com/linwh1115/react-native-cnodejs/blob/master/src/screenshot/561504842591_.pic_hd.jpg" width="50%" height="50%">
 
-![alt text](https://github.com/linwh1115/react-native-cnodejs/blob/master/src/screenshot/571504842628_.pic.jpg)
+<img src="https://github.com/linwh1115/react-native-cnodejs/blob/master/src/screenshot/571504842628_.pic.jpg" width="50%" height="50%">
 
-![alt text](https://github.com/linwh1115/react-native-cnodejs/blob/master/src/screenshot/581504842670_.pic.jpg)
+<img src="https://github.com/linwh1115/react-native-cnodejs/blob/master/src/screenshot/571504842628_.pic.jpg" width="50%" height="50%">
 
-![alt text](https://github.com/linwh1115/react-native-cnodejs/blob/master/src/screenshot/591504844116_.pic.jpg)
+<img src="https://github.com/linwh1115/react-native-cnodejs/blob/master/src/screenshot/581504842670_.pic.jpg" width="50%" height="50%">
 
-![alt text](https://github.com/linwh1115/react-native-cnodejs/blob/master/src/screenshot/621504844256_.pic.jpg)
+<img src="https://github.com/linwh1115/react-native-cnodejs/blob/master/src/screenshot/591504844116_.pic.jpg" width="50%" height="50%">
+
+<img src="https://github.com/linwh1115/react-native-cnodejs/blob/master/src/screenshot/621504844256_.pic.jpg" width="50%" height="50%">
 
 # 待完善的功能
 

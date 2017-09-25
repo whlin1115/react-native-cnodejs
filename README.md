@@ -6,6 +6,9 @@ API由 https://cnodejs.org/api 提供
 
 在官方提供的API之外，增加搜索入口和个人资料入口。
 
+# 更新
+9-25： 集成聊天，实现搜索好友，处理申请，实时聊天
+
 # 说明
 
 这个项目之间断断续续花了差不多12天时间，之前有一点react基础，因此做react-native上手就稍微快了。
@@ -18,30 +21,40 @@ API由 https://cnodejs.org/api 提供
 
 # 部分截图
 
-![alt text](https://github.com/linwh1115/react-native-cnodejs/blob/master/src/screenshot/511504842345_.pic_hd.jpg)
+<img src="https://github.com/linwh1115/react-native-cnodejs/blob/master/src/screenshot/511504842345_.pic_hd.jpg" width="50%" height="50%">
 
-![alt text](https://github.com/linwh1115/react-native-cnodejs/blob/master/src/screenshot/521504842419_.pic_hd.jpg)
+<img src="https://github.com/linwh1115/react-native-cnodejs/blob/master/src/screenshot/521504842419_.pic_hd.jpg" width="50%" height="50%">
 
-![alt text](https://github.com/linwh1115/react-native-cnodejs/blob/master/src/screenshot/531504842468_.pic.jpg)
+<img src="https://github.com/linwh1115/react-native-cnodejs/blob/master/src/screenshot/531504842468_.pic.jpg" width="50%" height="50%">
 
-![alt text](https://github.com/linwh1115/react-native-cnodejs/blob/master/src/screenshot/541504842490_.pic.jpg)
+<img src="https://github.com/linwh1115/react-native-cnodejs/blob/master/src/screenshot/541504842490_.pic.jpg" width="50%" height="50%">
 
-![alt text](https://github.com/linwh1115/react-native-cnodejs/blob/master/src/screenshot/551504842567_.pic.jpg)
+<img src="https://github.com/linwh1115/react-native-cnodejs/blob/master/src/screenshot/551504842567_.pic.jpg" width="50%" height="50%">
 
-![alt text](https://github.com/linwh1115/react-native-cnodejs/blob/master/src/screenshot/561504842591_.pic_hd.jpg)
+<img src="https://github.com/linwh1115/react-native-cnodejs/blob/master/src/screenshot/561504842591_.pic_hd.jpg" width="50%" height="50%">
 
-![alt text](https://github.com/linwh1115/react-native-cnodejs/blob/master/src/screenshot/571504842628_.pic.jpg)
+<img src="https://github.com/linwh1115/react-native-cnodejs/blob/master/src/screenshot/571504842628_.pic.jpg" width="50%" height="50%">
 
-![alt text](https://github.com/linwh1115/react-native-cnodejs/blob/master/src/screenshot/581504842670_.pic.jpg)
+<img src="https://github.com/linwh1115/react-native-cnodejs/blob/master/src/screenshot/571504842628_.pic.jpg" width="50%" height="50%">
 
-![alt text](https://github.com/linwh1115/react-native-cnodejs/blob/master/src/screenshot/591504844116_.pic.jpg)
+<img src="https://github.com/linwh1115/react-native-cnodejs/blob/master/src/screenshot/581504842670_.pic.jpg" width="50%" height="50%">
 
-![alt text](https://github.com/linwh1115/react-native-cnodejs/blob/master/src/screenshot/621504844256_.pic.jpg)
+<img src="https://github.com/linwh1115/react-native-cnodejs/blob/master/src/screenshot/591504844116_.pic.jpg" width="50%" height="50%">
+
+<img src="https://github.com/linwh1115/react-native-cnodejs/blob/master/src/screenshot/621504844256_.pic.jpg" width="50%" height="50%">
+
+<img src="https://github.com/linwh1115/react-native-cnodejs/blob/master/src/screenshot/WX20170925-171924%402x.png" width="50%" height="50%">
+
+<img src="https://github.com/linwh1115/react-native-cnodejs/blob/master/src/screenshot/WX20170925-171942%402x.png" width="50%" height="50%">
+
+<img src="https://github.com/linwh1115/react-native-cnodejs/blob/master/src/screenshot/WX20170925-171950%402x.png" width="50%" height="50%">
+
+<img src="https://github.com/linwh1115/react-native-cnodejs/blob/master/src/screenshot/WX20170925-173126%402x.png" width="50%" height="50%">
 
 # 待完善的功能
 
 - [ ] 实现扫码登录
 - [ ] 首页UI调整区分 首页和招聘板块
-- [ ] 详情页面内容显示优化
+- [x] 详情页面内容显示优化
 - [ ] 添加回复评论
 - [ ] 话题发布优化

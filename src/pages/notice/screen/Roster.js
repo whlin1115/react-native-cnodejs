@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva/mobile';
 import { Tip } from '../../../components';
-import { StyleSheet, View, Text, Button, Image, StatusBar, FlatList, Dimensions, TouchableOpacity } from 'react-native'
+import { StyleSheet, View, Text, Button, Image, StatusBar, FlatList, Alert, Dimensions, TouchableOpacity } from 'react-native'
 
 const { width } = Dimensions.get('window');
 
@@ -23,17 +23,41 @@ class Roster extends PureComponent {
     // this.props.query(params)
   }
 
+  _onLongPress = (user) => {
+    const { owner } = this.props
+    Alert.alert(
+      '是否删除？', null,
+      [
+        { text: '取消', onPress: () => console.log('cancle') },
+        { text: '确定', onPress: () => this.props.delete({ user, owner }) },
+      ]
+    )
+  }
+
   _renderRow(item) {
     const { navigate } = this.props.navigation;
 
     return (
-      <TouchableOpacity onPress={() => { navigate('Information', { user: item }) }}>
+      <TouchableOpacity onPress={() => { navigate('Information', { user: item }) }} onLongPress={() => { this._onLongPress(item) }}>
         <View style={styles.row}>
           <Image style={styles.rowImg} source={{ uri: item.avatar }} />
           <View style={styles.rowInner}>
-            <Text style={styles.rowText}>{item.name}</Text>
+            <Text style={styles.rowText}>{item.from}</Text>
+            {
+              item.type === 'subscribe' ?
+                <Text style={styles.rowContent}>{item.status}</Text>
+                : <Text style={styles.rowContent}>对方已经是您的好友</Text>
+            }
           </View>
-          <Text style={styles.rowText}>{item.subscription}</Text>
+          {
+            item.type === 'subscribe' ?
+              <TouchableOpacity style={styles.options} onPress={() => { this.props.on_subscribe({ user: item }) }}>
+                <Text style={styles.optionsText}>同意</Text>
+              </TouchableOpacity>
+              : <TouchableOpacity style={[styles.options, { backgroundColor: '#999' }]}>
+                <Text style={styles.optionsText}>已添加</Text>
+              </TouchableOpacity>
+          }
         </View>
       </TouchableOpacity>
     );
@@ -66,14 +90,21 @@ class Roster extends PureComponent {
 
 function mapStateToProps(state) {
   const { strangers, loading } = state.notice;
-  return { strangers, loading };
+  const { user: owner } = state.home;
+  return { strangers, owner, loading };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    query(params) {
+    on_subscribe(params) {
       dispatch({
-        type: 'notice/query',
+        type: 'notice/on_subscribe',
+        payload: params,
+      });
+    },
+    delete(params) {
+      dispatch({
+        type: 'notice/delete_application',
         payload: params,
       });
     },
@@ -107,8 +138,8 @@ const styles = StyleSheet.create({
 
   rowInner: {
     flex: 1,
-    paddingTop: 20,
-    paddingBottom: 20,
+    paddingTop: 15,
+    paddingBottom: 15,
     borderBottomWidth: 0.5,
     borderColor: '#F0F0F0',
   },
@@ -116,6 +147,26 @@ const styles = StyleSheet.create({
   rowText: {
     fontSize: 16,
     fontWeight: '400',
+  },
+
+  options: {
+    paddingTop: 8,
+    paddingBottom: 8,
+    paddingLeft: 16,
+    paddingRight: 16,
+    backgroundColor: '#0079FD',
+    borderRadius: 3,
+  },
+
+  optionsText: {
+    fontSize: 12,
+    color: '#FFFFFF',
+  },
+
+  rowContent: {
+    fontSize: 14,
+    color: '#999',
+    lineHeight: 18,
   }
 });
 

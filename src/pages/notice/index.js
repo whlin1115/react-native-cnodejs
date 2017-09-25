@@ -48,7 +48,7 @@ class Notice extends PureComponent {
         // 如果isAutoLogin设置为false，那么必须手动设置上线，否则无法收消息
         // 手动上线指的是调用conn.setPresence(); 如果conn初始化时已将isAutoLogin设置为true
         // 则无需调用conn.setPresence();  
-        conn.getRoster({ success: (roster) => this.props.save_contacts(roster) });
+        conn.getRoster({ success: (roster) => { console.log(`=== getRoster ===`); this.props.save_contacts(roster) } });
         console.log(`=== onOpened ===`)
       },
       onTextMessage: (message) => { console.log(`=== onTextMessage ===`); this._onReceive(message) },                           //收到文本消息
@@ -65,7 +65,7 @@ class Notice extends PureComponent {
       onMutedMessage: (message) => { console.log(`=== onMutedMessage ===`) },         //如果用户在A群组被禁言，在A群发消息会走这个回调并且消息不会传递给群其它成员
 
       onClosed: (message) => { console.log(`=== onClosed ===`) },                     //连接关闭回调
-      onPresence: (message) => { console.log(`=== onPresence ===`); this.props.on_presence(message) },                 //处理“广播”或“发布-订阅”消息，如联系人订阅请求、处理群组、聊天室被踢解散等消息
+      onPresence: (message) => { console.log(`=== onPresence ${message.type} ===`); this.props.on_presence(message) },                 //处理“广播”或“发布-订阅”消息，如联系人订阅请求、处理群组、聊天室被踢解散等消息
       onRoster: (messages) => this._onRoster(messages),                           //处理好友申请
       onInviteMessage: (message) => { console.log(`=== onInviteMessage ===`) },       //处理群组邀请
       onOnline: () => { console.log(`=== onOnline... ===`) },                         //本机网络连接成功
@@ -77,6 +77,7 @@ class Notice extends PureComponent {
   }
 
   _onReceive = (messages) => {
+    const { owner } = this.props
     const name = messages.from;
     const message = {
       _id: Math.round(Math.random() * 1000000),
@@ -88,7 +89,7 @@ class Notice extends PureComponent {
         avatar: 'https://facebook.github.io/react/img/logo_og.png',
       },
     }
-    this.props.saveMessage({ user: { name }, message })
+    this.props.saveMessage({ user: { name }, owner, message })
   }
 
   _onRoster = (messages) => {
@@ -143,8 +144,8 @@ class Notice extends PureComponent {
 
 function mapStateToProps(state) {
   const { data, chat_history, has_read_messages, hasnot_read_messages, loading } = state.notice;
-  const { accesstoken } = state.home;
-  return { data, chat_history, has_read_messages, hasnot_read_messages, accesstoken, loading };
+  const { user: owner, accesstoken } = state.home;
+  return { data, owner, chat_history, has_read_messages, hasnot_read_messages, accesstoken, loading };
 }
 
 function mapDispatchToProps(dispatch) {

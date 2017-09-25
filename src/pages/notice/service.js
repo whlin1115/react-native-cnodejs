@@ -38,6 +38,12 @@ export async function addFriends(params) {
   WebIM.conn.subscribe({ to: username, message });
 }
 
+export async function onSubscribe(params) {
+  const { to, from } = params
+  WebIM.conn.subscribed({ to: from, message: '[resp:true]' });
+  WebIM.conn.subscribe({ to, message: '[resp:true]' });
+}
+
 export async function removeFriends(params) {
   const { username } = params
   const success = () => { WebIM.conn.unsubscribed({ to: username }); console.log('=== remove friend success ===') }
@@ -106,8 +112,8 @@ export function parseMessage(state, payload) {
   return { messages, total_messages, chat_history }
 }
 
-export function parseSigleHistory(state, payload) {
-  const { name } = payload
+export function parseSigleHistory(state, user) {
+  const { name } = user
   const total_messages = state.total_messages;
   delete total_messages[name]
   const chat_history = state.chat_history.map(chat => {
@@ -117,8 +123,8 @@ export function parseSigleHistory(state, payload) {
   return { messages: [], total_messages, chat_history }
 }
 
-export function parseSigleChat(state, payload) {
-  const { name } = payload
+export function parseSigleChat(state, user) {
+  const { name } = user
   const total_messages = state.total_messages;
   delete total_messages[name]
   const chat_history = state.chat_history.filter(chat => chat.name !== name)
@@ -127,37 +133,61 @@ export function parseSigleChat(state, payload) {
 
 export function parseFriends(state, payload) {
   const { name, subscription } = payload
+  payload.avatar = 'https://facebook.github.io/react/img/logo_og.png'
   let contacts = state.contacts.filter(contact => contact.name != name)
   switch (subscription) {
     case 'remove': break;
     case 'both': contacts = [payload, ...state.contacts]; break;
-    default: contacts = state.contacts; break;
+    default: break;
   }
   return { contacts }
 }
 
+export function parseApplication(state, user) {
+  const { name } = user
+  const strangers = state.strangers.filter(chat => chat.name !== name)
+  return { strangers }
+}
+
 export function handlePresence(state, payload) {
-  const { from, type } = payload
-  let contacts = state.contacts.filter(contact => contact.name != from)
-  let strangers = state.strangers.filter(stranger => stranger.name != from)
+  const { from, type, fromJid } = payload
+  const filter_strangers = state.strangers.filter(stranger => stranger.from != from)
+  const filter_contacts = state.contacts.filter(contact => contact.name != from)
+  let { strangers, contacts } = state
+  payload.name = from
+  payload.avatar = 'https://facebook.github.io/react/img/logo_og.png'
   const roster = {
     groups: [],
-    jid: `magnussen#cnodejs_${from}@easemob.com`,
+    jid: fromJid,
     avatar: 'https://facebook.github.io/react/img/logo_og.png',
     name: from,
     subscription: "none"
   }
   switch (type) {
     //若e.status中含有[resp:true],则表示为对方同意好友后反向添加自己为好友的消息，demo中发现此类消息，默认同意操作，完成双方互为好友；如果不含有[resp:true]，则表示为正常的对方请求添加自己为好友的申请消息。
-    case 'subscribe': strangers = [roster, ...strangers]; break;
+    case 'subscribe': strangers = [payload, ...filter_strangers]; break;
     //(发送者允许接收者接收他们的出席信息)，即别人同意你加他为好友
-    case 'subscribed': concat.subscription = 'both'; contacts = [roster, ...contacts]; break;
+    case 'subscribed':
+      roster.subscription = 'both';
+      contacts = [roster, ...filter_contacts];
+      strangers = [payload, ...filter_strangers];
+      break;
     //（发送者取消订阅另一个实体的出席信息）,即删除现有好友
     case 'unsubscribe': break;
     //（订阅者的请求被拒绝或以前的订阅被取消），即对方单向的删除了好友
-    case 'unsubscribed': contacts = [roster, ...contacts]; break;
+    case 'unsubscribed': contacts = filter_contacts; break;
     default: break;
   }
+  return { contacts, strangers }
+}
+
+export function parseRosters(state, rosters) {
+  const { contacts, strangers } = state
+  rosters.map(roster => {
+    roster.avatar = 'https://facebook.github.io/react/img/logo_og.png'
+    if (roster.subscription === 'both' || roster.subscription === 'to') contacts.push(roster)
+    // else strangers.push(roster)
+  })
   return { contacts, strangers }
 }
 
@@ -170,15 +200,4 @@ export function parseHistory(messages) {
     return message
   })
   return history
-}
-
-export function parseRosters(rosters) {
-  const contacts = [];
-  const strangers = [];
-  rosters.map(roster => {
-    roster.avatar = 'https://facebook.github.io/react/img/logo_og.png'
-    if (roster.subscription === 'both' || roster.subscription === 'to') contacts.push(roster)
-    else strangers.push(roster)
-  })
-  return { contacts, strangers }
 }

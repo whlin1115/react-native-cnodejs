@@ -22,14 +22,15 @@ export default {
       const user = yield select(state => state.home.user);
       const webim_user = yield select(state => state.home.webim_user);
       const webim_accesstoken = yield select(state => state.home.webim_accesstoken);
+      const { loginname } = user
 
-      const chat_history = yield AsyncStorage.getItem('chat_history')
+      const chat_history = yield AsyncStorage.getItem(`${loginname}_chat_history`)
       if (chat_history) yield put({ type: 'chat_history', payload: { chat_history: JSON.parse(chat_history) } });
 
-      const total_messages = yield AsyncStorage.getItem('total_messages')
+      const total_messages = yield AsyncStorage.getItem(`${loginname}_total_messages`)
       if (total_messages) yield put({ type: 'total_messages', payload: { total_messages: JSON.parse(total_messages) } });
 
-      if (Object.keys(user).length == 0) put({ type: 'home/isLogin', payload: false })
+      if (Object.keys(user).length == 0) yield put({ type: 'home/isLogin', payload: false })
       else if (Object.keys(webim_user) == 0 && !webim_accesstoken) yield put({ type: 'attempt_login', payload: user })
       else yield put({ type: 'token_login', payload: { user: webim_user, accesstoken: webim_accesstoken } })
 
@@ -77,8 +78,12 @@ export default {
       yield call(service.sendTxtMessage, { to, msg });
     },
     *add_friends({ payload = {} }, { call, put }) {
-      const { username, message = '你好' } = payload;
+      const { username, message = '对方请求添加你为好友' } = payload;
       yield call(service.addFriends, { username, message });
+    },
+    *on_subscribe({ payload = {} }, { call, put }) {
+      const { user: { to, from } } = payload;
+      yield call(service.onSubscribe, { to, from });
     },
     *remove_friends({ payload = {} }, { call, put }) {
       const { username } = payload;
@@ -117,7 +122,8 @@ export default {
     },
     'on_presence'(state, { payload }) {
       const { contacts, strangers } = service.handlePresence(state, payload)
-      // return { ...state, contacts, strangers };
+      // AsyncStorage.setItem(`${loginname}_application`, JSON.stringify(strangers))
+      return { ...state, contacts, strangers };
     },
     'total_messages'(state, { payload }) {
       const { total_messages } = payload
@@ -128,21 +134,30 @@ export default {
       return { ...state, chat_history };
     },
     'delete_sigle_chat'(state, { payload }) {
-      const { messages, total_messages, chat_history } = service.parseSigleChat(state, payload)
-      AsyncStorage.setItem('total_messages', JSON.stringify(total_messages))
-      AsyncStorage.setItem('chat_history', JSON.stringify(chat_history))
+      const { user, owner: { loginname } } = payload
+      const { messages, total_messages, chat_history } = service.parseSigleChat(state, user)
+      AsyncStorage.setItem(`${loginname}_total_messages`, JSON.stringify(total_messages))
+      AsyncStorage.setItem(`${loginname}_chat_history`, JSON.stringify(chat_history))
       return { ...state, messages, total_messages, chat_history };
     },
+    'delete_application'(state, { payload }) {
+      const { user, owner: { loginname } } = payload
+      const { strangers } = service.parseApplication(state, user)
+      // AsyncStorage.setItem(`${loginname}_application`, JSON.stringify(strangers))
+      return { ...state, strangers };
+    },
     'clean_sigle_history'(state, { payload }) {
-      const { messages, total_messages, chat_history } = service.parseSigleHistory(state, payload)
-      AsyncStorage.setItem('total_messages', JSON.stringify(total_messages))
-      AsyncStorage.setItem('chat_history', JSON.stringify(chat_history))
+      const { user, owner: { loginname } } = payload
+      const { messages, total_messages, chat_history } = service.parseSigleHistory(state, user)
+      AsyncStorage.setItem(`${loginname}_total_messages`, JSON.stringify(total_messages))
+      AsyncStorage.setItem(`${loginname}_chat_history`, JSON.stringify(chat_history))
       return { ...state, messages, total_messages, chat_history };
     },
     'save_message'(state, { payload }) {
+      const { user, owner: { loginname } } = payload
       const { messages, total_messages, chat_history } = service.parseMessage(state, payload)
-      AsyncStorage.setItem('total_messages', JSON.stringify(total_messages))
-      AsyncStorage.setItem('chat_history', JSON.stringify(chat_history))
+      AsyncStorage.setItem(`${loginname}_total_messages`, JSON.stringify(total_messages))
+      AsyncStorage.setItem(`${loginname}_chat_history`, JSON.stringify(chat_history))
       return { ...state, messages, total_messages, chat_history };
     },
     'fetch_message'(state, { payload }) {
@@ -151,8 +166,11 @@ export default {
       return { ...state, messages };
     },
     'save_contacts'(state, { payload }) {
-      const { contacts, strangers } = service.parseRosters(payload)
+      const { contacts, strangers } = service.parseRosters(state, payload)
       return { ...state, contacts, strangers };
+    },
+    'clean'(state, { payload: data }) {
+      return { ...state, messages: [], contacts: [], strangers: [], };
     },
     'loading'(state, { payload: data }) {
       return { ...state, loading: data };

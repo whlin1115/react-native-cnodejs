@@ -21,7 +21,7 @@ class Dynamic extends PureComponent {
 
   render() {
     const { navigate, state } = this.props.navigation;
-    const { data } = state.params
+    const { data = [] } = state.params
 
     return (
       <View style={styles.container}>

@@ -13,9 +13,8 @@ export default {
   },
   effects: {
     *init({ payload = {} }, { call, put }) {
-      const data = yield AsyncStorage.getItem('records') || '[]';
-      const records = JSON.parse(data)
-      yield put({ type: 'records', payload: records });
+      const records = yield AsyncStorage.getItem('records');
+      if (records) yield put({ type: 'records', payload: JSON.parse(records) });
     },
     *query({ payload = {} }, { call, put }) {
       const { page = 1, content } = payload

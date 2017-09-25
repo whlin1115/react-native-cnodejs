@@ -9,16 +9,17 @@ class ChatRow extends PureComponent {
     this.state = {}
   }
 
-  _onLongPress = (item) => {
+  _onLongPress = (user) => {
+    const { owner } = this.props
     Alert.alert(
       '删除信息？', null,
       [
         { text: '取消', onPress: () => console.log('cancle') },
-        { text: '确定', onPress: () => this.props.delete(item) },
+        { text: '确定', onPress: () => this.props.delete({ user, owner }) },
       ]
     )
   }
-  
+
   render() {
     const { item, navigate } = this.props
 
@@ -42,7 +43,8 @@ class ChatRow extends PureComponent {
 
 function mapStateToProps(state) {
   const { loading } = state.notice;
-  return { loading };
+  const { user: owner } = state.home;
+  return { owner, loading };
 }
 
 function mapDispatchToProps(dispatch) {

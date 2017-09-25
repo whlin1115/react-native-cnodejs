@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva/mobile';
-import { StyleSheet, View, ScrollView, Text, Button, Switch, Image, StatusBar, FlatList, Dimensions, TouchableOpacity } from 'react-native'
+import { StyleSheet, View, ScrollView, Text, Button, Switch, Image, StatusBar, FlatList, Alert, Dimensions, TouchableOpacity } from 'react-native'
 
 class ChatMessage extends PureComponent {
   constructor(props) {
@@ -17,6 +17,17 @@ class ChatMessage extends PureComponent {
       headerTitle: '聊天信息',
     };
   };
+
+  _onClean = (user) => {
+    const { owner } = this.props
+    Alert.alert(
+      '清空当前聊天记录？', null,
+      [
+        { text: '取消', onPress: () => console.log('cancle') },
+        { text: '确定', onPress: () => this.props.clean({ user, owner }) },
+      ]
+    )
+  }
 
   render() {
     const { user } = this.props.navigation.state.params;
@@ -75,7 +86,7 @@ class ChatMessage extends PureComponent {
           </TouchableOpacity>
         </View>
         <View style={styles.rowList}>
-          <TouchableOpacity onPress={() => { this.props.clean(user) }}>
+          <TouchableOpacity onPress={() => { this._onClean(user) }}>
             <View style={styles.row}>
               <View style={styles.rowInner}>
                 <View style={styles.textView}>
@@ -92,7 +103,8 @@ class ChatMessage extends PureComponent {
 
 function mapStateToProps(state) {
   const { loading } = state.notice;
-  return { loading };
+  const { user: owner } = state.home;
+  return { owner, loading };
 }
 
 function mapDispatchToProps(dispatch) {

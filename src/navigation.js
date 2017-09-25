@@ -37,12 +37,14 @@ const Tabs = TabNavigator({
 }, {
     tabBarOptions: {
       activeTintColor: '#7a86a2',
+      inactiveTintColor: '#7a86a2',
       style: {
         backgroundColor: '#fff',
       },
     },
     lazy: true,
     swipeEnabled: true,
+    tabBarPosition: 'bottom'
   });
 
 const Navigation = StackNavigator({

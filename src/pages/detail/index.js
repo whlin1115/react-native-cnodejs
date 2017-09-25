@@ -1,6 +1,8 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva/mobile';
-import { Floor, Info, Option } from './components';
+import Floor from './components/Floor';
+import Info from './components/Info';
+import Option from './components/Option';
 import { HtmlView } from '../../components';
 import { StyleSheet, View, Text, TextInput, RefreshControl, Button, Image, StatusBar, FlatList, Dimensions, ScrollView, TouchableOpacity } from 'react-native'
 

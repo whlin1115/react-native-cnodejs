@@ -24,7 +24,7 @@ class Option extends Component {
     return (
       <View style={styles.headerRight}>
         {
-          user.loginname === author.loginname ?
+          user.loginname && user.loginname === author.loginname ?
             <TouchableOpacity style={styles.headerTouch} onPress={() => { navigation.navigate('Publish', { edit: true }) }}>
               <Image style={styles.headerBtn} source={require('../../../assets/images/edit.png')} resizeMode='contain' />
             </TouchableOpacity>

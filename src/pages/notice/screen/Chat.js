@@ -37,9 +37,10 @@ class Chat extends PureComponent {
   _onSend = (messages = []) => {
     const [message] = messages
     const { user } = this.props.navigation.state.params;
+    const { owner } = this.props
     const params = { to: user.name, msg: message.text }
     this.props.sendMessage(params)
-    this.props.saveMessage({ user, message })
+    this.props.saveMessage({ user, owner, message })
   }
 
   _renderBubble(props) {
@@ -51,7 +52,7 @@ class Chat extends PureComponent {
   }
 
   render() {
-    const { messages, user, loading } = this.props
+    const { messages, owner, loading } = this.props
     const { navigate } = this.props.navigation;
 
     return (
@@ -65,7 +66,7 @@ class Chat extends PureComponent {
           onSend={(messages) => this._onSend(messages)}
           renderBubble={this._renderBubble.bind(this)}
           renderFooter={this._renderFooter.bind(this)}
-          user={{ _id: user.loginname, name: user.loginname, avatar: user.avatar_url }}
+          user={{ _id: owner.loginname, name: owner.loginname, avatar: owner.avatar_url }}
         />
       </View>
     );
@@ -74,8 +75,8 @@ class Chat extends PureComponent {
 
 function mapStateToProps(state) {
   const { messages, loading } = state.notice;
-  const { user } = state.home;
-  return { messages, user, loading };
+  const { user: owner } = state.home;
+  return { messages, owner, loading };
 }
 
 function mapDispatchToProps(dispatch) {

@@ -38,6 +38,7 @@ export default {
       yield put({ type: 'loading', payload: false });
       if (err) return console.log(err)
       if (login) yield put({ type: 'notice/init', payload: true });    //重新登录聊天
+      yield put({ type: 'home/isLogin', payload: true })
       yield put({ type: 'query/success', payload: data });
     },
     *otherInfo({ payload = {} }, { call, put }) {
@@ -66,7 +67,9 @@ export default {
       AsyncStorage.removeItem('accesstoken')
       AsyncStorage.removeItem('webim_user')
       AsyncStorage.removeItem('webim_accesstoken')
+      yield put({ type: 'home/isLogin', payload: false })
       yield put({ type: 'home/clean', payload: true });
+      yield put({ type: 'notice/clean', payload: true });
       yield put({ type: 'clean', payload: true });
       yield call(service.logout);
     },

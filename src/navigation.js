@@ -25,7 +25,7 @@ import Github from './pages/zone/screen/Github';
 import Collect from './pages/zone/screen/Collect';
 import Dynamic from './pages/zone/screen/Dynamic';
 import Credits from './pages/zone/screen/Credits';
-import Setting from './pages/zone/screen/Setting';
+import Settings from './pages/zone/screen/Settings';
 import Personal from './pages/zone/screen/Personal';
 import Password from './pages/zone/screen/Password';
 
@@ -68,7 +68,7 @@ const Navigation = StackNavigator({
   Credits: { screen: Credits },
   Dynamic: { screen: Dynamic },
   Collect: { screen: Collect },
-  Setting: { screen: Setting },
+  Settings: { screen: Settings },
   Personal: { screen: Personal },
   Password: { screen: Password },
 }, {

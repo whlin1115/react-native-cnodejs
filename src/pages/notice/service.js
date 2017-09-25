@@ -100,16 +100,28 @@ export function parseRead(data, state) {
 }
 
 export function parseMessage(state, payload) {
-  const { user: { name }, message } = payload
+  const { user: { name }, message, owner } = payload
   const total_messages = state.total_messages;
-  const user_messages = total_messages[name] || []
+  const { messages: user_messages = [] } = total_messages[name] || {}
   const messages = [message, ...user_messages]
-  total_messages[name] = messages
-  const chat_user = { name, avatar: 'https://facebook.github.io/react/img/logo_og.png', ...message }
-  chat_user.createdAt = moment(chat_user.createdAt).format('HH:mm');
+  total_messages[name] = { messages }
   const filter_chats = state.chat_history.filter(chat => chat.name !== name)
+  const [state_chat = {}] = state.chat_history.filter(chat => chat.name === name)
+  let { count = 0 } = state_chat
+  if (message.user.name !== owner.loginname) count += 1  // 只有是对方的信息才增加
+  const chat_user = { name, count, avatar: 'https://facebook.github.io/react/img/logo_og.png', ...message }
+  chat_user.createdAt = moment(chat_user.createdAt).format('HH:mm');
   const chat_history = [chat_user, ...filter_chats]
   return { messages, total_messages, chat_history }
+}
+
+export function cleanCount(state, payload) {
+  const { user: { name }, owner } = payload
+  const chat_history = state.chat_history.map(chat => {
+    if (chat.name === name) chat.count = 0
+    return chat
+  })
+  return { chat_history }
 }
 
 export function parseSigleHistory(state, user) {
@@ -117,7 +129,7 @@ export function parseSigleHistory(state, user) {
   const total_messages = state.total_messages;
   delete total_messages[name]
   const chat_history = state.chat_history.map(chat => {
-    if (chat.name === name) chat = { ...chat, text: '', createdAt: '' }
+    if (chat.name === name) chat = { ...chat, text: '[已清除]', createdAt: '' }
     return chat
   })
   return { messages: [], total_messages, chat_history }

@@ -68,7 +68,7 @@ class Zone extends PureComponent {
           </TouchableOpacity>
         </View>
         <View style={styles.rowList}>
-          <TouchableOpacity onPress={() => { navigate('Setting') }}>
+          <TouchableOpacity onPress={() => { navigate('Settings') }}>
             <View style={styles.row}>
               <Image style={styles.rowImg} source={require('../../assets/images/setting.png')} resizeMode='contain' />
               <View style={styles.rowInner}>

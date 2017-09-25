@@ -162,8 +162,15 @@ export default {
     },
     'fetch_message'(state, { payload }) {
       const { user: { name } } = payload
-      const messages = state.total_messages[name]
+      const total_messages = state.total_messages[name] || {}
+      const { messages = [] } = total_messages
       return { ...state, messages };
+    },
+    'clean_count'(state, { payload }) {
+      const { owner: { loginname } } = payload
+      const { chat_history } = service.cleanCount(state, payload)
+      AsyncStorage.setItem(`${loginname}_chat_history`, JSON.stringify(chat_history))
+      return { ...state, chat_history };
     },
     'save_contacts'(state, { payload }) {
       const { contacts, strangers } = service.parseRosters(state, payload)

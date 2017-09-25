@@ -23,7 +23,7 @@ class Notice extends PureComponent {
       headerRight: (
         <View style={styles.headerRight}>
           <TouchableOpacity style={styles.headerTouch} onPress={() => { navigate('Contact') }}>
-            <Image style={styles.headerBtn} source={require('../../assets/images/recruit.png')} resizeMode='contain' />
+            <Image style={styles.headerBtn} source={require('../../assets/images/group.png')} resizeMode='contain' />
           </TouchableOpacity>
           <TouchableOpacity style={styles.headerTouch} onPress={() => { navigate('AddFriend') }}>
             <Image style={styles.headerBtn} source={require('../../assets/images/search.png')} resizeMode='contain' />
@@ -100,7 +100,7 @@ class Notice extends PureComponent {
   }
 
   render() {
-    const { data, chat_history, has_read_messages, hasnot_read_messages, accesstoken, loading } = this.props
+    const { data, chat_history, has_read_messages, hasnot_read_messages, accesstoken, strangers, loading } = this.props
     const { navigate } = this.props.navigation;
 
     return (
@@ -112,6 +112,7 @@ class Notice extends PureComponent {
               <Image style={styles.rowImg} source={require('../../assets/images/notice.png')} resizeMode='contain' />
               <View style={styles.rowInner}>
                 <Text style={styles.rowText}>系统消息</Text>
+                <Text style={styles.span}>{hasnot_read_messages.length > 0 ? hasnot_read_messages.length : null}</Text>
               </View>
             </View>
           </TouchableOpacity>
@@ -120,6 +121,7 @@ class Notice extends PureComponent {
               <Image style={styles.rowImg} source={require('../../assets/images/comment.png')} resizeMode='contain' />
               <View style={styles.rowInner}>
                 <Text style={styles.rowText}>好友申请</Text>
+                <Text style={styles.span}>{strangers.length > 0 ? strangers.length : null}</Text>
               </View>
             </View>
           </TouchableOpacity>
@@ -143,9 +145,9 @@ class Notice extends PureComponent {
 }
 
 function mapStateToProps(state) {
-  const { data, chat_history, has_read_messages, hasnot_read_messages, loading } = state.notice;
+  const { data, chat_history, has_read_messages, hasnot_read_messages, strangers, loading } = state.notice;
   const { user: owner, accesstoken } = state.home;
-  return { data, owner, chat_history, has_read_messages, hasnot_read_messages, accesstoken, loading };
+  return { data, owner, chat_history, has_read_messages, hasnot_read_messages, accesstoken, strangers, loading };
 }
 
 function mapDispatchToProps(dispatch) {
@@ -232,6 +234,8 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 20,
     paddingBottom: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     borderBottomWidth: 0.5,
     borderColor: '#F0F0F0',
   },
@@ -244,6 +248,11 @@ const styles = StyleSheet.create({
   iconBtn: {
     width: 25,
     height: 25,
+  },
+
+  span: {
+    color: '#999',
+    fontSize: 14,
   }
 });
 

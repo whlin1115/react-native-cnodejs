@@ -22,7 +22,7 @@ class Chat extends PureComponent {
       headerRight: (
         <View style={styles.headerRight}>
           <TouchableOpacity style={styles.headerTouch} onPress={() => { navigate('ChatMessage', { user }) }}>
-            <Image style={styles.headerBtn} source={require('../../../assets/images/setting.png')} resizeMode='contain' />
+            <Image style={styles.headerBtn} source={require('../../../assets/images/user.png')} resizeMode='contain' />
           </TouchableOpacity>
         </View>
       ),

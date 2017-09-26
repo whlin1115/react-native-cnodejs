@@ -60,7 +60,7 @@ class Recruit extends PureComponent {
           style={{ width: width }}
           data={data}
           extraData={this.state}
-          keyExtractor={(item, index) => index}
+          keyExtractor={(item, index) => item.id}
           renderItem={({ item }) => <Wrap navigate={navigate} item={item} />}
           onRefresh={() => { this.props.query() }}
           onEndReached={() => { this._onEndReached(page) }} // 如果直接 this.props.query() 会请求两次

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva/mobile';
-import { StyleSheet, Text, View, Image, TextInput, Dimensions, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Image, TextInput, Dimensions, Platform, TouchableOpacity } from 'react-native';
 
 const { width } = Dimensions.get('window')
 const inputWidth = width - (44 + 15) * 2 - 35 - 4 - 24 // 减去的宽度分别是 导航栏按钮+margin*2，关闭按钮
@@ -22,10 +22,12 @@ class Seek extends Component {
 
   render() {
     const { loading } = this.props
+    const height = Platform.OS == 'ios' ? 28 : 32
+    const borderRadius = Platform.OS == 'ios' ? 14 : 16
 
     return (
       <View style={styles.headerRight}>
-        <View style={styles.inputView}>
+        <View style={[styles.inputView, { height, borderRadius }]}>
           <Image style={styles.headerBtn} source={require('../../../assets/images/searchbar.png')} resizeMode='contain' />
           <TextInput style={styles.input}
             placeholder='搜索用户'
@@ -86,9 +88,7 @@ const styles = StyleSheet.create({
 
   inputView: {
     flexDirection: 'row',
-    height: 28,
     backgroundColor: '#FFFFFF',
-    borderRadius: 14,
     borderWidth: 1,
     alignItems: 'center',
     borderColor: '#FFFFFF',
@@ -96,6 +96,7 @@ const styles = StyleSheet.create({
   },
 
   input: {
+    padding: 0,
     fontSize: 14,
     width: inputWidth,
   },

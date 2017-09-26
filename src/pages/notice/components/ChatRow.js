@@ -27,12 +27,16 @@ class ChatRow extends PureComponent {
   }
 
   _renderWidth = ({ count }) => {
-    return 10 * 2
+    if (count < 10) return 10
+    else if (count > 10 && count < 100) return 10 * 2
+    else if (count > 100 && count < 1000) return 10 * 3
+    else if (count >= 1000) return 10 * 4
   }
 
   render() {
     const { item } = this.props
     const width = this._renderWidth(item)
+    item.count = item.count <= 999 ? item.count : '+999'
 
     return (
       <TouchableOpacity onPress={() => { this._onPress(item) }} onLongPress={() => { this._onLongPress(item) }}>

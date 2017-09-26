@@ -1,5 +1,5 @@
 import CardStackStyleInterpolator from 'react-navigation/src/views/CardStackStyleInterpolator';
-import { StackNavigator, TabNavigator } from 'react-navigation';
+import { StackNavigator, TabNavigator, TabBarBottom } from 'react-navigation';
 import Home from './pages/home';
 import Detail from './pages/detail';
 import Search from './pages/search';
@@ -44,7 +44,8 @@ const Tabs = TabNavigator({
     },
     lazy: true,
     swipeEnabled: true,
-    tabBarPosition: 'bottom'
+    tabBarPosition: 'bottom',
+    tabBarComponent: TabBarBottom,  //解决安卓底栏不显示图标问题
   });
 
 const Navigation = StackNavigator({

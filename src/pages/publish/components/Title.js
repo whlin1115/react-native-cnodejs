@@ -45,6 +45,7 @@ class Title extends Component {
           animationType={"fade"}
           transparent={true}
           visible={this.state.visible}
+          onRequestClose={() => null}     //修复安卓modal的告警
         >
           <TouchableWithoutFeedback onPress={() => { this.setState({ visible: false }) }}>
             <View style={styles.modalContainer}>
@@ -141,7 +142,7 @@ const styles = StyleSheet.create({
   },
 
   rowLine: {
-    height: 0.5,
+    height: 1,
     backgroundColor: '#F0F0F0',
   },
 

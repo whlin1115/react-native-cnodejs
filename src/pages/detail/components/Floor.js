@@ -6,7 +6,7 @@ import { HtmlView } from '../../../components';
 
 const { width } = Dimensions.get('window')
 const defaultMaxImageWidth = width - 30 - 20
-const defaultWidth = width - 50 * 2
+const defaultWidth = width - 90 * 2
 
 class Floor extends PureComponent {
   constructor(props) {
@@ -16,7 +16,11 @@ class Floor extends PureComponent {
     }
   }
 
-  _onSelect = () => {
+  _onReply = (item) => {
+    const { author: { loginname }, id } = item
+    const content = `@${loginname}`
+    this.props.setReplyId(id)
+    this.props.setContent(content)
     this.setState({ visible: false })
   }
 
@@ -31,7 +35,7 @@ class Floor extends PureComponent {
 
     return (
       <View tyle={styles.container}>
-        <TouchableOpacity onPress={() => { this.setState({ visible: true }) }}>
+        <TouchableWithoutFeedback onPress={() => { this.setState({ visible: true }) }}>
           <View style={styles.list}>
             <View style={styles.user}>
               <TouchableOpacity onPress={() => { navigate('Center', { user: item.author.loginname }) }}>
@@ -54,18 +58,19 @@ class Floor extends PureComponent {
               <HtmlView html={item.content} styles={htmlStyles} />
             </View>
           </View>
-        </TouchableOpacity>
+        </TouchableWithoutFeedback>
         <Modal
           animationType={"fade"}
           transparent={true}
           visible={this.state.visible}
+          onRequestClose={() => null}     //修复安卓modal的告警
         >
           <TouchableWithoutFeedback onPress={() => { this.setState({ visible: false }) }}>
             <View style={styles.modalContainer}>
               <View style={styles.modal}>
-                <TouchableOpacity onPress={() => { this._onSelect() }}>
+                <TouchableOpacity onPress={() => { this._onReply(item) }}>
                   <View style={styles.rowView}>
-                    <Text style={styles.rowText}>评论</Text>
+                    <Text style={styles.rowText}>回复</Text>
                   </View>
                   <View style={styles.rowLine}></View>
                 </TouchableOpacity>
@@ -94,6 +99,18 @@ function mapDispatchToProps(dispatch) {
     ups(params) {
       dispatch({
         type: 'detail/ups',
+        payload: params,
+      });
+    },
+    setContent(params) {
+      dispatch({
+        type: 'detail/content',
+        payload: params,
+      });
+    },
+    setReplyId(params) {
+      dispatch({
+        type: 'detail/set_reply_id',
         payload: params,
       });
     },
@@ -186,7 +203,7 @@ const styles = StyleSheet.create({
   },
 
   rowLine: {
-    height: 0.5,
+    height: 1,
     backgroundColor: '#F0F0F0',
   },
 

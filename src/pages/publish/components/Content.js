@@ -15,7 +15,7 @@ class Content extends Component {
   render() {
     const { tab, content } = this.props
     const { height } = Dimensions.get('window');
-    const textareaHeight = height - 64 - 74 - 35
+    const textareaHeight = height - 64 - 74 - 35 - 260
 
     return (
       <View style={styles.content}>
@@ -61,6 +61,9 @@ const styles = StyleSheet.create({
   },
 
   textarea: {
+    padding: 0,
+    textAlign:'left',
+    textAlignVertical:'top',
     fontSize: 16,
     marginTop: 10,
     marginBottom: 10,

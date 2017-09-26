@@ -1,11 +1,11 @@
 
 import React from 'react'
-import { StyleSheet, View, Image, Text, TouchableOpacity } from 'react-native'
+import { StyleSheet, View, Image, Text, TouchableHighlight } from 'react-native'
 
 function Card({ item, navigate }) {
 
   return (
-    <TouchableOpacity onPress={() => { navigate('Detail', { topic_id: item.id }) }}>
+    <TouchableHighlight onPress={() => { navigate('Detail', { topic_id: item.id }) }}>
       <View style={styles.list}>
         <View style={styles.header}>
           <Text numberOfLines={1} style={styles.h3}>{item.title}</Text>
@@ -19,7 +19,7 @@ function Card({ item, navigate }) {
           </View>
         </View>
       </View >
-    </TouchableOpacity>
+    </TouchableHighlight>
   )
 }
 

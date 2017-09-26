@@ -11,7 +11,9 @@ function Info({ data, navigate }) {
           <Text style={styles.h2}>{data.title}</Text>
         </View>
         <View style={styles.info}>
-          <Image source={{ uri: data.author.avatar_url }} style={styles.avatar} />
+          <TouchableOpacity onPress={() => { navigate('Center', { user: data.author.loginname }) }}>
+            <Image source={{ uri: data.author.avatar_url }} style={styles.avatar} />
+          </TouchableOpacity>
           <View style={styles.col}>
             <Text style={styles.span}>{data.author.loginname}</Text>
             <Text style={styles.span}>发布于: {data.create_at}</Text>

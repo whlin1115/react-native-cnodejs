@@ -38,8 +38,9 @@ class Detail extends PureComponent {
   }
 
   _onSend = () => {
-    const { accesstoken, user, content, data } = this.props
+    const { accesstoken, user, content, reply_id, data } = this.props
     const params = { content, user, accesstoken, topic_id: data.id }
+    if (content.indexOf('@') === 0) params.reply_id = reply_id
     this.refs._scrollView.scrollToEnd()
     this.props.comment(params)
   }
@@ -61,9 +62,10 @@ class Detail extends PureComponent {
               </View> : null
           }
           {
-            replies.length > 0 ? <View style={styles.reply}>
-              <Text style={styles.total}>{replies.length}</Text><Text> 回复</Text>
-            </View> : null
+            replies.length > 0 ?
+              <View style={styles.reply}>
+                <Text style={styles.total}>{replies.length}</Text><Text> 回复</Text>
+              </View> : null
           }
           <FlatList
             style={{ width: width }}
@@ -92,9 +94,9 @@ class Detail extends PureComponent {
 }
 
 function mapStateToProps(state) {
-  const { data, replies, content, loading } = state.detail;
+  const { data, replies, content, reply_id, loading } = state.detail;
   const { accesstoken, user } = state.home
-  return { data, accesstoken, loading, content, replies, user };
+  return { data, accesstoken, loading, content, replies, reply_id, user };
 }
 
 function mapDispatchToProps(dispatch) {

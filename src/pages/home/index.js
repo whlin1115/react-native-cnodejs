@@ -61,6 +61,7 @@ class Home extends PureComponent {
 
     return (
       <View style={styles.container}>
+        <StatusBar barStyle="light-content" />
         <View style={styles.tabsView}>
           {
             tabs.map((item, index) => (
@@ -72,7 +73,6 @@ class Home extends PureComponent {
             ))
           }
         </View>
-        <StatusBar barStyle="light-content" />
         <FlatList
           style={{ width: width }}
           ref="_flatlist"
@@ -85,7 +85,7 @@ class Home extends PureComponent {
           onEndReachedThreshold={0.5}
           refreshing={loading}
         />
-        <TouchableOpacity onPress={() => { navigate('Publish') }}>
+        <TouchableOpacity style={styles.pubilshBox} onPress={() => { navigate('Publish') }}>
           <Image style={styles.pubilsh} source={require('../../assets/images/add.png')} resizeMode='contain' />
         </TouchableOpacity>
       </View>
@@ -152,10 +152,13 @@ const styles = StyleSheet.create({
     borderRadius: 15,
   },
 
-  pubilsh: {
+  pubilshBox: {
     position: 'absolute',
     bottom: 15,
     right: 15,
+  },
+  
+  pubilsh: {
     width: 44,
     height: 44,
   },

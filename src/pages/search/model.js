@@ -32,12 +32,10 @@ export default {
     'query/success'(state, { payload }) {
       const { data, content } = payload
       const [, result] = data
-      const datas = state.records.filter(history => history !== content);
-      if (datas.length > 9) datas.shift();
-      datas.unshift(content);
-      AsyncStorage.setItem('records', JSON.stringify(datas));
       const topics = service.parseSearch(result)
-      return { ...state, data: topics, content: content };
+      const { records } = service.parseRecords(state, content)
+      AsyncStorage.setItem('records', JSON.stringify(records));
+      return { ...state, data: topics, content, records };
     },
     'more/success'(state, { payload }) {
       const [, data] = payload

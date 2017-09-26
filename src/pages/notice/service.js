@@ -89,13 +89,13 @@ export function parseNotics(data) {
 export function parseRead(data, state) {
   const { marked_msg_id } = data
   const hasnot_read_messages = state.hasnot_read_messages.filter(messages => messages.id !== marked_msg_id);
-  const read_messages = state.hasnot_read_messages.map((messages) => {
+  const [read_messages] = state.hasnot_read_messages.filter((messages) => {
     if (messages.id === marked_msg_id) {
       messages.has_read = true
       return messages
     }
   });
-  const has_read_messages = state.has_read_messages.unshift(read_messages[0]).concat()
+  const has_read_messages = [read_messages, ...state.has_read_messages]
   return { has_read_messages, hasnot_read_messages }
 }
 

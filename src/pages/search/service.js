@@ -21,3 +21,10 @@ export function parseSearch(data) {
   });
   return lists;
 }
+
+export function parseRecords(state, content) {
+  const records = state.records.filter(history => history !== content);
+  if (records.length > 9) records.shift();
+  records.unshift(content);
+  return { records };
+}

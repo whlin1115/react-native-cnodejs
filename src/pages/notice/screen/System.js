@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva/mobile';
 import { Tip } from '../../../components';
 import Message from '../components/Message';
-import { StyleSheet, View, ScrollView, Text, Button, Image, StatusBar, FlatList, Dimensions, TouchableOpacity } from 'react-native'
+import { StyleSheet, View, ScrollView, Text, Button, Image, StatusBar, FlatList, Dimensions, TouchableHighlight } from 'react-native'
 
 const { width } = Dimensions.get('window');
 
@@ -27,14 +27,14 @@ class System extends PureComponent {
       <ScrollView style={styles.container}>
         <StatusBar barStyle="light-content" />
         <View style={styles.rowList}>
-          <TouchableOpacity onPress={() => { navigate('Read', { messages: has_read_messages }) }}>
+          <TouchableHighlight onPress={() => { navigate('Read', { messages: has_read_messages }) }}>
             <View style={styles.row}>
               <Image style={styles.rowImg} source={require('../../../assets/images/comment.png')} resizeMode='contain' />
               <View style={styles.rowInner}>
                 <Text style={styles.rowText}>已读消息</Text>
               </View>
             </View>
-          </TouchableOpacity>
+          </TouchableHighlight>
         </View>
         {
           hasnot_read_messages.length > 0 ?

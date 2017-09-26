@@ -38,12 +38,6 @@ export default {
       if (err) return console.log(err)
       yield put({ type: 'comment/success', payload: { data, user } });
     },
-    *reply({ payload = {} }, { call, put }) {
-      const { reply_id } = payload
-      const { data, err } = yield call(service.postComment, payload);
-      if (err) return console.log(err)
-      yield put({ type: 'comment/success', payload: { reply_id, data } });
-    },
   },
   reducers: {
     'query/success'(state, { payload }) {
@@ -75,8 +69,11 @@ export default {
     'content'(state, { payload: data }) {
       return { ...state, content: data };
     },
+    'set_reply_id'(state, { payload: data }) {
+      return { ...state, reply_id: data };
+    },
     'clean'(state, { payload: data }) {
-      return { ...state, data: {}, is_collect: false, replies: [] };
+      return { ...state, data: {}, is_collect: false, replies: [], content: '' };
     },
   },
   subscriptions: {},

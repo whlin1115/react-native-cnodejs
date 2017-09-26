@@ -4,7 +4,7 @@ import WebIM from '../../utils/webIM';
 import { Tip } from '../../components';
 import Message from './components/Message';
 import ChatRow from './components/ChatRow';
-import { StyleSheet, View, ScrollView, RefreshControl, Text, Button, Image, StatusBar, FlatList, Dimensions, TouchableOpacity } from 'react-native'
+import { StyleSheet, View, ScrollView, RefreshControl, Text, Button, Image, StatusBar, FlatList, Dimensions, TouchableOpacity, TouchableHighlight } from 'react-native'
 
 const { width } = Dimensions.get('window');
 
@@ -107,7 +107,7 @@ class Notice extends PureComponent {
       <ScrollView style={styles.container} refreshControl={<RefreshControl onRefresh={() => { this.props.query({ accesstoken }) }} refreshing={loading} />}>
         <StatusBar barStyle="light-content" />
         <View style={styles.rowList}>
-          <TouchableOpacity onPress={() => { navigate('System') }}>
+          <TouchableHighlight onPress={() => { navigate('System') }}>
             <View style={styles.row}>
               <Image style={styles.rowImg} source={require('../../assets/images/notice.png')} resizeMode='contain' />
               <View style={styles.rowInner}>
@@ -115,8 +115,8 @@ class Notice extends PureComponent {
                 <Text style={styles.span}>{hasnot_read_messages.length > 0 ? hasnot_read_messages.length : null}</Text>
               </View>
             </View>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => { navigate('Roster') }}>
+          </TouchableHighlight>
+          <TouchableHighlight onPress={() => { navigate('Roster') }}>
             <View style={styles.row}>
               <Image style={styles.rowImg} source={require('../../assets/images/comment.png')} resizeMode='contain' />
               <View style={styles.rowInner}>
@@ -124,7 +124,7 @@ class Notice extends PureComponent {
                 <Text style={styles.span}>{strangers.length > 0 ? strangers.length : null}</Text>
               </View>
             </View>
-          </TouchableOpacity>
+          </TouchableHighlight>
         </View>
         {
           chat_history.length > 0 ?

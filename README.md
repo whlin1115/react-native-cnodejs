@@ -33,6 +33,14 @@ token登录、退出；
 
 这只是一个练手的项目，希望大家多多交流
 
+# 部分演示
+
+<img src="https://github.com/linwh1115/react-native-cnodejs/blob/master/src/screenshot/chat.gif" width="50%" height="50%">
+
+<img src="https://github.com/linwh1115/react-native-cnodejs/blob/master/src/screenshot/home.gif" width="50%" height="50%">
+
+<img src="https://github.com/linwh1115/react-native-cnodejs/blob/master/src/screenshot/search.gif" width="50%" height="50%">
+
 # 部分截图
 
 <img src="https://github.com/linwh1115/react-native-cnodejs/blob/master/src/screenshot/511504842345_.pic_hd.jpg" width="50%" height="50%">

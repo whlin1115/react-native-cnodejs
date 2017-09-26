@@ -9,12 +9,6 @@ class ChatRow extends PureComponent {
     this.state = {}
   }
 
-  _onPress = (user) => {
-    const { owner, navigate } = this.props
-    navigate('Chat', { user })
-    this.props.cleanCount({ user, owner })
-  }
-
   _onLongPress = (user) => {
     const { owner } = this.props
     Alert.alert(
@@ -34,12 +28,12 @@ class ChatRow extends PureComponent {
   }
 
   render() {
-    const { item } = this.props
+    const { item, navigate } = this.props
     const width = this._renderWidth(item)
     item.count = item.count <= 999 ? item.count : '+999'
 
     return (
-      <TouchableOpacity onPress={() => { this._onPress(item) }} onLongPress={() => { this._onLongPress(item) }}>
+      <TouchableOpacity onPress={() => { navigate('Chat', { user: item }) }} onLongPress={() => { this._onLongPress(item) }}>
         <View style={styles.row}>
           <View style={styles.avatarBox} >
             <Image style={styles.avatar} source={{ uri: item.avatar }} />
@@ -76,12 +70,6 @@ function mapDispatchToProps(dispatch) {
     delete(params) {
       dispatch({
         type: 'notice/delete_sigle_chat',
-        payload: params,
-      });
-    },
-    cleanCount(params) {
-      dispatch({
-        type: 'notice/clean_count',
         payload: params,
       });
     },

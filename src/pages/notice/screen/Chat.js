@@ -31,7 +31,15 @@ class Chat extends PureComponent {
 
   componentDidMount() {
     const { user } = this.props.navigation.state.params;
+    const { owner } = this.props;
     this.props.fetchMessage({ user })
+    this.props.cleanCount({ user, owner })
+  }
+
+  componentWillUnmount() {
+    const { user } = this.props.navigation.state.params;
+    const { owner } = this.props;
+    this.props.cleanCount({ user, owner })
   }
 
   _onSend = (messages = []) => {
@@ -96,6 +104,12 @@ function mapDispatchToProps(dispatch) {
     saveMessage(params) {
       dispatch({
         type: 'notice/save_message',
+        payload: params,
+      });
+    },
+    cleanCount(params) {
+      dispatch({
+        type: 'notice/clean_count',
         payload: params,
       });
     },

@@ -6,8 +6,22 @@ API由 https://cnodejs.org/api 提供
 
 在官方提供的API之外，增加搜索入口和个人资料入口。
 
+# 主要功能
+
+token登录、退出；
+查看、发布、编辑主题；
+点赞评论、回复主题、收藏主题；
+搜索、添加好友、实时聊天；
+查看资料、查看收藏的主题、回复的主题；
+
 # 更新
-9-25： 集成聊天，实现搜索好友，处理申请，实时聊天
+
+17-9-25： 
+集成聊天，实现搜索好友，处理申请，实时聊天；
+
+17-9-26： 
+修复安卓搜索框显示不全问题；
+修复安卓tabbar的icon不能显示问题；
 
 # 说明
 
@@ -50,6 +64,14 @@ API由 https://cnodejs.org/api 提供
 <img src="https://github.com/linwh1115/react-native-cnodejs/blob/master/src/screenshot/WX20170925-171950%402x.png" width="50%" height="50%">
 
 <img src="https://github.com/linwh1115/react-native-cnodejs/blob/master/src/screenshot/WX20170925-173126%402x.png" width="50%" height="50%">
+
+# 等待修复问题
+
+- [ ] 上拉加载更多数据的时候，在android由于加载数据时间比较久，导致不能点击item，只有等待loading结束后才能正常点击（猜测是FlatList的问题，待观察）。
+- [ ] android端，点击主页上的tab，反应慢的问题（Android貌似都会比ios慢半拍 = = ）。
+- [ ] 文章图片显示问题，可能需要换个解析html的框架。
+- [ ] android如果图片设置 position:'absolute'，不能显示问题，比如新建文章按钮。
+- [ ] android如果图片是点击后才显示的，不显示问题，比如点赞和收藏按钮。
 
 # 待完善的功能
 

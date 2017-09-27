@@ -41,8 +41,9 @@ const Tabs = TabNavigator({
         backgroundColor: '#fff',
       },
     },
-    lazy: true,
-    swipeEnabled: true,
+    lazy: true,                     //懒加载
+    swipeEnabled: false,
+    animationEnabled: false,        //关闭安卓底栏动画
     tabBarPosition: 'bottom',
     tabBarComponent: TabBarBottom,  //解决安卓底栏不显示图标问题
   });

@@ -1,7 +1,7 @@
 
 import React, { Component, PureComponent } from 'react'
 import { connect } from 'dva/mobile';
-import { StyleSheet, View, Image, Text, TouchableHighlight } from 'react-native'
+import { StyleSheet, View, Image, Text, TouchableOpacity } from 'react-native'
 
 class Message extends PureComponent {
   constructor(props) {
@@ -21,7 +21,7 @@ class Message extends PureComponent {
     const { item } = this.props
 
     return (
-      <TouchableHighlight onPress={() => { this._onRead(item) }}>
+      <TouchableOpacity onPress={() => { this._onRead(item) }}>
         <View style={styles.list}>
           <View style={styles.content}>
             <View style={styles.tip}></View>
@@ -40,7 +40,7 @@ class Message extends PureComponent {
             </View>
           </View>
         </View >
-      </TouchableHighlight>
+      </TouchableOpacity>
     )
   }
 }

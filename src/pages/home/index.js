@@ -31,8 +31,6 @@ class Home extends PureComponent {
           source={!focused ? require('../../assets/images/home_0.png') : require('../../assets/images/home_1.png')} />
       ),
       tabBarLabel: '话题',
-      mode: 'card',
-      headerMode: 'float',
     };
   };
 
@@ -157,7 +155,7 @@ const styles = StyleSheet.create({
     bottom: 15,
     right: 15,
   },
-  
+
   pubilsh: {
     width: 44,
     height: 44,

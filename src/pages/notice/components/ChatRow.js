@@ -1,7 +1,7 @@
 
 import React, { Component, PureComponent } from 'react'
 import { connect } from 'dva/mobile';
-import { StyleSheet, View, Image, Text, Alert, TouchableHighlight } from 'react-native'
+import { StyleSheet, View, Image, Text, Alert, TouchableOpacity } from 'react-native'
 
 class ChatRow extends PureComponent {
   constructor(props) {
@@ -33,7 +33,7 @@ class ChatRow extends PureComponent {
     item.count = item.count <= 999 ? item.count : '+999'
 
     return (
-      <TouchableHighlight onPress={() => { navigate('Chat', { user: item }) }} onLongPress={() => { this._onLongPress(item) }}>
+      <TouchableOpacity onPress={() => { navigate('Chat', { user: item }) }} onLongPress={() => { this._onLongPress(item) }}>
         <View style={styles.row}>
           <View style={styles.avatarBox} >
             <Image style={styles.avatar} source={{ uri: item.avatar }} />
@@ -53,7 +53,7 @@ class ChatRow extends PureComponent {
             <Text numberOfLines={1} style={styles.content}>{item.text}</Text>
           </View>
         </View>
-      </TouchableHighlight >
+      </TouchableOpacity>
     )
   }
 }

@@ -10,12 +10,40 @@ Object.defineProperty(global, "GLOBAL", {
     enumerable: true,
     value: global
 });
-process.on("message", function(message){
-    if (onmessage) onmessage(message);
+
+var vscodeHandlers = {
+    'vscode_reloadApp': function () {
+        try {
+            global.require('NativeModules').DevMenu.reload();
+        } catch (err) {
+            // ignore
+        }
+    },
+    'vscode_showDevMenu': function () {
+        try {
+            var DevMenu = global.require('NativeModules').DevMenu.show();
+        } catch (err) {
+            // ignore
+        }
+    }
+};
+
+process.on("message", function (message) {
+    if (message.data && vscodeHandlers[message.data.method]) {
+        vscodeHandlers[message.data.method]();
+    } else if(onmessage) {
+        onmessage(message);
+    }
 });
+
 var postMessage = function(message){
     process.send(message);
 };
+
+if (!self.postMessage) {
+    self.postMessage = postMessage;
+}
+
 var importScripts = (function(){
     var fs=require('fs'), vm=require('vm');
     return function(scriptUrl){
@@ -23,6 +51,7 @@ var importScripts = (function(){
         vm.runInThisContext(scriptCode, {filename: scriptUrl});
     };
 })();
+
 /**
  * Copyright (c) 2015-present, Facebook, Inc.
  * All rights reserved.

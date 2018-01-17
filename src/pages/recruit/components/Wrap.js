@@ -1,11 +1,11 @@
 
 import React from 'react'
-import { StyleSheet, View, Image, Text, TouchableHighlight } from 'react-native'
+import { StyleSheet, View, Image, Text, TouchableOpacity } from 'react-native'
 
 function Wrap({ item, navigate }) {
 
   return (
-    <TouchableHighlight onPress={() => { navigate('Detail', { topic_id: item.id }) }}>
+    <TouchableOpacity onPress={() => { navigate('Detail', { topic_id: item.id }) }}>
       <View style={styles.list}>
         <View style={styles.header}>
           <View style={[styles[item.tab], styles.tab]} >
@@ -14,9 +14,9 @@ function Wrap({ item, navigate }) {
           <Text numberOfLines={1} style={styles.h3}>{item.title}</Text>
         </View >
         <View style={styles.content}>
-          <TouchableHighlight onPress={() => { navigate('Center', { user: item.author.loginname }) }}>
+          <TouchableOpacity onPress={() => { navigate('Center', { user: item.author.loginname }) }}>
             <Image source={{ uri: item.author.avatar_url }} style={styles.avatar} />
-          </TouchableHighlight>
+          </TouchableOpacity>
           <View style={styles.info}>
             <View style={styles.p}>
               <Text style={styles.name}>{item.author.loginname}</Text>
@@ -32,7 +32,7 @@ function Wrap({ item, navigate }) {
           </View>
         </View>
       </View >
-    </TouchableHighlight>
+    </TouchableOpacity>
   )
 }
 

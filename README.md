@@ -6,6 +6,16 @@ API由 https://cnodejs.org/api 提供
 
 在官方提供的API之外，增加搜索入口和个人资料入口。
 
+# 如何运行
+
+npm install 或者 yarn
+react-native start
+react-native run-android 或者 react-native run-ios
+
+如果还没有安装 react-native 那么先  npm i react-native-cli -g
+如果遇到无法启动问题，先尝试将 node 版本切换到8.1.0（推荐使用nvm安装）
+如果npm安装有提示问题，那么尝试使用 yarn 安装
+
 # 主要功能
 
 token登录、退出；

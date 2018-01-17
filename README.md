@@ -8,9 +8,9 @@ API由 https://cnodejs.org/api 提供
 
 # 如何运行
 
-npm install 或者 yarn
-react-native start
-react-native run-android 或者 react-native run-ios
+<pre><code> npm install 或者 yarn </code></pre>
+<pre><code> react-native start </code></pre>
+<pre><code> react-native run-android 或者 react-native run-ios</code></pre>
 
 如果还没有安装 react-native 那么先  npm i react-native-cli -g
 如果遇到无法启动问题，先尝试将 node 版本切换到8.1.0（推荐使用nvm安装）
@@ -26,17 +26,17 @@ token登录、退出；
 
 # 更新
 
-17-9-25： 
+17-9-25:
 集成聊天，实现搜索好友，处理申请，实时聊天；
 
-17-9-26： 
-修复安卓搜索框显示不全问题；
-修复安卓tabbar的icon不能显示问题；
-新增对评论进行回复；
-优化FlatList显示逻辑;
-修复搜索记录不能及时更新问题；
-修复android首页发布话题按钮不显示问题；
-修复点赞、收藏图标点击后不显示问题；
+17-9-26:
+<pre>修复安卓搜索框显示不全问题  
+修复安卓tabbar的icon不能显示问题  
+新增对评论进行回复  
+优化FlatList显示逻辑  
+修复搜索记录不能及时更新问题  
+修复android首页发布话题按钮不显示问题   
+修复点赞、收藏图标点击后不显示问题  </pre>
 
 # 说明
 
